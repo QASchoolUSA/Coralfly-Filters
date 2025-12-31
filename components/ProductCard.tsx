@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { useCart } from "@/components/CartProvider"
 
 interface ProductCardProps {
     product: {
@@ -21,6 +22,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+    const { addItem } = useCart()
     const [isImageLoaded, setIsImageLoaded] = useState(false)
 
     return (
@@ -58,9 +60,20 @@ export function ProductCard({ product }: ProductCardProps) {
                     ${product.price.toFixed(2)}
                 </div>
             </CardContent>
-            <CardFooter className="p-4 pt-0 mt-auto">
-                <Button className="w-full" asChild>
-                    <Link href={`/product/${product.slug.current}`}>View Details</Link>
+            <CardFooter className="p-4 pt-0 mt-auto grid grid-cols-2 gap-2">
+                <Button variant="outline" className="w-full" asChild>
+                    <Link href={`/product/${product.slug.current}`}>Details</Link>
+                </Button>
+                <Button className="w-full" onClick={() => addItem({
+                    _id: product._id,
+                    name: product.name,
+                    price: product.price,
+                    slug: product.slug.current,
+                    imageUrl: product.imageUrl,
+                    partNumber: product.partNumber,
+                    quantity: 1
+                })}>
+                    Add
                 </Button>
             </CardFooter>
         </Card>
