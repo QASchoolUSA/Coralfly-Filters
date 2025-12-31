@@ -73,7 +73,7 @@ export function ProductCard({ product }: ProductCardProps) {
                     partNumber: product.partNumber,
                     quantity: 1
                 })}>
-                    Add
+                    Add to Cart
                 </Button>
             </CardFooter>
         </Card>
