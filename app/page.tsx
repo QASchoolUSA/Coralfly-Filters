@@ -3,6 +3,7 @@ import { Search, ArrowRight, ShieldCheck, Truck, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
+import { HeroVideo } from "@/components/HeroVideo"
 
 export default function Home() {
   return (
@@ -31,20 +32,7 @@ export default function Home() {
             </div>
 
             <div className="relative mx-auto w-full max-w-[500px] lg:max-w-none">
-              {/* Placeholder for Hero Image */}
-              <div className="aspect-video overflow-hidden rounded-xl bg-slate-100 border shadow-2xl">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                  poster="/placeholder-poster.jpg" // Optional: Add a poster if available, or omit
-                >
-                  <source src="https://lynxandparts.com/wp-content/uploads/2025/06/IMG_0901.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
-              </div>
+              <HeroVideo />
             </div>
           </div>
         </div>

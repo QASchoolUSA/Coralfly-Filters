@@ -1,8 +1,12 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
+import { useState } from "react"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 
 interface ProductCardProps {
     product: {
@@ -17,23 +21,31 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+    const [isImageLoaded, setIsImageLoaded] = useState(false)
+
     return (
         <Card className="overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
             <div className="relative aspect-square">
                 {product.imageUrl ? (
-                    <Image
-                        src={product.imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-contain p-2 transition-transform hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+                    <>
+                        {!isImageLoaded && (
+                            <Skeleton className="absolute inset-0 w-full h-full z-10" />
+                        )}
+                        <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            onLoad={() => setIsImageLoaded(true)}
+                            className={`object-contain p-2 transition-all duration-300 hover:scale-105 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                    </>
                 ) : (
-                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                    <div className="flex items-center justify-center h-full text-muted-foreground bg-slate-50 dark:bg-slate-900">
                         No Image
                     </div>
                 )}
-                <Badge className="absolute top-2 right-2" variant="secondary">
+                <Badge className="absolute top-2 right-2 z-20" variant="secondary">
                     {product.productType.replace('-', ' ')}
                 </Badge>
             </div>
