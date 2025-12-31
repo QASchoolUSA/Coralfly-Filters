@@ -32,8 +32,18 @@ export default function Home() {
 
             <div className="relative mx-auto w-full max-w-[500px] lg:max-w-none">
               {/* Placeholder for Hero Image */}
-              <div className="aspect-video overflow-hidden rounded-xl bg-gradient-to-br from-slate-200 to-slate-100 border shadow-2xl flex items-center justify-center">
-                <span className="text-muted-foreground font-medium">Hero Image Visualization</span>
+              <div className="aspect-video overflow-hidden rounded-xl bg-slate-100 border shadow-2xl">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                  poster="/placeholder-poster.jpg" // Optional: Add a poster if available, or omit
+                >
+                  <source src="https://lynxandparts.com/wp-content/uploads/2025/06/IMG_0901.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </div>
           </div>
