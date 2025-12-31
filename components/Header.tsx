@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import { Search, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { CartSheet } from '@/components/CartSheet'
+import { SearchBar } from '@/components/SearchBar'
 
 export function Header() {
     return (
@@ -40,18 +40,10 @@ export function Header() {
                     <Link href="/shop?type=air-filter" className="transition-colors hover:text-foreground/80 text-foreground/60">Air Filters</Link>
                 </nav>
 
-                <div className="flex flex-1 items-center justify-end space-x-4">
-                    <form action="/shop" className="hidden lg:block lg:w-80">
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                type="search"
-                                name="search"
-                                placeholder="Search by part number..."
-                                className="w-full bg-background pl-8 md:w-[200px] lg:w-[300px]"
-                            />
-                        </div>
-                    </form>
+                <div className="flex flex-1 items-center justify-end gap-8">
+                    <div className="hidden lg:block">
+                        <SearchBar />
+                    </div>
                     <CartSheet />
                 </div>
             </div>

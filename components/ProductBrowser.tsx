@@ -3,10 +3,8 @@
 import { useState, useMemo, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { ProductCard } from "@/components/ProductCard"
-import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
-import { Search } from "lucide-react"
 
 interface Product {
     _id: string
@@ -93,21 +91,6 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
             {/* Sidebar Filters */}
             <aside className="w-full md:w-64 space-y-6 shrink-0">
                 {/* Search */}
-                <div>
-                    <h3 className="font-semibold mb-4">Search</h3>
-                    <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            placeholder="Part Number..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-8"
-                        />
-                    </div>
-                </div>
-
-                <Separator />
-
                 {/* Categories */}
                 <div>
                     <h3 className="font-semibold mb-4">Categories</h3>

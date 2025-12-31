@@ -26,19 +26,21 @@ export function ProductCard({ product }: ProductCardProps) {
     const [isImageLoaded, setIsImageLoaded] = useState(false)
 
     return (
-        <Card className="overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+        <Card className="group relative overflow-hidden flex flex-col h-full hover:shadow-lg transition-shadow">
+            <Link href={`/product/${product.slug.current}`} className="absolute inset-0 z-10" />
+
             <div className="relative aspect-square">
                 {product.imageUrl ? (
                     <>
                         {!isImageLoaded && (
-                            <Skeleton className="absolute inset-0 w-full h-full z-10" />
+                            <Skeleton className="absolute inset-0 w-full h-full z-0" />
                         )}
                         <Image
                             src={product.imageUrl}
                             alt={product.name}
                             fill
                             onLoad={() => setIsImageLoaded(true)}
-                            className={`object-contain p-2 transition-all duration-300 hover:scale-105 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                            className={`object-contain p-2 transition-all duration-300 group-hover:scale-105 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`}
                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                     </>
@@ -53,14 +55,14 @@ export function ProductCard({ product }: ProductCardProps) {
             </div>
             <CardContent className="p-4 flex-1">
                 <p className="text-sm text-muted-foreground mb-1">Part #: {product.partNumber}</p>
-                <Link href={`/product/${product.slug.current}`} className="hover:underline">
+                <div className="hover:underline">
                     <h3 className="font-semibold text-lg leading-tight mb-2 line-clamp-2">{product.name}</h3>
-                </Link>
+                </div>
                 <div className="text-xl font-bold text-primary">
                     ${product.price.toFixed(2)}
                 </div>
             </CardContent>
-            <CardFooter className="p-4 pt-0 mt-auto grid grid-cols-2 gap-2">
+            <CardFooter className="p-4 pt-0 mt-auto grid grid-cols-2 gap-2 relative z-20">
                 <Button variant="outline" className="w-full" asChild>
                     <Link href={`/product/${product.slug.current}`}>Details</Link>
                 </Button>
