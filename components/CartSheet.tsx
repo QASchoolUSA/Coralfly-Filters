@@ -8,7 +8,7 @@ import Image from "next/image"
 import Link from "next/link"
 
 export function CartSheet() {
-    const { items, isOpen, toggleCart, removeItem, total } = useCart()
+    const { items, isOpen, toggleCart, removeItem, updateQuantity, total } = useCart()
 
     const handleCheckout = async () => {
         try {
@@ -92,12 +92,30 @@ export function CartSheet() {
                                             <p className="font-bold text-primary">${item.price.toFixed(2)}</p>
 
                                             <div className="flex items-center gap-3">
-                                                <div className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
-                                                    Qty: {item.quantity}
+                                                <div className="flex items-center gap-1 bg-muted rounded-md border">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 rounded-none rounded-l-md"
+                                                        onClick={() => updateQuantity(item._id, -1)}
+                                                    >
+                                                        <Minus className="h-3 w-3" />
+                                                    </Button>
+                                                    <span className="text-xs font-medium w-6 text-center">
+                                                        {item.quantity}
+                                                    </span>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="h-7 w-7 rounded-none rounded-r-md"
+                                                        onClick={() => updateQuantity(item._id, 1)}
+                                                    >
+                                                        <Plus className="h-3 w-3" />
+                                                    </Button>
                                                 </div>
                                                 <button
                                                     onClick={() => removeItem(item._id)}
-                                                    className="text-muted-foreground hover:text-destructive transition-colors p-1 -mr-1"
+                                                    className="text-muted-foreground hover:text-destructive transition-colors p-1"
                                                     aria-label="Remove item"
                                                 >
                                                     <Trash2 className="h-4 w-4" />
