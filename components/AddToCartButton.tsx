@@ -13,6 +13,7 @@ export function AddToCartButton({ product }: { product: any }) {
             price: product.price,
             slug: product.slug.current,
             imageUrl: product.images?.[0],
+            partNumber: product.partNumber,
             quantity: 1
         })}>
             Add to Cart
