@@ -9,6 +9,7 @@ type CartItem = {
     imageUrl?: string
     slug: string
     quantity: number
+    partNumber: string
 }
 
 type CartContextType = {
