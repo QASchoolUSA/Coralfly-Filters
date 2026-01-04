@@ -73,6 +73,13 @@ export const product = defineType({
             description: 'List compatible vehicles, separated by commas or new lines.'
         }),
         defineField({
+            name: 'compatibleVehicles',
+            title: 'Compatible Vehicles',
+            type: 'array',
+            of: [{ type: 'reference', to: [{ type: 'vehicle' }] }],
+            description: 'Select specific vehicles this part fits.'
+        }),
+        defineField({
             name: 'seoTitle',
             title: 'SEO Title',
             type: 'string',

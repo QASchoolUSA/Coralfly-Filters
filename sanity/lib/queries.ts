@@ -8,6 +8,22 @@ export const PRODUCTS_QUERY = defineQuery(`*[_type == "product" && defined(slug.
   price,
   productType,
   brand,
+  "imageUrl": images[0].asset->url,
+  "compatibleVehicles": compatibleVehicles[]->{make, model, year, engine}
+}`);
+
+export const PRODUCTS_FILTERED_QUERY = defineQuery(`*[_type == "product" && defined(slug.current) 
+  && ($type == null || productType == $type)
+  && ($make == null || $make in compatibleVehicles[]->make)
+  && ($model == null || $model in compatibleVehicles[]->model)
+] | order(name asc) {
+  _id,
+  name,
+  slug,
+  partNumber,
+  price,
+  productType,
+  brand,
   "imageUrl": images[0].asset->url
 }`);
 
