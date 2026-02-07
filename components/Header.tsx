@@ -1,7 +1,7 @@
 "use client"
 
 import Link from 'next/link'
-import { Search, Menu, X, Home, LayoutGrid, Droplet, Flame, Wind, Fan } from 'lucide-react'
+import { Search, Menu, X, Home, LayoutGrid, Droplet, Flame, Wind, Fan, Package, Lightbulb } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet'
 import { Separator } from '@/components/ui/separator'
@@ -90,6 +90,18 @@ export function Header() {
                                             Cabin Filters
                                         </Link>
                                     </Button>
+                                    <Button variant="ghost" className="w-full justify-start" asChild>
+                                        <Link href="/shop?type=multi-system-filter-kit" onClick={() => setIsMenuOpen(false)}>
+                                            <Package className="mr-3 h-4 w-4" />
+                                            Filter Kits
+                                        </Link>
+                                    </Button>
+                                    <Button variant="ghost" className="w-full justify-start" asChild>
+                                        <Link href="/shop?type=lamp" onClick={() => setIsMenuOpen(false)}>
+                                            <Lightbulb className="mr-3 h-4 w-4" />
+                                            Lamps
+                                        </Link>
+                                    </Button>
                                 </div>
                             </nav>
                         </div>
@@ -106,6 +118,8 @@ export function Header() {
                     <Link href="/shop?type=oil-filter" className="transition-colors hover:text-foreground/80 text-foreground/60">Oil Filters</Link>
                     <Link href="/shop?type=fuel-filter" className="transition-colors hover:text-foreground/80 text-foreground/60">Fuel Filters</Link>
                     <Link href="/shop?type=air-filter" className="transition-colors hover:text-foreground/80 text-foreground/60">Air Filters</Link>
+                    <Link href="/shop?type=multi-system-filter-kit" className="transition-colors hover:text-foreground/80 text-foreground/60">Filter Kits</Link>
+                    <Link href="/shop?type=lamp" className="transition-colors hover:text-foreground/80 text-foreground/60">Lamps</Link>
                 </nav>
 
                 <div className="flex flex-1 items-center justify-end gap-2 md:gap-8">

@@ -62,6 +62,8 @@ export default async function ShopPage(props: {
                                 { label: 'Air Filters', value: 'air-filter' },
                                 { label: 'Cabin Filters', value: 'cabin-air-filter' },
                                 { label: 'Water Separators', value: 'fuel-water-separator' },
+                                { label: 'Filter Kits', value: 'multi-system-filter-kit' },
+                                { label: 'Lamps', value: 'lamp' },
                             ].map((cat) => {
                                 const params = new URLSearchParams()
                                 if (searchQuery) params.set('search', searchQuery)
@@ -102,6 +104,8 @@ export default async function ShopPage(props: {
                                 { label: 'Air Filters', value: 'air-filter' },
                                 { label: 'Cabin Filters', value: 'cabin-air-filter' },
                                 { label: 'Water Separators', value: 'fuel-water-separator' },
+                                { label: 'Filter Kits', value: 'multi-system-filter-kit' },
+                                { label: 'Lamps', value: 'lamp' },
                             ].map((cat) => {
                                 // Build URL keeping existing params
                                 const params = new URLSearchParams()
