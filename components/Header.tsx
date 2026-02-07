@@ -97,7 +97,7 @@ export function Header() {
 
                 <div className="flex flex-1 items-center justify-end gap-2 md:gap-8">
                     {/* Desktop Search */}
-                    <div className="hidden md:block w-full max-w-[200px] md:w-auto">
+                    <div className="hidden md:block md:w-60 lg:w-80">
                         <SearchBar />
                     </div>
 

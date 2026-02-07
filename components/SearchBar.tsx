@@ -67,7 +67,7 @@ export function SearchBar() {
     }
 
     return (
-        <div className="relative w-full lg:w-80" ref={containerRef}>
+        <div className="relative w-full" ref={containerRef}>
             <form onSubmit={handleSubmit} className="relative">
                 <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
