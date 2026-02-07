@@ -82,43 +82,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                                 )}
                             </AccordionContent>
                         </AccordionItem>
-                        <AccordionItem value="compatibility">
-                            <AccordionTrigger>Compatibility</AccordionTrigger>
-                            <AccordionContent>
-                                {product.compatibleVehicles && product.compatibleVehicles.length > 0 ? (
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-sm text-left">
-                                            <thead className="text-xs uppercase bg-slate-100 text-muted-foreground">
-                                                <tr>
-                                                    <th className="px-3 py-2 rounded-tl-lg">Make</th>
-                                                    <th className="px-3 py-2">Model</th>
-                                                    <th className="px-3 py-2">Year</th>
-                                                    <th className="px-3 py-2">Engine</th>
-                                                    <th className="px-3 py-2 rounded-tr-lg">Notes</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {product.compatibleVehicles.map((v: any, i: number) => (
-                                                    <tr key={i} className="border-b last:border-0 hover:bg-slate-50">
-                                                        <td className="px-3 py-2 font-medium">{v.make}</td>
-                                                        <td className="px-3 py-2">{v.model}</td>
-                                                        <td className="px-3 py-2">{v.year || 'All'}</td>
-                                                        <td className="px-3 py-2">
-                                                            {v.engine} {v.engineSize ? `(${v.engineSize}L)` : ''}
-                                                        </td>
-                                                        <td className="px-3 py-2 text-muted-foreground">{v.trim || '-'}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                ) : (
-                                    <p className="whitespace-pre-line text-sm text-muted-foreground">
-                                        {product.compatibility || "Please check verification with part number."}
-                                    </p>
-                                )}
-                            </AccordionContent>
-                        </AccordionItem>
                     </Accordion>
                 </div>
             </div>

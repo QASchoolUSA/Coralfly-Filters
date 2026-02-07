@@ -1,7 +1,6 @@
 import { client } from "@/sanity/lib/client"
 import { PRODUCTS_FILTERED_QUERY } from "@/sanity/lib/queries"
 import { ProductCard } from "@/components/ProductCard"
-import { VehicleFinder } from "@/components/VehicleFinder"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Search } from "lucide-react"
@@ -15,16 +14,12 @@ export default async function ShopPage(props: {
 }) {
     const searchParams = await props.searchParams
     const typeFilter = typeof searchParams.type === 'string' ? searchParams.type : undefined;
-    const makeFilter = typeof searchParams.make === 'string' ? searchParams.make : null;
-    const modelFilter = typeof searchParams.model === 'string' ? searchParams.model : null;
-    const yearFilter = typeof searchParams.year === 'string' ? searchParams.year : null;
     const searchQuery = typeof searchParams.search === 'string' ? searchParams.search.toLowerCase() : undefined;
 
     // Use GROQ for filtering Vehicle & Type
     let products = await client.fetch(PRODUCTS_FILTERED_QUERY, {
         type: typeFilter || null,
-        make: makeFilter || null,
-        model: modelFilter || null
+        // Removed make/model filtering params
     });
 
     if (searchQuery) {
@@ -37,33 +32,13 @@ export default async function ShopPage(props: {
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8">
-                {makeFilter ? `Parts for ${yearFilter || ''} ${makeFilter} ${modelFilter || ''}` : 'Shop All Parts'}
+                Shop All Parts
             </h1>
 
-            {(makeFilter) && (
-                <div className="mb-6 p-4 bg-muted/30 rounded-lg border flex items-center justify-between">
-                    <div>
-                        <span className="font-semibold">Filtering by vehicle:</span> {yearFilter} {makeFilter} {modelFilter}
-                    </div>
-                    <a href="/shop" className="text-sm text-primary hover:underline">Clear Vehicle</a>
-                </div>
-            )}
-
-            <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-8">
                 {/* Sidebar Filters */}
-                <aside className="w-full md:w-64 space-y-8 shrink-0">
-                    <div>
-                        <h3 className="font-semibold mb-3 flex items-center gap-2">
-                            Vehicle Filter
-                        </h3>
-                        <div className="p-4 bg-slate-50 border rounded-lg">
-                            <VehicleFinder compact />
-                        </div>
-                    </div>
-
-                    <Separator />
-
-                    <div>
+                <aside className="w-full md:w-64 space-y-4 md:space-y-8 shrink-0">
+                    <div className="hidden md:block">
                         <h3 className="font-semibold mb-4">Search</h3>
                         <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -74,15 +49,51 @@ export default async function ShopPage(props: {
                                     defaultValue={searchQuery}
                                     className="pl-8"
                                 />
-                                {makeFilter && <input type="hidden" name="make" value={makeFilter} />}
-                                {modelFilter && <input type="hidden" name="model" value={modelFilter} />}
-                                {yearFilter && <input type="hidden" name="year" value={yearFilter} />}
                                 {typeFilter && <input type="hidden" name="type" value={typeFilter} />}
                             </form>
                         </div>
                     </div>
                     <Separator />
-                    <div>
+                    <div className="md:hidden overflow-x-auto pb-2 -mx-4 px-4 scrollbar-hide">
+                        <div className="flex space-x-2">
+                            {[
+                                { label: 'Oil Filters', value: 'oil-filter' },
+                                { label: 'Fuel Filters', value: 'fuel-filter' },
+                                { label: 'Air Filters', value: 'air-filter' },
+                                { label: 'Cabin Filters', value: 'cabin-air-filter' },
+                                { label: 'Water Separators', value: 'fuel-water-separator' },
+                            ].map((cat) => {
+                                const params = new URLSearchParams()
+                                if (searchQuery) params.set('search', searchQuery)
+                                params.set('type', cat.value)
+
+                                const isActive = typeFilter === cat.value
+
+                                return (
+                                    <Link
+                                        key={cat.value}
+                                        href={`/shop?${params.toString()}`}
+                                        className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border transition-colors ${isActive
+                                            ? 'bg-primary text-primary-foreground border-primary'
+                                            : 'bg-background hover:bg-muted border-input'
+                                            }`}
+                                    >
+                                        {cat.label}
+                                    </Link>
+                                )
+                            })}
+                            {(typeFilter || searchQuery) && (
+                                <Link
+                                    href="/shop"
+                                    className="flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium border border-dashed hover:bg-muted text-muted-foreground"
+                                >
+                                    Clear
+                                </Link>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="hidden md:block">
                         <h3 className="font-semibold mb-4">Categories</h3>
                         <div className="space-y-3">
                             {[
@@ -94,9 +105,6 @@ export default async function ShopPage(props: {
                             ].map((cat) => {
                                 // Build URL keeping existing params
                                 const params = new URLSearchParams()
-                                if (makeFilter) params.set('make', makeFilter)
-                                if (modelFilter) params.set('model', modelFilter)
-                                if (yearFilter) params.set('year', yearFilter)
                                 if (searchQuery) params.set('search', searchQuery)
                                 params.set('type', cat.value)
 
@@ -129,7 +137,6 @@ export default async function ShopPage(props: {
                     ) : (
                         <div className="text-center py-20 border rounded-lg bg-slate-50">
                             <p className="text-muted-foreground">No products found for this selection.</p>
-                            {makeFilter && <p className="text-sm mt-2 text-muted-foreground">Try clearing the vehicle filter.</p>}
                         </div>
                     )}
                 </div>

@@ -81,7 +81,7 @@ export function ProductGallery({ images, productName }: ProductGalleryProps) {
 
             {/* Thumbnails */}
             {images.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                <div className="flex gap-2 overflow-x-auto pb-2 pt-2 px-1 scrollbar-hide">
                     {images.map((src, index) => (
                         <button
                             key={index}
