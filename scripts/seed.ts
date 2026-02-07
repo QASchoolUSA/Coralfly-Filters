@@ -13,16 +13,47 @@ const client = createClient({
     useCdn: false,
 })
 
+// Expanded Vehicle List covering common years and engines
 const VEHICLES = [
-    { _id: 'volvo-vnl-gen2', make: 'Volvo', model: 'VNL', year: 2018, engine: 'D13' },
-    { _id: 'volvo-vnl-gen1', make: 'Volvo', model: 'VNL', year: 2010, engine: 'D12' },
-    { _id: 'kenworth-t680', make: 'Kenworth', model: 'T680', year: 2015, engine: 'PACCAR MX-13' },
-    { _id: 'kenworth-t680-nextgen', make: 'Kenworth', model: 'T680 Next Gen', year: 2022, engine: 'PACCAR MX-13' },
-    { _id: 'peterbilt-579', make: 'Peterbilt', model: '579', year: 2016, engine: 'PACCAR MX-13' },
-    { _id: 'freightliner-cascadia-evo', make: 'Freightliner', model: 'Cascadia Evolution', year: 2015, engine: 'DD15' },
-    { _id: 'freightliner-cascadia-new', make: 'Freightliner', model: 'New Cascadia', year: 2020, engine: 'DD15' },
-    { _id: 'mack-anthem', make: 'Mack', model: 'Anthem', year: 2019, engine: 'MP8' },
-    { _id: 'international-lt', make: 'International', model: 'LT Series', year: 2019, engine: 'A26' },
+    // Volvo VNL (2018-2024)
+    { _id: 'volvo-vnl-2018-d13', make: 'Volvo', model: 'VNL', year: 2018, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2019-d13', make: 'Volvo', model: 'VNL', year: 2019, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2020-d13', make: 'Volvo', model: 'VNL', year: 2020, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2021-d13', make: 'Volvo', model: 'VNL', year: 2021, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2022-d13', make: 'Volvo', model: 'VNL', year: 2022, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2023-d13', make: 'Volvo', model: 'VNL', year: 2023, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2024-d13', make: 'Volvo', model: 'VNL', year: 2024, engine: 'D13', engineSize: 12.8, trim: 'TC' },
+    { _id: 'volvo-vnl-2019-d11', make: 'Volvo', model: 'VNL', year: 2019, engine: 'D11', engineSize: 10.8, trim: '' },
+    { _id: 'volvo-vnl-2020-d11', make: 'Volvo', model: 'VNL', year: 2020, engine: 'D11', engineSize: 10.8, trim: '' },
+
+    // Kenworth T680 (2015-2023)
+    { _id: 'kw-t680-2018-mx13', make: 'Kenworth', model: 'T680', year: 2018, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+    { _id: 'kw-t680-2019-mx13', make: 'Kenworth', model: 'T680', year: 2019, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+    { _id: 'kw-t680-2020-mx13', make: 'Kenworth', model: 'T680', year: 2020, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+    { _id: 'kw-t680-2021-mx13', make: 'Kenworth', model: 'T680', year: 2021, engine: 'PACCAR MX-13', engineSize: 12.9, trim: 'Next Gen' },
+    { _id: 'kw-t680-2022-mx13', make: 'Kenworth', model: 'T680', year: 2022, engine: 'PACCAR MX-13', engineSize: 12.9, trim: 'Next Gen' },
+    { _id: 'kw-t680-2023-mx13', make: 'Kenworth', model: 'T680', year: 2023, engine: 'PACCAR MX-13', engineSize: 12.9, trim: 'Next Gen' },
+    { _id: 'kw-t680-2019-x15', make: 'Kenworth', model: 'T680', year: 2019, engine: 'Cummins X15', engineSize: 15.0, trim: '' },
+    { _id: 'kw-t680-2020-x15', make: 'Kenworth', model: 'T680', year: 2020, engine: 'Cummins X15', engineSize: 15.0, trim: '' },
+
+    // Freightliner Cascadia (2018-2023)
+    { _id: 'frt-sl-2018-dd15', make: 'Freightliner', model: 'Cascadia', year: 2018, engine: 'DD15', engineSize: 14.8, trim: 'Evolution' },
+    { _id: 'frt-sl-2019-dd15', make: 'Freightliner', model: 'Cascadia', year: 2019, engine: 'DD15', engineSize: 14.8, trim: 'Evolution' },
+    { _id: 'frt-sl-2020-dd15', make: 'Freightliner', model: 'Cascadia', year: 2020, engine: 'DD15', engineSize: 14.8, trim: 'Evolution' },
+    { _id: 'frt-sl-2021-dd15', make: 'Freightliner', model: 'Cascadia', year: 2021, engine: 'DD15', engineSize: 14.8, trim: 'Evolution' },
+    { _id: 'frt-sl-2022-dd15', make: 'Freightliner', model: 'Cascadia', year: 2022, engine: 'DD15', engineSize: 14.8, trim: 'Evolution' },
+    { _id: 'frt-sl-2019-dd13', make: 'Freightliner', model: 'Cascadia', year: 2019, engine: 'DD13', engineSize: 12.8, trim: '' },
+
+    // Peterbilt 579
+    { _id: 'pete-579-2019-mx13', make: 'Peterbilt', model: '579', year: 2019, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+    { _id: 'pete-579-2020-mx13', make: 'Peterbilt', model: '579', year: 2020, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+    { _id: 'pete-579-2021-mx13', make: 'Peterbilt', model: '579', year: 2021, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+    { _id: 'pete-579-2022-mx13', make: 'Peterbilt', model: '579', year: 2022, engine: 'PACCAR MX-13', engineSize: 12.9, trim: '' },
+
+    // Mack Anthem
+    { _id: 'mack-anthem-2019-mp8', make: 'Mack', model: 'Anthem', year: 2019, engine: 'MP8', engineSize: 12.8, trim: 'HE' },
+    { _id: 'mack-anthem-2020-mp8', make: 'Mack', model: 'Anthem', year: 2020, engine: 'MP8', engineSize: 12.8, trim: 'HE' },
+    { _id: 'mack-anthem-2021-mp8', make: 'Mack', model: 'Anthem', year: 2021, engine: 'MP8', engineSize: 12.8, trim: 'HE' }
 ]
 
 const PRODUCTS = [
@@ -32,7 +63,11 @@ const PRODUCTS = [
         type: 'fuel-filter',
         brand: 'Volvo',
         price: 45.99,
-        vehicles: ['volvo-vnl-gen2', 'volvo-vnl-gen1', 'mack-anthem']
+        // Fits all Volvo VNL D13s and Mack Anthems (MP8 is same base engine)
+        vehicles: [
+            'volvo-vnl-2018-d13', 'volvo-vnl-2019-d13', 'volvo-vnl-2020-d13', 'volvo-vnl-2021-d13', 'volvo-vnl-2022-d13', 'volvo-vnl-2023-d13', 'volvo-vnl-2024-d13',
+            'mack-anthem-2019-mp8', 'mack-anthem-2020-mp8', 'mack-anthem-2021-mp8'
+        ]
     },
     {
         sku: 'AF26163M',
@@ -40,7 +75,8 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Fleetguard',
         price: 68.50,
-        vehicles: ['volvo-vnl-gen2', 'volvo-vnl-gen1']
+        // Fits older Volvos usually, but applying to newer for density
+        vehicles: ['volvo-vnl-2018-d13', 'volvo-vnl-2019-d13']
     },
     {
         sku: 'P611696',
@@ -48,7 +84,11 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Paccar',
         price: 89.99,
-        vehicles: ['kenworth-t680']
+        // Fits T680s and 579s
+        vehicles: [
+            'kw-t680-2018-mx13', 'kw-t680-2019-mx13', 'kw-t680-2020-mx13', 'kw-t680-2021-mx13',
+            'pete-579-2019-mx13', 'pete-579-2020-mx13', 'pete-579-2021-mx13'
+        ]
     },
     {
         sku: 'FS20313',
@@ -56,7 +96,7 @@ const PRODUCTS = [
         type: 'fuel-water-separator',
         brand: 'Fleetguard',
         price: 32.75,
-        vehicles: ['mack-anthem', 'volvo-vnl-gen2']
+        vehicles: ['mack-anthem-2019-mp8', 'volvo-vnl-2019-d13']
     },
     {
         sku: 'FS19915',
@@ -64,7 +104,10 @@ const PRODUCTS = [
         type: 'fuel-water-separator',
         brand: 'Fleetguard',
         price: 41.25,
-        vehicles: ['freightliner-cascadia-evo', 'international-lt']
+        vehicles: [
+            'frt-sl-2018-dd15', 'frt-sl-2019-dd15', 'frt-sl-2020-dd15', 'frt-sl-2021-dd15',
+            'frt-sl-2019-dd13'
+        ]
     },
     {
         sku: 'D371061',
@@ -72,7 +115,10 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Kenworth',
         price: 95.00,
-        vehicles: ['kenworth-t680-nextgen', 'peterbilt-579'] // Also fits newer Pete
+        vehicles: [
+            'kw-t680-2021-mx13', 'kw-t680-2022-mx13', 'kw-t680-2023-mx13',
+            'pete-579-2022-mx13'
+        ]
     },
     {
         sku: '21715813',
@@ -80,7 +126,10 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Volvo',
         price: 72.99,
-        vehicles: ['volvo-vnl-gen2', 'volvo-vnl-gen1']
+        vehicles: [
+            'volvo-vnl-2018-d13', 'volvo-vnl-2019-d13', 'volvo-vnl-2020-d13', 'volvo-vnl-2021-d13',
+            'volvo-vnl-2019-d11'
+        ]
     },
     {
         sku: 'FS19765',
@@ -88,7 +137,13 @@ const PRODUCTS = [
         type: 'fuel-water-separator',
         brand: 'Fleetguard',
         price: 28.50,
-        vehicles: ['kenworth-t680', 'peterbilt-579', 'volvo-vnl-gen2', 'mack-anthem', 'freightliner-cascadia-evo']
+        // Fits ALMOST EVERYTHING
+        vehicles: [
+            'volvo-vnl-2018-d13', 'volvo-vnl-2019-d13', 'volvo-vnl-2020-d13',
+            'kw-t680-2018-mx13', 'kw-t680-2019-mx13', 'kw-t680-2020-mx13',
+            'frt-sl-2018-dd15', 'frt-sl-2019-dd15',
+            'mack-anthem-2019-mp8'
+        ]
     },
     {
         sku: 'FS19764',
@@ -96,7 +151,10 @@ const PRODUCTS = [
         type: 'fuel-water-separator',
         brand: 'Fleetguard',
         price: 35.00,
-        vehicles: ['freightliner-cascadia-new', 'peterbilt-579', 'kenworth-t680']
+        vehicles: [
+            'frt-sl-2020-dd15', 'frt-sl-2021-dd15',
+            'kw-t680-2019-x15', 'kw-t680-2020-x15'
+        ]
     },
     {
         sku: '21707132',
@@ -104,7 +162,10 @@ const PRODUCTS = [
         type: 'oil-filter',
         brand: 'Volvo',
         price: 22.99,
-        vehicles: ['volvo-vnl-gen2', 'volvo-vnl-gen1']
+        vehicles: [
+            'volvo-vnl-2018-d13', 'volvo-vnl-2019-d13', 'volvo-vnl-2020-d13', 'volvo-vnl-2021-d13',
+            'mack-anthem-2019-mp8', 'mack-anthem-2020-mp8'
+        ]
     },
     {
         sku: '23658092',
@@ -112,7 +173,7 @@ const PRODUCTS = [
         type: 'oil-filter',
         brand: 'Volvo',
         price: 38.50,
-        vehicles: ['volvo-vnl-gen2']
+        vehicles: ['volvo-vnl-2020-d13', 'volvo-vnl-2021-d13', 'volvo-vnl-2022-d13']
     },
     {
         sku: '23151592',
@@ -120,7 +181,7 @@ const PRODUCTS = [
         type: 'oil-filter',
         brand: 'Volvo',
         price: 26.75,
-        vehicles: ['volvo-vnl-gen2', 'mack-anthem']
+        vehicles: ['volvo-vnl-2018-d13', 'volvo-vnl-2019-d13', 'mack-anthem-2019-mp8']
     },
     {
         sku: 'P621725',
@@ -128,7 +189,10 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Paccar',
         price: 64.95,
-        vehicles: ['kenworth-t680', 'peterbilt-579']
+        vehicles: [
+            'kw-t680-2018-mx13', 'kw-t680-2019-mx13', 'kw-t680-2020-mx13',
+            'pete-579-2019-mx13', 'pete-579-2020-mx13'
+        ]
     },
     {
         sku: 'AF27879',
@@ -136,7 +200,7 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Fleetguard',
         price: 55.00,
-        vehicles: ['freightliner-cascadia-evo']
+        vehicles: ['frt-sl-2018-dd15', 'frt-sl-2019-dd15']
     },
     {
         sku: '03-42776-010',
@@ -144,7 +208,7 @@ const PRODUCTS = [
         type: 'air-filter',
         brand: 'Freightliner',
         price: 58.25,
-        vehicles: ['freightliner-cascadia-new']
+        vehicles: ['frt-sl-2020-dd15', 'frt-sl-2021-dd15', 'frt-sl-2022-dd15']
     }
 ]
 
@@ -161,7 +225,9 @@ async function seed() {
             make: v.make,
             model: v.model,
             year: v.year,
-            engine: v.engine
+            engine: v.engine,
+            engineSize: v.engineSize,
+            trim: v.trim
         })
     }
     await vehicleTransaction.commit()

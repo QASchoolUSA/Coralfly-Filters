@@ -44,6 +44,8 @@ export const product = defineType({
                     { title: 'Air Filter', value: 'air-filter' },
                     { title: 'Cabin Air Filter', value: 'cabin-air-filter' },
                     { title: 'Fuel Water Separator', value: 'fuel-water-separator' },
+                    { title: 'Lamp', value: 'lamp' },
+                    { title: 'Multi-System Filter Kit', value: 'multi-system-filter-kit' },
                 ],
             },
             validation: (rule) => rule.required(),

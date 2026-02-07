@@ -40,19 +40,33 @@ export const vehicle = defineType({
             type: 'string',
             description: 'e.g., D13, ISX15'
         }),
+        defineField({
+            name: 'engineSize',
+            title: 'Engine Size (L)',
+            type: 'number',
+            description: 'e.g., 12.8',
+            validation: (rule) => rule.precision(1)
+        }),
+        defineField({
+            name: 'trim',
+            title: 'Trim/Notes',
+            type: 'string',
+            description: 'e.g., EcoTorque, X15 Performance'
+        }),
     ],
     preview: {
         select: {
             make: 'make',
             model: 'model',
             year: 'year',
-            engine: 'engine'
+            engine: 'engine',
+            size: 'engineSize'
         },
         prepare(selection) {
-            const { make, model, year, engine } = selection;
+            const { make, model, year, engine, size } = selection;
             return {
                 title: `${make} ${model} ${year || ''}`,
-                subtitle: engine
+                subtitle: `${engine} ${size ? `(${size}L)` : ''}`
             }
         }
     }
