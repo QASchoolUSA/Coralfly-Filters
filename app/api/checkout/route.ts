@@ -52,6 +52,7 @@ export async function POST(req: Request) {
                 allowed_countries: ['US', 'CA'],
             },
             billing_address_collection: 'required',
+            allow_promotion_codes: true,
         })
 
         return NextResponse.json({ url: session.url })
