@@ -14,8 +14,14 @@ export function CartSheet() {
     const searchParams = useSearchParams()
 
     useEffect(() => {
-        if (searchParams.get('cart') === 'open' && !isOpen) {
-            toggleCart()
+        if (searchParams.get('cart') === 'open') {
+            if (!isOpen) {
+                toggleCart()
+            }
+            // Remove the query param so it doesn't re-trigger or persist
+            const newUrl = new URL(window.location.href)
+            newUrl.searchParams.delete('cart')
+            window.history.replaceState({}, '', newUrl.toString())
         }
     }, [searchParams, isOpen, toggleCart])
 
