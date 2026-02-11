@@ -1,13 +1,41 @@
 import Link from "next/link"
-import { Search, ArrowRight, ShieldCheck, Truck, Clock } from "lucide-react"
+import { Metadata } from "next"
+import { Search, ArrowRight, ShieldCheck, Truck, Clock, Droplet, Flame, Wind, Fan, Filter } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { HeroVideo } from "@/components/HeroVideo"
 
+export const metadata: Metadata = {
+  title: 'Lynx Trucking & Parts - Premium Semi Truck Filters',
+  description: 'Your trusted source for premium semi truck filters. Shop Oil, Fuel, Air, Cabin, and Water Separators. Fast shipping and exact fit guarantee.',
+  alternates: {
+    canonical: 'https://lynxandparts.com',
+  },
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Lynx Trucking & Parts',
+  url: 'https://lynxandparts.com',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://lynxandparts.com/shop?search={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
+
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* Hero Section */}
       <section className="relative bg-muted/40 py-20 lg:py-32 overflow-hidden">
         <div className="container px-4 md:px-6 relative z-10 mx-auto">
@@ -82,17 +110,17 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {[
-              { name: 'Oil Filters', slug: 'oil-filter' },
-              { name: 'Fuel Filters', slug: 'fuel-filter' },
-              { name: 'Air Filters', slug: 'air-filter' },
-              { name: 'Cabin Filters', slug: 'cabin-air-filter' },
-              { name: 'Water Separators', slug: 'fuel-water-separator' },
+              { name: 'Oil Filters', slug: 'oil-filter', icon: Droplet },
+              { name: 'Fuel Filters', slug: 'fuel-filter', icon: Flame },
+              { name: 'Air Filters', slug: 'air-filter', icon: Wind },
+              { name: 'Cabin Filters', slug: 'cabin-air-filter', icon: Fan },
+              { name: 'Water Separators', slug: 'fuel-water-separator', icon: Filter },
             ].map((cat) => (
               <Link key={cat.slug} href={`/shop?type=${cat.slug}`}>
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer">
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer hover:border-primary/50">
                   <CardContent className="p-6 flex flex-col items-center justify-center space-y-4 h-full text-center">
-                    <div className="h-16 w-16 rounded-full bg-slate-100 flex items-center justify-center">
-                      <span className="text-2xl font-bold text-slate-300">{cat.name[0]}</span>
+                    <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                      <cat.icon className="h-8 w-8" />
                     </div>
                     <span className="font-semibold">{cat.name}</span>
                   </CardContent>

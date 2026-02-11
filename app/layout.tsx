@@ -7,9 +7,29 @@ import { CartProvider } from '@/components/CartProvider'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
-export const metadata = {
-  title: 'CoralFly - Premium Auto Filters',
-  description: 'Shop premium Oil Filters, Fuel Filters, Air Filters, and more at CoralFly.',
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://lynxandparts.com'),
+  title: {
+    default: 'Lynx Trucking & Parts - Premium Semi Truck Filters',
+    template: '%s | Lynx Trucking & Parts'
+  },
+  description: 'Shop premium Oil Filters, Fuel Filters, Air Filters, Cabin Filters, and Water Separators for semi trucks. Professional grade quality, direct to your door.',
+  keywords: ['semi truck filters', 'oil filters', 'fuel filters', 'air filters', 'heavy duty filters', 'truck parts', 'Coralfly', 'Lynx Trucking'],
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://lynxandparts.com',
+    title: 'Lynx Trucking & Parts - Premium Semi Truck Filters',
+    description: 'Shop premium Oil Filters, Fuel Filters, Air Filters, and more for your semi truck.',
+    siteName: 'Lynx Trucking & Parts',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lynx Trucking & Parts - Premium Semi Truck Filters',
+    description: 'Shop premium Oil Filters, Fuel Filters, Air Filters, and more for your semi truck.',
+  },
 }
 
 export default function RootLayout({
