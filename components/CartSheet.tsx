@@ -6,9 +6,18 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
+import { useEffect } from "react"
 
 export function CartSheet() {
     const { items, isOpen, toggleCart, removeItem, updateQuantity, total } = useCart()
+    const searchParams = useSearchParams()
+
+    useEffect(() => {
+        if (searchParams.get('cart') === 'open' && !isOpen) {
+            toggleCart()
+        }
+    }, [searchParams, isOpen, toggleCart])
 
     const handleCheckout = async () => {
         try {
