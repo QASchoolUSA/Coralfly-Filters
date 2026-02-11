@@ -139,7 +139,7 @@ export function Header() {
                     </Button>
 
                     <Button variant="ghost" size="icon" asChild>
-                        <Link href="https://web.whatsapp.com/send?phone=+14078853831" target="_blank" rel="noopener noreferrer">
+                        <Link href="https://wa.me/14078853831" target="_blank" rel="noopener noreferrer">
                             <WhatsAppIcon className="h-5 w-5" />
                             <span className="sr-only">Contact on WhatsApp</span>
                         </Link>
