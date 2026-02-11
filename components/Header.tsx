@@ -8,7 +8,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from 
 import { Separator } from '@/components/ui/separator'
 import { CartSheet } from '@/components/CartSheet'
 import { SearchBar } from '@/components/SearchBar'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 
 function WhatsAppIcon({ className }: { className?: string }) {
     return (
@@ -171,7 +171,9 @@ export function Header() {
                         </Link>
                     </Button>
 
-                    <CartSheet />
+                    <Suspense fallback={null}>
+                        <CartSheet />
+                    </Suspense>
                 </div>
             </div>
 
