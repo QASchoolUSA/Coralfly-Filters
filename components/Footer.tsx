@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function Footer() {
     return (
@@ -6,7 +7,16 @@ export function Footer() {
             <div className="container mx-auto py-10 px-4 md:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="space-y-3">
-                        <h3 className="text-lg font-bold">CoralFly</h3>
+                        <Link href="/" className="flex items-center space-x-2">
+                            <div className="relative h-10 w-48">
+                                <Image
+                                    src="/lynxandparts-logo.svg"
+                                    alt="Lynx Trucking & Parts"
+                                    fill
+                                    className="object-contain object-left"
+                                />
+                            </div>
+                        </Link>
                         <p className="text-sm text-muted-foreground">
                             Professional Grade Filters for your vehicle. Oil, Fuel, Air, and more.
                         </p>
@@ -36,7 +46,7 @@ export function Footer() {
                     </div>
                 </div>
                 <div className="border-t mt-8 pt-8 text-center text-xs text-muted-foreground">
-                    © {new Date().getFullYear()} CoralFly Filters. All rights reserved.
+                    © {new Date().getFullYear()} Lynx Trucking & Parts. All rights reserved.
                 </div>
             </div>
         </footer>

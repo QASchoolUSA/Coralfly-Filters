@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { Search, Menu, X, Home, LayoutGrid, Droplet, Flame, Wind, Fan, Package, Lightbulb } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -44,7 +45,15 @@ export function Header() {
                         <div className="flex flex-col h-full">
                             <div className="px-1 py-4">
                                 <Link href="/" className="flex items-center space-x-2" onClick={() => setIsMenuOpen(false)}>
-                                    <span className="font-bold text-2xl tracking-tight">CoralFly</span>
+                                    <div className="relative h-8 w-48">
+                                        <Image
+                                            src="/lynxandparts-logo.svg"
+                                            alt="Lynx Trucking & Parts"
+                                            fill
+                                            className="object-contain"
+                                            priority
+                                        />
+                                    </div>
                                 </Link>
                             </div>
 
@@ -109,7 +118,24 @@ export function Header() {
                 </Sheet>
 
                 <Link href="/" className="mr-6 flex items-center space-x-2">
-                    <span className="font-bold text-xl tracking-tight">CoralFly</span>
+                    <div className="relative h-10 w-60 hidden md:block">
+                        <Image
+                            src="/lynxandparts-logo.svg"
+                            alt="Lynx Trucking & Parts"
+                            fill
+                            className="object-contain object-left"
+                            priority
+                        />
+                    </div>
+                    <div className="relative h-8 w-40 md:hidden">
+                        <Image
+                            src="/lynxandparts-logo.svg"
+                            alt="Lynx Trucking & Parts"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
                 </Link>
 
                 {/* Desktop Nav */}
