@@ -3,15 +3,16 @@
 import { useCart } from "@/components/CartProvider"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react"
+import { ShoppingCart, Trash2, Plus, Minus, Loader2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 export function CartSheet() {
     const { items, isOpen, toggleCart, removeItem, updateQuantity, total } = useCart()
     const searchParams = useSearchParams()
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         if (searchParams.get('cart') === 'open') {
@@ -27,6 +28,7 @@ export function CartSheet() {
 
     const handleCheckout = async () => {
         try {
+            setIsLoading(true)
             const response = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: {
@@ -42,10 +44,12 @@ export function CartSheet() {
             } else {
                 console.error("No URL returned")
                 alert("Checkout failed. Please try again.")
+                setIsLoading(false)
             }
         } catch (error) {
             console.error("Checkout error:", error)
             alert("Checkout system is currently configuring. Please try again later.")
+            setIsLoading(false)
         }
     }
 
@@ -160,8 +164,20 @@ export function CartSheet() {
                                 <span>${total.toFixed(2)}</span>
                             </div>
                         </div>
-                        <Button size="lg" className="w-full text-base font-semibold shadow-lg" onClick={handleCheckout}>
-                            Proceed to Checkout
+                        <Button
+                            size="lg"
+                            className="w-full text-base font-semibold shadow-lg"
+                            onClick={handleCheckout}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Processing...
+                                </>
+                            ) : (
+                                "Proceed to Checkout"
+                            )}
                         </Button>
                     </div>
                 )}
