@@ -15,6 +15,14 @@ export function CartSheet() {
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
+        // Handle BFCache page restore to reset loading state
+        const onPageShow = (event: PageTransitionEvent) => {
+            if (event.persisted) {
+                setIsLoading(false)
+            }
+        }
+        window.addEventListener('pageshow', onPageShow)
+
         if (searchParams.get('cart') === 'open') {
             if (!isOpen) {
                 toggleCart()
@@ -23,6 +31,13 @@ export function CartSheet() {
             const newUrl = new URL(window.location.href)
             newUrl.searchParams.delete('cart')
             window.history.replaceState({}, '', newUrl.toString())
+
+            // Also ensure loading state is reset if returning via redirect
+            setIsLoading(false)
+        }
+
+        return () => {
+            window.removeEventListener('pageshow', onPageShow)
         }
     }, [searchParams, isOpen, toggleCart])
 
