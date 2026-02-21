@@ -62,7 +62,17 @@ export async function POST(req: Request) {
 
         return NextResponse.json({ url: session.url })
     } catch (error: any) {
-        console.error('[STRIPE_ERROR]', error.message || error)
+        // Advanced logging to help diagnose Vercel Environment Variable issues
+        console.error('[STRIPE_ERROR_MESSAGE]', error.message || error)
+
+        const stripeKey = process.env.STRIPE_SECRET_KEY
+        console.error('[STRIPE_DEBUG] STRIPE_SECRET_KEY is defined:', !!stripeKey)
+        console.error('[STRIPE_DEBUG] STRIPE_SECRET_KEY starts with sk_test_:', stripeKey?.startsWith('sk_test_'))
+        console.error('[STRIPE_DEBUG] STRIPE_SECRET_KEY starts with sk_live_:', stripeKey?.startsWith('sk_live_'))
+        console.error('[STRIPE_DEBUG] STRIPE_SECRET_KEY length:', stripeKey?.length)
+
+        console.error('[STRIPE_DEBUG] NEXT_PUBLIC_URL:', process.env.NEXT_PUBLIC_URL)
+
         return new NextResponse("Internal Error", { status: 500 })
     }
 }
