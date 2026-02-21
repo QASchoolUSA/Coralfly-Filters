@@ -2,6 +2,8 @@ import { getStripe } from "@/lib/stripe"
 import { NextResponse } from "next/server"
 import { client } from "@/sanity/lib/client"
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(req: Request) {
     try {
         const { items } = await req.json()
