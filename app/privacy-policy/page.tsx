@@ -93,9 +93,9 @@ export default function PrivacyPolicyPage() {
                             </p>
                             <div className="mt-4">
                                 <p className="font-semibold">Lynx Trucking LLC</p>
-                                <p>123 Logistics Way</p>
-                                <p>Transportation City, TC 98765</p>
-                                <p>Email: support@lynxtrucking.com</p>
+                                <p>1660 Retreat View Cir</p>
+                                <p>Sanford, FL 32771</p>
+                                <p>Email: support@lynxandparts.com</p>
                             </div>
                         </CardContent>
                     </Card>

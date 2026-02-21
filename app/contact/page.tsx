@@ -30,8 +30,7 @@ export default function ContactPage() {
                 <Mail className="w-5 h-5 mt-1 text-primary" />
                 <div>
                   <h3 className="font-medium">Email</h3>
-                  <p className="text-sm text-muted-foreground">support@lynxtrucking.com</p>
-                  <p className="text-sm text-muted-foreground">sales@lynxtrucking.com</p>
+                  <p className="text-sm text-muted-foreground">support@lynxandparts.com</p>
                 </div>
               </div>
               <Separator />
@@ -50,8 +49,8 @@ export default function ContactPage() {
                   <h3 className="font-medium">Office</h3>
                   <p className="text-sm text-muted-foreground">
                     Lynx Trucking LLC<br />
-                    123 Logistics Way<br />
-                    Transportation City, TC 98765
+                    1660 Retreat View Cir<br />
+                    Sanford, FL 32771
                   </p>
                 </div>
               </div>

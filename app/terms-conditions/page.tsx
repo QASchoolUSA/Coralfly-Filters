@@ -102,14 +102,14 @@ export default function TermsConditionsPage() {
 
                             <h3 className="font-semibold text-lg">Return Process</h3>
                             <p>
-                                To return an item, please email customer service at support@lynxtrucking.com to obtain a Return Merchandise Authorization (RMA) number. After receiving a RMA number, place the item securely in its original packaging and mail your return to the following address:
+                                To return an item, please email customer service at support@lynxandparts.com to obtain a Return Merchandise Authorization (RMA) number. After receiving a RMA number, place the item securely in its original packaging and mail your return to the following address:
                             </p>
                             <address className="not-italic bg-muted p-4 rounded-md">
                                 Lynx Trucking LLC<br />
                                 Attn: Returns<br />
                                 RMA #<br />
-                                123 Logistics Way<br />
-                                Transportation City, TC 98765
+                                1660 Retreat View Cir<br />
+                                Sanford, FL 32771
                             </address>
                             <p>
                                 Please note, you will be responsible for all return shipping charges. We strongly recommend that you use a trackable method to mail your return.
@@ -137,9 +137,9 @@ export default function TermsConditionsPage() {
                             </p>
                             <div className="mt-4">
                                 <p className="font-semibold">Lynx Trucking LLC</p>
-                                <p>123 Logistics Way</p>
-                                <p>Transportation City, TC 98765</p>
-                                <p>Email: support@lynxtrucking.com</p>
+                                <p>1660 Retreat View Cir</p>
+                                <p>Sanford, FL 32771</p>
+                                <p>Email: support@lynxandparts.com</p>
                                 <p>Phone: +1 (555) 123-4567</p>
                             </div>
                         </CardContent>
