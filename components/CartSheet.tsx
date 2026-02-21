@@ -52,6 +52,14 @@ export function CartSheet() {
                 body: JSON.stringify({ items }),
             })
 
+            if (!response.ok) {
+                const errorText = await response.text()
+                console.error("Server API Error:", errorText)
+                alert("Checkout system is currently configuring. Please try again later.")
+                setIsLoading(false)
+                return
+            }
+
             const data = await response.json()
 
             if (data.url) {
