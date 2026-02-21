@@ -1,4 +1,4 @@
-import { stripe } from "@/lib/stripe"
+import { getStripe } from "@/lib/stripe"
 import { NextResponse } from "next/server"
 import { client } from "@/sanity/lib/client"
 
@@ -43,6 +43,7 @@ export async function POST(req: Request) {
             }
         })
 
+        const stripe = getStripe()
         const session = await stripe.checkout.sessions.create({
             line_items,
             mode: 'payment',
@@ -56,8 +57,8 @@ export async function POST(req: Request) {
         })
 
         return NextResponse.json({ url: session.url })
-    } catch (error) {
-        console.error('[STRIPE_ERROR]', error)
+    } catch (error: any) {
+        console.error('[STRIPE_ERROR]', error.message || error)
         return new NextResponse("Internal Error", { status: 500 })
     }
 }
