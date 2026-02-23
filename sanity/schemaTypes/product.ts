@@ -57,6 +57,24 @@ export const product = defineType({
             initialValue: 'CoralFly',
         }),
         defineField({
+            name: 'vehicleFit',
+            title: 'Vehicle Fit',
+            type: 'array',
+            of: [{ type: 'string' }],
+            options: {
+                list: [
+                    { title: 'Volvo', value: 'volvo' },
+                    { title: 'Freightliner', value: 'freightliner' },
+                    { title: 'Kenworth', value: 'kenworth' },
+                    { title: 'Peterbilt', value: 'peterbilt' },
+                    { title: 'Mack', value: 'mack' },
+                    { title: 'International', value: 'international' },
+                    { title: 'Universal', value: 'universal' },
+                ]
+            },
+            description: 'Select the vehicles this product fits.',
+        }),
+        defineField({
             name: 'images',
             title: 'Images',
             type: 'array',

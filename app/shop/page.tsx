@@ -2,7 +2,7 @@ import { client } from "@/sanity/lib/client"
 import { PRODUCTS_FILTERED_QUERY } from "@/sanity/lib/queries"
 import { ProductCard } from "@/components/ProductCard"
 import { Input } from "@/components/ui/input"
-import { Search, Droplet, Flame, Wind, Fan, Package, Lightbulb, Filter, X } from "lucide-react"
+import { Search, Droplet, Flame, Wind, Fan, Package, Lightbulb, Filter, X, Truck } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -14,11 +14,13 @@ export default async function ShopPage(props: {
 }) {
     const searchParams = await props.searchParams
     const typeFilter = typeof searchParams.type === 'string' ? searchParams.type : undefined;
+    const vehicleFilter = typeof searchParams.vehicle === 'string' ? searchParams.vehicle : undefined;
     const searchQuery = typeof searchParams.search === 'string' ? searchParams.search.toLowerCase() : undefined;
 
     // Use GROQ for filtering Vehicle & Type
     let products = await client.fetch(PRODUCTS_FILTERED_QUERY, {
         type: typeFilter || null,
+        vehicle: vehicleFilter || null,
     });
 
     if (searchQuery) {
@@ -38,6 +40,16 @@ export default async function ShopPage(props: {
         { label: 'Lamps', value: 'lamp', icon: Lightbulb },
     ]
 
+    const vehicles = [
+        { label: 'Volvo', value: 'volvo', icon: Truck },
+        { label: 'Freightliner', value: 'freightliner', icon: Truck },
+        { label: 'Kenworth', value: 'kenworth', icon: Truck },
+        { label: 'Peterbilt', value: 'peterbilt', icon: Truck },
+        { label: 'Mack', value: 'mack', icon: Truck },
+        { label: 'International', value: 'international', icon: Truck },
+        { label: 'Universal', value: 'universal', icon: Package },
+    ]
+
     return (
         <div className="min-h-screen bg-muted/10">
             <div className="container mx-auto px-4 py-8 md:py-12 space-y-8">
@@ -52,42 +64,83 @@ export default async function ShopPage(props: {
                     </p>
                 </div>
 
-                {/* Category Pills - Wrapped */}
-                <div className="w-full">
-                    <div className="flex flex-wrap justify-center gap-3">
-                        {/* Clear Filter Pill */}
-                        {(typeFilter || searchQuery) && (
-                            <Link
-                                href="/shop"
-                                className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium border border-dashed bg-background hover:bg-muted text-muted-foreground transition-colors"
-                            >
-                                <X className="mr-2 h-4 w-4" />
-                                Clear Filters
-                            </Link>
-                        )}
+                {/* Category & Vehicle Pills - Wrapped */}
+                <div className="w-full space-y-6">
+                    {/* Vehicles Section */}
+                    <div>
+                        <h3 className="text-sm font-semibold text-center text-muted-foreground mb-3 uppercase tracking-wider">Filter by Vehicle</h3>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            {vehicles.map((veh) => {
+                                const params = new URLSearchParams()
+                                if (searchQuery) params.set('search', searchQuery)
+                                if (typeFilter) params.set('type', typeFilter)
 
-                        {categories.map((cat) => {
-                            const params = new URLSearchParams()
-                            if (searchQuery) params.set('search', searchQuery)
-                            params.set('type', cat.value)
+                                const isActive = vehicleFilter === veh.value
+                                if (!isActive) {
+                                    params.set('vehicle', veh.value)
+                                }
+                                const Icon = veh.icon
 
-                            const isActive = typeFilter === cat.value
-                            const Icon = cat.icon
+                                return (
+                                    <Link
+                                        key={veh.value}
+                                        href={`/shop?${params.toString()}`}
+                                        className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium border transition-all shadow-sm hover:shadow-md ${isActive
+                                            ? 'bg-primary text-primary-foreground border-primary ring-2 ring-primary/20'
+                                            : 'bg-background hover:bg-muted border-input text-foreground hover:border-primary/30'
+                                            }`}
+                                    >
+                                        <Icon className={`mr-2 h-4 w-4 ${isActive ? 'text-primary-foreground' : 'text-primary'}`} />
+                                        {veh.label}
+                                    </Link>
+                                )
+                            })}
+                        </div>
+                    </div>
 
-                            return (
+                    <div className="w-full max-w-[800px] mx-auto border-t border-dashed"></div>
+
+                    {/* Filter Type Section */}
+                    <div>
+                        <h3 className="text-sm font-semibold text-center text-muted-foreground mb-3 uppercase tracking-wider">Filter by Type</h3>
+                        <div className="flex flex-wrap justify-center gap-3">
+                            {/* Clear Filter Pill */}
+                            {(typeFilter || searchQuery || vehicleFilter) && (
                                 <Link
-                                    key={cat.value}
-                                    href={`/shop?${params.toString()}`}
-                                    className={`inline-flex items-center px-5 py-2.5 rounded-full text-sm font-medium border transition-all shadow-sm hover:shadow-md ${isActive
-                                        ? 'bg-primary text-primary-foreground border-primary ring-2 ring-primary/20'
-                                        : 'bg-background hover:bg-muted border-input text-foreground hover:border-primary/30'
-                                        }`}
+                                    href="/shop"
+                                    className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium border border-dashed bg-destructive/10 hover:bg-destructive/20 text-destructive transition-colors"
                                 >
-                                    <Icon className={`mr-2 h-4 w-4 ${isActive ? 'text-primary-foreground' : 'text-primary'}`} />
-                                    {cat.label}
+                                    <X className="mr-2 h-4 w-4" />
+                                    Clear Filters
                                 </Link>
-                            )
-                        })}
+                            )}
+
+                            {categories.map((cat) => {
+                                const params = new URLSearchParams()
+                                if (searchQuery) params.set('search', searchQuery)
+                                if (vehicleFilter) params.set('vehicle', vehicleFilter)
+
+                                const isActive = typeFilter === cat.value
+                                if (!isActive) {
+                                    params.set('type', cat.value)
+                                }
+                                const Icon = cat.icon
+
+                                return (
+                                    <Link
+                                        key={cat.value}
+                                        href={`/shop?${params.toString()}`}
+                                        className={`inline-flex items-center px-5 py-2.5 rounded-full text-sm font-medium border transition-all shadow-sm hover:shadow-md ${isActive
+                                            ? 'bg-primary text-primary-foreground border-primary ring-2 ring-primary/20'
+                                            : 'bg-background hover:bg-muted border-input text-foreground hover:border-primary/30'
+                                            }`}
+                                    >
+                                        <Icon className={`mr-2 h-4 w-4 ${isActive ? 'text-primary-foreground' : 'text-primary'}`} />
+                                        {cat.label}
+                                    </Link>
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
 

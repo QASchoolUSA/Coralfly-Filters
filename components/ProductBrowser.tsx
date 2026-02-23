@@ -15,6 +15,7 @@ interface Product {
     productType: string
     brand: string
     imageUrl: string
+    vehicleFit?: string[]
 }
 
 interface ProductBrowserProps {
@@ -29,6 +30,13 @@ const CATEGORIES = [
     { label: 'Water Separators', value: 'fuel-water-separator' },
 ]
 
+const VEHICLES = [
+    { label: 'Volvo', value: 'volvo' },
+    { label: 'Freightliner', value: 'freightliner' },
+    { label: 'Kenworth', value: 'kenworth' },
+    { label: 'Peterbilt', value: 'peterbilt' },
+]
+
 export function ProductBrowser({ products }: ProductBrowserProps) {
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -36,15 +44,15 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
     // Initialize state from URL params
     const initialSearch = searchParams.get('search') || ""
     const initialType = searchParams.get('type') || ""
+    const initialVehicle = searchParams.get('vehicle') || ""
     // Helper to verify price params are valid numbers
     const initialMinPrice = Number(searchParams.get('minPrice')) || 0
     const initialMaxPrice = Number(searchParams.get('maxPrice')) || 200
 
     const [searchQuery, setSearchQuery] = useState(initialSearch)
     const [selectedType, setSelectedType] = useState(initialType)
+    const [selectedVehicle, setSelectedVehicle] = useState(initialVehicle)
     const [priceRange, setPriceRange] = useState([initialMinPrice, initialMaxPrice])
-
-
     // Effect to update URL without reloading when filters change
     // Using simple debounce logic or just updating on effect could be spammy, 
     // but for "smoothness" let's just shallow replace.
@@ -52,20 +60,25 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
         const params = new URLSearchParams()
         if (searchQuery) params.set('search', searchQuery)
         if (selectedType) params.set('type', selectedType)
+        if (selectedVehicle) params.set('vehicle', selectedVehicle)
         if (priceRange[0] > 0) params.set('minPrice', priceRange[0].toString())
         if (priceRange[1] < 200) params.set('maxPrice', priceRange[1].toString())
 
         // Use replace to avoid cluttering history stack too much, or push if we want back button to work for every change
         // Replace is usually better for sliders
         router.replace(`?${params.toString()}`, { scroll: false })
-    }, [searchQuery, selectedType, priceRange, router])
-
+    }, [searchQuery, selectedType, selectedVehicle, priceRange, router])
 
     // Filter Logic
     const filteredProducts = useMemo(() => {
         return products.filter(product => {
             // Type Filter
             if (selectedType && product.productType !== selectedType) {
+                return false
+            }
+
+            // Vehicle Filter
+            if (selectedVehicle && (!product.vehicleFit || !product.vehicleFit.includes(selectedVehicle))) {
                 return false
             }
 
@@ -84,13 +97,38 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
 
             return true
         })
-    }, [products, selectedType, searchQuery, priceRange])
+    }, [products, selectedType, selectedVehicle, searchQuery, priceRange])
 
     return (
         <div className="flex flex-col md:flex-row gap-8">
             {/* Sidebar Filters */}
             <aside className="w-full md:w-64 space-y-6 shrink-0">
                 {/* Search */}
+                {/* Vehicles */}
+                <div>
+                    <h3 className="font-semibold mb-4">Vehicles</h3>
+                    <div className="space-y-3">
+                        {VEHICLES.map((v) => (
+                            <button
+                                key={v.value}
+                                onClick={() => setSelectedVehicle(selectedVehicle === v.value ? "" : v.value)}
+                                className={`block text-sm hover:underline text-left ${selectedVehicle === v.value ? 'font-bold text-primary' : 'text-muted-foreground'}`}
+                            >
+                                {v.label}
+                            </button>
+                        ))}
+                        {selectedVehicle && (
+                            <div className="pt-2">
+                                <button onClick={() => setSelectedVehicle("")} className="text-xs text-primary underline">
+                                    Clear Vehicle
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                <Separator />
+
                 {/* Categories */}
                 <div>
                     <h3 className="font-semibold mb-4">Categories</h3>
@@ -152,6 +190,7 @@ export function ProductBrowser({ products }: ProductBrowserProps) {
                             onClick={() => {
                                 setSearchQuery("")
                                 setSelectedType("")
+                                setSelectedVehicle("")
                                 setPriceRange([0, 200])
                             }}
                             className="mt-4 text-primary underline"

@@ -13,6 +13,7 @@ export const PRODUCTS_QUERY = defineQuery(`*[_type == "product" && defined(slug.
 
 export const PRODUCTS_FILTERED_QUERY = defineQuery(`*[_type == "product" && defined(slug.current) 
   && ($type == null || productType == $type)
+  && ($vehicle == null || $vehicle in vehicleFit)
 ] | order(name asc) {
   _id,
   name,
@@ -21,6 +22,7 @@ export const PRODUCTS_FILTERED_QUERY = defineQuery(`*[_type == "product" && defi
   price,
   productType,
   brand,
+  vehicleFit,
   "imageUrl": images[0].asset->url
 }`);
 
