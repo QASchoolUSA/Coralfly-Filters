@@ -131,6 +131,37 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Vehicles Grid */}
+      <section className="py-16 bg-background">
+        <div className="container px-4 md:px-6 space-y-8 mx-auto">
+          <div className="flex justify-between items-end">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">Shop by Vehicle</h2>
+              <p className="text-muted-foreground mt-2">Find parts specifically for your truck.</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { name: 'Volvo', slug: 'volvo', icon: Truck },
+              { name: 'Freightliner', slug: 'freightliner', icon: Truck },
+              { name: 'Kenworth', slug: 'kenworth', icon: Truck },
+            ].map((veh) => (
+              <Link key={veh.slug} href={`/shop?vehicle=${veh.slug}`}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-primary/20 hover:border-primary/50">
+                  <CardContent className="p-8 flex flex-col items-center justify-center space-y-4 h-full text-center">
+                    <div className="h-20 w-20 rounded-full bg-primary/10 flex items-center justify-center text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                      <veh.icon className="h-10 w-10" />
+                    </div>
+                    <span className="font-bold text-lg">{veh.name} Parts</span>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
     </div>
   )
 }
