@@ -10,7 +10,7 @@ import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export function CartSheet() {
-    const { items, isOpen, toggleCart, removeItem, updateQuantity, total } = useCart()
+    const { items, isOpen, toggleCart, removeItem, updateQuantity, total, shipping } = useCart()
     const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(false)
 
@@ -180,11 +180,11 @@ export function CartSheet() {
                             </div>
                             <div className="flex items-center justify-between text-sm text-muted-foreground">
                                 <span>Shipping</span>
-                                <span>Calculated at checkout</span>
+                                <span>${shipping.toFixed(2)}</span>
                             </div>
                             <div className="flex items-center justify-between font-bold text-xl pt-2 text-foreground">
                                 <span>Total</span>
-                                <span>${total.toFixed(2)}</span>
+                                <span>${(total + shipping).toFixed(2)}</span>
                             </div>
                         </div>
                         <Button

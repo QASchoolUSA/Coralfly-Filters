@@ -45,6 +45,10 @@ export async function POST(req: Request) {
             }
         })
 
+        // Calculate shipping cost based on the total number of items
+        const totalItems = items.reduce((sum: number, item: any) => sum + item.quantity, 0)
+        const shippingCostInCents = totalItems > 0 ? Math.round((9.99 + (totalItems - 1) * 1.99) * 100) : 0
+
         const stripe = getStripe()
         const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_URL || 'https://lynxandparts.com'
 
@@ -56,6 +60,18 @@ export async function POST(req: Request) {
             shipping_address_collection: {
                 allowed_countries: ['US', 'CA'],
             },
+            shipping_options: shippingCostInCents > 0 ? [
+                {
+                    shipping_rate_data: {
+                        type: 'fixed_amount',
+                        fixed_amount: {
+                            amount: shippingCostInCents,
+                            currency: 'usd',
+                        },
+                        display_name: 'Flat Rate Shipping',
+                    },
+                },
+            ] : undefined,
             billing_address_collection: 'required',
             allow_promotion_codes: true,
         })
