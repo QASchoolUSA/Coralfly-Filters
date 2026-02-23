@@ -28,6 +28,7 @@ const CATEGORIES = [
     { label: 'Air Filters', value: 'air-filter' },
     { label: 'Cabin Filters', value: 'cabin-air-filter' },
     { label: 'Water Separators', value: 'fuel-water-separator' },
+    { label: 'Lamps', value: 'lamp' },
 ]
 
 const VEHICLES = [

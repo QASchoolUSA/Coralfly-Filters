@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Metadata } from "next"
-import { Search, ArrowRight, ShieldCheck, Truck, Clock, Droplet, Flame, Wind, Fan, Filter } from "lucide-react"
+import { Search, ArrowRight, ShieldCheck, Truck, Clock, Droplet, Flame, Wind, Fan, Filter, Lightbulb } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
@@ -146,6 +146,7 @@ export default function Home() {
               { name: 'Air Filters', slug: 'air-filter', icon: Wind },
               { name: 'Cabin Filters', slug: 'cabin-air-filter', icon: Fan },
               { name: 'Water Separators', slug: 'fuel-water-separator', icon: Filter },
+              { name: 'Lamps', slug: 'lamp', icon: Lightbulb },
             ].map((cat) => (
               <Link key={cat.slug} href={`/shop?type=${cat.slug}`}>
                 <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer hover:border-primary/50">
