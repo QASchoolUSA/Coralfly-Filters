@@ -34,7 +34,6 @@ const VEHICLES = [
     { label: 'Volvo', value: 'volvo' },
     { label: 'Freightliner', value: 'freightliner' },
     { label: 'Kenworth', value: 'kenworth' },
-    { label: 'Peterbilt', value: 'peterbilt' },
 ]
 
 export function ProductBrowser({ products }: ProductBrowserProps) {

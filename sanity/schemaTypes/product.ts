@@ -66,10 +66,6 @@ export const product = defineType({
                     { title: 'Volvo', value: 'volvo' },
                     { title: 'Freightliner', value: 'freightliner' },
                     { title: 'Kenworth', value: 'kenworth' },
-                    { title: 'Peterbilt', value: 'peterbilt' },
-                    { title: 'Mack', value: 'mack' },
-                    { title: 'International', value: 'international' },
-                    { title: 'Universal', value: 'universal' },
                 ]
             },
             description: 'Select the vehicles this product fits.',

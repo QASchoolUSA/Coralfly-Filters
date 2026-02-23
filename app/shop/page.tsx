@@ -44,10 +44,6 @@ export default async function ShopPage(props: {
         { label: 'Volvo', value: 'volvo', icon: Truck },
         { label: 'Freightliner', value: 'freightliner', icon: Truck },
         { label: 'Kenworth', value: 'kenworth', icon: Truck },
-        { label: 'Peterbilt', value: 'peterbilt', icon: Truck },
-        { label: 'Mack', value: 'mack', icon: Truck },
-        { label: 'International', value: 'international', icon: Truck },
-        { label: 'Universal', value: 'universal', icon: Package },
     ]
 
     return (
