@@ -5,30 +5,30 @@ export async function POST(request: Request) {
     try {
         const { firstName, lastName, email, subject, message } = await request.json();
 
-        // Check if Titan credentials are provided
-        if (!process.env.TITAN_EMAIL_USER || !process.env.TITAN_EMAIL_PASSWORD) {
-            console.error('Titan Email credentials are missing in .env.local');
+        // Check if Spaceship credentials are provided
+        if (!process.env.SPACEMAIL_USER || !process.env.SPACEMAIL_PASSWORD) {
+            console.error('Spacemail credentials are missing in .env.local');
             return NextResponse.json(
                 { error: 'Email service is not configured.' },
                 { status: 500 }
             );
         }
 
-        // Configure Nodemailer for Titan Email
+        // Configure Nodemailer for Spaceship Spacemail
         const transporter = nodemailer.createTransport({
-            host: 'smtp.titan.email', // Titan SMTP server
+            host: 'mail.spacemail.com', // Spaceship SMTP server
             port: 465, // SSL port
             secure: true, // Use SSL
             auth: {
-                user: process.env.TITAN_EMAIL_USER,
-                pass: process.env.TITAN_EMAIL_PASSWORD,
+                user: process.env.SPACEMAIL_USER,
+                pass: process.env.SPACEMAIL_PASSWORD,
             },
         });
 
         // Email Data
         const mailOptions = {
-            from: `"Contact Form" <${process.env.TITAN_EMAIL_USER}>`, // Must send from the authenticated Titan user
-            to: process.env.TITAN_EMAIL_USER, // Send to yourself
+            from: `"Contact Form" <${process.env.SPACEMAIL_USER}>`, // Must send from the authenticated Spacemail user
+            to: process.env.SPACEMAIL_USER, // Send to yourself
             replyTo: email, // If you click "reply", it will go to the user's email
             subject: `New Contact Form Submission: ${subject || 'No Subject'}`,
             html: `
