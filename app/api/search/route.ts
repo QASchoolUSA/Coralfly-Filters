@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
     try {
         const products = await client.fetch(
-            groq`*[_type == "product" && (name match $q + "*" || partNumber match $q + "*")] | order(name asc) [0...5] {
+            groq`*[_type == "product" && coalesce(published, true) == true && (name match $q + "*" || partNumber match $q + "*")] | order(name asc) [0...5] {
                 _id,
                 name,
                 "slug": slug.current,

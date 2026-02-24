@@ -34,6 +34,13 @@ export const product = defineType({
             validation: (rule) => rule.required().min(0),
         }),
         defineField({
+            name: 'published',
+            title: 'Published',
+            type: 'boolean',
+            initialValue: true,
+            description: 'Set to false to hide this product from the store.',
+        }),
+        defineField({
             name: 'productType',
             title: 'Product Type',
             type: 'string',

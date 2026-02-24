@@ -47,7 +47,7 @@ export async function POST(req: Request) {
 
         // Calculate shipping cost based on the total number of items
         const totalItems = items.reduce((sum: number, item: any) => sum + item.quantity, 0)
-        const shippingCostInCents = totalItems > 0 ? Math.round((9.99 + (totalItems - 1) * 1.99) * 100) : 0
+        const shippingCostInCents = totalItems > 0 ? Math.round((9.99 + (totalItems - 1) * 1.00) * 100) : 0
 
         const stripe = getStripe()
         const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_URL || 'https://lynxandparts.com'

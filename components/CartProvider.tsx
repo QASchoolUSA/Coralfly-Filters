@@ -81,7 +81,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0)
-    const shipping = totalItems > 0 ? 9.99 + (totalItems - 1) * 1.99 : 0
+    const shipping = totalItems > 0 ? 9.99 + (totalItems - 1) * 1.00 : 0
 
     return (
         <CartContext.Provider value={{ items, isOpen, addItem, removeItem, updateQuantity, toggleCart, total, shipping }}>
