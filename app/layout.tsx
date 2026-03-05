@@ -1,6 +1,8 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
+import { Suspense } from 'react'
+import { FacebookPixel } from '@/components/FacebookPixel'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
@@ -40,6 +42,9 @@ export default function RootLayout({
         "min-h-screen bg-background font-sans antialiased",
         inter.variable
       )}>
+        <Suspense fallback={null}>
+          <FacebookPixel />
+        </Suspense>
         {children}
       </body>
     </html>

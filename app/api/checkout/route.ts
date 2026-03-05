@@ -58,6 +58,9 @@ export async function POST(req: Request) {
             automatic_tax: { enabled: true },
             success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/?cart=open`,
+            metadata: {
+                product_ids: JSON.stringify(items.map((i: { partNumber: string }) => i.partNumber))
+            },
             shipping_address_collection: {
                 allowed_countries: ['US', 'CA'],
             },

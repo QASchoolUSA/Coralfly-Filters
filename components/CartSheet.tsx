@@ -33,6 +33,7 @@ export function CartSheet() {
             window.history.replaceState({}, '', newUrl.toString())
 
             // Also ensure loading state is reset if returning via redirect
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setIsLoading(false)
         }
 
@@ -44,6 +45,15 @@ export function CartSheet() {
     const handleCheckout = async () => {
         try {
             setIsLoading(true)
+
+            if (typeof window !== 'undefined' && typeof window.fbq === 'function' && items.length > 0) {
+                const productIds = items.map((item: { partNumber: string }) => item.partNumber)
+                window.fbq('track', 'InitiateCheckout', {
+                    content_ids: productIds,
+                    content_type: 'product'
+                })
+            }
+
             const response = await fetch('/api/checkout', {
                 method: 'POST',
                 headers: {

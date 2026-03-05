@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Check, ShieldCheck, Truck } from "lucide-react"
 import { AddToCartButton } from "@/components/AddToCartButton"
+import { ProductViewTracker } from "@/components/ProductViewTracker"
 
 export const dynamic = 'force-dynamic'
 
@@ -33,6 +34,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     return (
         <div className="container mx-auto px-4 py-8 md:py-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                <ProductViewTracker partNumber={product.partNumber} />
                 {/* Image Gallery */}
                 <ProductGallery
                     images={product.images || (product.imageUrl ? [product.imageUrl] : [])}
