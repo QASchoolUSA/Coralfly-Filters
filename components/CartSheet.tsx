@@ -5,14 +5,15 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Button } from "@/components/ui/button"
 import { ShoppingCart, Trash2, Plus, Minus, Loader2 } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export function CartSheet() {
-    const { items, isOpen, toggleCart, removeItem, updateQuantity, total, shipping } = useCart()
+    const { items, isOpen, toggleCart, removeItem, updateQuantity, total, shipping, deliveryMethod, setDeliveryMethod } = useCart()
     const searchParams = useSearchParams()
     const [isLoading, setIsLoading] = useState(false)
+    const pickupLocation = "610 Rinehart Rd, Unit 0353, Lake Mary, FL 32746"
+    const pickupInstructions = "Pickup address and timing details are shown in checkout and confirmation."
 
     useEffect(() => {
         // Handle BFCache page restore to reset loading state
@@ -59,7 +60,7 @@ export function CartSheet() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ items }),
+                body: JSON.stringify({ items, deliveryMethod }),
             })
 
             if (!response.ok) {
@@ -183,13 +184,41 @@ export function CartSheet() {
 
                 {items.length > 0 && (
                     <div className="border-t bg-muted/30 p-6 space-y-4">
+                        <div className="space-y-2">
+                            <p className="text-sm font-medium">Delivery Method</p>
+                            <div className="grid grid-cols-1 gap-2">
+                                <label className="flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm">
+                                    <input
+                                        type="radio"
+                                        name="delivery-method"
+                                        checked={deliveryMethod === 'shipping'}
+                                        onChange={() => setDeliveryMethod('shipping')}
+                                    />
+                                    <span>Ship to address</span>
+                                </label>
+                                <label className="flex items-center gap-2 rounded-md border bg-background px-3 py-2 text-sm">
+                                    <input
+                                        type="radio"
+                                        name="delivery-method"
+                                        checked={deliveryMethod === 'pickup'}
+                                        onChange={() => setDeliveryMethod('pickup')}
+                                    />
+                                    <span>Pick up in Sanford, FL (Lake Mary address)</span>
+                                </label>
+                            </div>
+                            {deliveryMethod === 'pickup' && (
+                                <p className="text-xs text-muted-foreground">
+                                    {pickupLocation}. {pickupInstructions}
+                                </p>
+                            )}
+                        </div>
                         <div className="space-y-1.5">
                             <div className="flex items-center justify-between text-sm text-muted-foreground">
                                 <span>Subtotal</span>
                                 <span>${total.toFixed(2)}</span>
                             </div>
                             <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                <span>Shipping</span>
+                                <span>{deliveryMethod === 'pickup' ? 'Pickup' : 'Shipping'}</span>
                                 <span>${shipping.toFixed(2)}</span>
                             </div>
                             <div className="flex items-center justify-between font-bold text-xl pt-2 text-foreground">

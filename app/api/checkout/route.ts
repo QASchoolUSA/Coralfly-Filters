@@ -6,7 +6,10 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(req: Request) {
     try {
-        const { items } = await req.json()
+        const { items, deliveryMethod } = await req.json()
+        const selectedDeliveryMethod = deliveryMethod === 'pickup' ? 'pickup' : 'shipping'
+        const pickupLocation = "610 Rinehart Rd, Unit 0353, Lake Mary, FL 32746"
+        const pickupInstructions = "Local pickup for Sanford-area orders. You'll receive pickup timing details after payment."
 
         if (!items || items.length === 0) {
             return new NextResponse("No items in cart", { status: 400 })
@@ -51,6 +54,7 @@ export async function POST(req: Request) {
 
         const stripe = getStripe()
         const origin = req.headers.get('origin') || process.env.NEXT_PUBLIC_URL || 'https://lynxandparts.com'
+        const isPickup = selectedDeliveryMethod === 'pickup'
 
         const session = await stripe.checkout.sessions.create({
             line_items,
@@ -59,12 +63,14 @@ export async function POST(req: Request) {
             success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${origin}/?cart=open`,
             metadata: {
-                product_ids: JSON.stringify(items.map((i: { partNumber: string }) => i.partNumber))
+                product_ids: JSON.stringify(items.map((i: { partNumber: string }) => i.partNumber)),
+                delivery_method: selectedDeliveryMethod,
+                pickup_location: isPickup ? pickupLocation : '',
             },
-            shipping_address_collection: {
+            shipping_address_collection: isPickup ? undefined : {
                 allowed_countries: ['US', 'CA'],
             },
-            shipping_options: shippingCostInCents > 0 ? [
+            shipping_options: isPickup ? undefined : (shippingCostInCents > 0 ? [
                 {
                     shipping_rate_data: {
                         type: 'fixed_amount',
@@ -76,9 +82,14 @@ export async function POST(req: Request) {
                         tax_behavior: 'exclusive',
                     },
                 },
-            ] : undefined,
+            ] : undefined),
             billing_address_collection: 'required',
             allow_promotion_codes: true,
+            custom_text: isPickup ? {
+                submit: {
+                    message: `${pickupInstructions} ${pickupLocation}`,
+                },
+            } : undefined,
         })
 
         return NextResponse.json({ url: session.url })
