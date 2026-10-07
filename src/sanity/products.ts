@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { sanityClient, isSanityConfigured } from "./client";
 import { fixtureProducts } from "./fixtures";
-import { urlForImage } from "./image";
+import { resolveSanityImageUrl } from "./image";
 import {
   categoriesQuery,
   productBySlugQuery,
@@ -23,49 +23,98 @@ function asNumber(value: unknown): number | undefined {
   return undefined;
 }
 
-function resolveImageUrl(source: unknown): string | null {
-  if (!source) return null;
-  if (typeof source === "string") return source;
-  if (typeof source === "object" && source !== null) {
-    const obj = source as Record<string, unknown>;
-    if (typeof obj.url === "string") return obj.url;
-    if (obj.asset || obj._type === "image") {
-      try {
-        return (
-          urlForImage(source as Parameters<typeof urlForImage>[0])
-            ?.width(1200)
-            .url() ?? null
-        );
-      } catch {
-        return null;
+function pushImage(
+  images: ProductImage[],
+  seen: Set<string>,
+  source: unknown,
+  altFallback?: string,
+) {
+  const url = resolveSanityImageUrl(source);
+  if (!url || seen.has(url)) return;
+
+  let alt = altFallback;
+  if (source && typeof source === "object") {
+    const row = source as Record<string, unknown>;
+    alt =
+      asString(row.alt) ||
+      asString(row.caption) ||
+      asString(row.title) ||
+      altFallback;
+  }
+
+  seen.add(url);
+  images.push({ url, alt });
+}
+
+/**
+ * Merge every known image field — do not stop at the first match.
+ * Prefer GROQ `resolvedImages` (asset->url expanded), then fall back to raw fields.
+ */
+function normalizeImages(raw: RawProduct): ProductImage[] {
+  const images: ProductImage[] = [];
+  const seen = new Set<string>();
+  const nameFallback = asString(raw.name) || asString(raw.title);
+
+  const resolved = raw.resolvedImages;
+  if (Array.isArray(resolved)) {
+    for (const item of resolved) {
+      if (!item || typeof item !== "object") {
+        pushImage(images, seen, item, nameFallback);
+        continue;
+      }
+      const row = item as Record<string, unknown>;
+      if (typeof row.url === "string" && row.url.startsWith("http")) {
+        if (!seen.has(row.url)) {
+          seen.add(row.url);
+          images.push({
+            url: row.url,
+            alt: asString(row.alt) || nameFallback,
+          });
+        }
+      } else {
+        pushImage(images, seen, item, nameFallback);
       }
     }
   }
-  return null;
-}
 
-function normalizeImages(raw: RawProduct): ProductImage[] {
-  const images: ProductImage[] = [];
-  const candidates = [
-    raw.gallery,
+  const groups: unknown[] = [
     raw.images,
-    raw.image ? [raw.image] : null,
-    raw.mainImage ? [raw.mainImage] : null,
+    raw.gallery,
+    raw.photos,
+    raw.media,
+    raw.image,
+    raw.mainImage,
+    raw.photo,
+    raw.thumbnail,
+    raw.coverImage,
+    raw.productImage,
   ];
 
-  for (const group of candidates) {
-    if (!Array.isArray(group)) continue;
-    for (const item of group) {
-      const url = resolveImageUrl(item);
-      if (!url) continue;
-      const alt =
-        typeof item === "object" && item !== null
-          ? asString((item as Record<string, unknown>).alt) ||
-            asString((item as Record<string, unknown>).caption)
-          : undefined;
-      images.push({ url, alt });
+  const store = raw.store;
+  if (store && typeof store === "object") {
+    const preview = (store as Record<string, unknown>).previewImageUrl;
+    if (typeof preview === "string") {
+      pushImage(images, seen, preview, nameFallback);
     }
-    if (images.length) break;
+  }
+
+  const variant = raw.defaultProductVariant;
+  if (variant && typeof variant === "object") {
+    const variantImages = (variant as Record<string, unknown>).images;
+    if (Array.isArray(variantImages)) {
+      groups.push(variantImages);
+    }
+  }
+
+  for (const group of groups) {
+    if (!group) continue;
+    if (Array.isArray(group)) {
+      for (const item of group) {
+        pushImage(images, seen, item, nameFallback);
+      }
+    } else {
+      pushImage(images, seen, group, nameFallback);
+    }
   }
 
   return images;

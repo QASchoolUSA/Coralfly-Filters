@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "./AddToCartButton";
+import { ProductGallery } from "./ProductGallery";
 import { formatPrice } from "@/lib/format";
 import { getProductBySlug } from "@/sanity/products";
 
@@ -13,7 +13,6 @@ export async function ProductDetail({ slug }: Props) {
   const product = await getProductBySlug(slug);
   if (!product) notFound();
 
-  const image = product.images[0];
   const compareAt =
     product.price > 0 ? Math.round(product.price * 1.18 * 100) / 100 : null;
 
@@ -39,27 +38,11 @@ export async function ProductDetail({ slug }: Props) {
       </nav>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-2 lg:gap-14">
-        <div className="relative aspect-square overflow-hidden border border-border bg-surface">
-          {product.featured ? (
-            <span className="absolute left-4 top-4 z-10 bg-brand px-2.5 py-1 font-display text-[10px] uppercase tracking-[0.14em] text-white">
-              Best seller
-            </span>
-          ) : null}
-          {image ? (
-            <Image
-              src={image.url}
-              alt={image.alt || product.name}
-              fill
-              priority
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center font-display text-xs uppercase tracking-[0.16em] text-muted">
-              No image
-            </div>
-          )}
-        </div>
+        <ProductGallery
+          images={product.images}
+          productName={product.name}
+          featured={product.featured}
+        />
 
         <div>
           {product.category ? (
