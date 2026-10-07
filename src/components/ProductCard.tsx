@@ -2,18 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { formatPrice } from "@/lib/format";
+import { useCartStore } from "@/lib/cart-store";
 import type { Product } from "@/sanity/types";
 
 type Props = {
   product: Product;
   index?: number;
+  badge?: string;
 };
 
-export function ProductCard({ product, index = 0 }: Props) {
+export function ProductCard({ product, index = 0, badge }: Props) {
   const reduceMotion = useReducedMotion();
+  const addItem = useCartStore((s) => s.addItem);
+  const [added, setAdded] = useState(false);
   const image = product.images[0];
+  const compareAt =
+    product.price > 0 ? Math.round(product.price * 1.18 * 100) / 100 : null;
 
   return (
     <motion.article
@@ -22,19 +29,24 @@ export function ProductCard({ product, index = 0 }: Props) {
       viewport={{ once: true, margin: "-40px" }}
       transition={{
         duration: 0.45,
-        delay: reduceMotion ? 0 : index * 0.06,
+        delay: reduceMotion ? 0 : index * 0.05,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="group flex flex-col"
+      className="group flex h-full flex-col border border-border bg-white"
     >
       <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-[4/3] overflow-hidden bg-surface">
+        <div className="relative aspect-square overflow-hidden bg-surface">
+          {badge || product.featured ? (
+            <span className="absolute left-3 top-3 z-10 bg-brand px-2 py-1 font-display text-[10px] uppercase tracking-[0.14em] text-white">
+              {badge || "Best seller"}
+            </span>
+          ) : null}
           {image ? (
             <Image
               src={image.url}
               alt={image.alt || product.name}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             />
           ) : (
@@ -43,18 +55,47 @@ export function ProductCard({ product, index = 0 }: Props) {
             </div>
           )}
         </div>
-        <div className="mt-4 space-y-1.5">
-          {product.category ? (
-            <p className="font-display text-[11px] uppercase tracking-[0.16em] text-brand">
-              {product.category}
-            </p>
-          ) : null}
-          <h3 className="text-base font-semibold leading-snug text-foreground group-hover:text-brand">
+      </Link>
+
+      <div className="flex flex-1 flex-col p-4">
+        {product.category ? (
+          <p className="font-display text-[11px] uppercase tracking-[0.16em] text-brand">
+            {product.category}
+          </p>
+        ) : null}
+        <Link href={`/product/${product.slug}`} className="mt-1.5 block">
+          <h3 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-brand">
             {product.name}
           </h3>
-          <p className="text-sm text-muted">{formatPrice(product.price, product.currency)}</p>
+        </Link>
+        {product.sku ? (
+          <p className="mt-1 text-xs text-muted">SKU {product.sku}</p>
+        ) : null}
+
+        <div className="mt-3 flex items-baseline gap-2">
+          <p className="text-lg font-bold text-foreground">
+            {formatPrice(product.price, product.currency)}
+          </p>
+          {compareAt ? (
+            <p className="text-sm text-muted line-through">
+              {formatPrice(compareAt, product.currency)}
+            </p>
+          ) : null}
         </div>
-      </Link>
+        <p className="mt-1 text-xs font-medium text-emerald-700">In stock · Ships today</p>
+
+        <button
+          type="button"
+          onClick={() => {
+            addItem(product, 1);
+            setAdded(true);
+            window.setTimeout(() => setAdded(false), 1400);
+          }}
+          className="mt-4 inline-flex h-11 w-full items-center justify-center bg-brand font-display text-xs uppercase tracking-[0.14em] text-white transition-colors hover:bg-brand-dark"
+        >
+          {added ? "Added ✓" : "Add to cart"}
+        </button>
+      </div>
     </motion.article>
   );
 }

@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { sanityClient, isSanityConfigured } from "./client";
 import { fixtureProducts } from "./fixtures";
 import { urlForImage } from "./image";
@@ -30,7 +31,11 @@ function resolveImageUrl(source: unknown): string | null {
     if (typeof obj.url === "string") return obj.url;
     if (obj.asset || obj._type === "image") {
       try {
-        return urlForImage(source as Parameters<typeof urlForImage>[0])?.width(1200).url() ?? null;
+        return (
+          urlForImage(source as Parameters<typeof urlForImage>[0])
+            ?.width(1200)
+            .url() ?? null
+        );
       } catch {
         return null;
       }
@@ -86,7 +91,6 @@ function normalizeSpecs(raw: RawProduct): ProductSpec[] | undefined {
 
 function normalizePrice(raw: RawProduct): number {
   const price = asNumber(raw.priceValue) ?? asNumber(raw.price) ?? 0;
-  // If Sanity stores cents (common for Stripe-oriented schemas), convert when huge
   if (price >= 1000 && Number.isInteger(price)) {
     return price / 100;
   }
@@ -128,6 +132,10 @@ async function fetchFromSanity<T>(
 }
 
 export async function getProducts(): Promise<Product[]> {
+  "use cache";
+  cacheTag("products");
+  cacheLife("hours");
+
   if (!isSanityConfigured) return fixtureProducts;
 
   const raw = await fetchFromSanity<RawProduct[]>(productsQuery);
@@ -138,17 +146,27 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
+  "use cache";
+  cacheTag("products", "featured-products");
+  cacheLife("hours");
+
   const products = await getProducts();
   const featured = products.filter((p) => p.featured);
   return (featured.length ? featured : products).slice(0, limit);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
+  "use cache";
+  cacheTag("products", `product-${slug}`);
+  cacheLife("hours");
+
   if (!isSanityConfigured) {
     return fixtureProducts.find((p) => p.slug === slug) ?? null;
   }
 
-  const raw = await fetchFromSanity<RawProduct | null>(productBySlugQuery, { slug });
+  const raw = await fetchFromSanity<RawProduct | null>(productBySlugQuery, {
+    slug,
+  });
   if (raw) {
     const product = normalizeProduct(raw);
     if (product) return product;
@@ -158,14 +176,24 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 export async function getCategories(): Promise<string[]> {
+  "use cache";
+  cacheTag("products", "categories");
+  cacheLife("hours");
+
   if (!isSanityConfigured) {
-    return [...new Set(fixtureProducts.map((p) => p.category).filter(Boolean))] as string[];
+    return [
+      ...new Set(fixtureProducts.map((p) => p.category).filter(Boolean)),
+    ] as string[];
   }
 
-  const raw = await fetchFromSanity<(string | null | undefined)[]>(categoriesQuery);
+  const raw = await fetchFromSanity<(string | null | undefined)[]>(
+    categoriesQuery,
+  );
   if (!raw?.length) {
     const products = await getProducts();
-    return [...new Set(products.map((p) => p.category).filter(Boolean))] as string[];
+    return [
+      ...new Set(products.map((p) => p.category).filter(Boolean)),
+    ] as string[];
   }
 
   return [...new Set(raw.filter((c): c is string => Boolean(c)))].sort();

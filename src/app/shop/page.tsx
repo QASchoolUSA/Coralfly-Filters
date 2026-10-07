@@ -1,34 +1,42 @@
 import type { Metadata } from "next";
-import { ShopFilters } from "@/components/ShopFilters";
-import { getCategories, getProducts } from "@/sanity/products";
+import { Suspense } from "react";
+import { ProductGridSkeleton } from "@/components/ProductGridSkeleton";
+import { ShopCatalog } from "@/components/ShopCatalog";
 
 export const metadata: Metadata = {
-  title: "Shop",
-  description: "Browse CORALFLY oil, air, fuel, cabin, and hydraulic filters.",
+  title: "Shop Filters",
+  description:
+    "Buy CORALFLY oil, air, fuel, cabin, and hydraulic filters online. In stock with secure Stripe checkout.",
 };
 
-export default async function ShopPage() {
-  const [products, categories] = await Promise.all([
-    getProducts(),
-    getCategories(),
-  ]);
-
+export default function ShopPage() {
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-      <div className="mb-10 max-w-2xl">
-        <p className="font-display text-xs uppercase tracking-[0.18em] text-brand">
-          Catalog
-        </p>
-        <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.04em] text-foreground">
-          Shop filters
-        </h1>
-        <p className="mt-3 text-base text-muted">
-          Find the right CORALFLY filter by category, name, or SKU. Add to cart
-          and checkout securely on Stripe.
-        </p>
+    <div>
+      <div className="border-b border-border bg-surface">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+          <p className="font-display text-xs uppercase tracking-[0.18em] text-brand">
+            Online store
+          </p>
+          <h1 className="mt-2 font-display text-4xl uppercase tracking-[0.04em] text-foreground">
+            Shop filters
+          </h1>
+          <p className="mt-3 max-w-2xl text-base text-muted">
+            Browse in-stock CORALFLY filters, add to cart, and checkout securely
+            with Stripe. Free shipping on orders $75+.
+          </p>
+          <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-foreground">
+            <li className="font-medium">✓ In stock</li>
+            <li className="font-medium">✓ Fast processing</li>
+            <li className="font-medium">✓ Stripe secure pay</li>
+          </ul>
+        </div>
       </div>
 
-      <ShopFilters products={products} categories={categories} />
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-12">
+        <Suspense fallback={<ProductGridSkeleton count={8} />}>
+          <ShopCatalog />
+        </Suspense>
+      </div>
     </div>
   );
 }

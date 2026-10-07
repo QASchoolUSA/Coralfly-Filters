@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Oswald, Source_Sans_3 } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { PromoBar } from "@/components/PromoBar";
 import "./globals.css";
 
 const display = Oswald({
@@ -22,7 +23,7 @@ export const metadata: Metadata = {
     template: "%s | CORALFLY",
   },
   description:
-    "CORALFLY industrial and automotive filters. Browse the catalog and checkout securely with Stripe.",
+    "Buy CORALFLY filters online — oil, air, fuel, cabin, and hydraulic. In-stock SKUs, free shipping $75+, secure Stripe checkout.",
   icons: {
     icon: "/favicon.svg",
   },
@@ -36,6 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
       <body className="flex min-h-full flex-col antialiased">
+        <PromoBar />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
