@@ -71,6 +71,11 @@ export function ProductCard({ product, index = 0, badge }: Props) {
         {product.sku ? (
           <p className="mt-1 text-xs text-muted">SKU {product.sku}</p>
         ) : null}
+        {product.compatibleMakes?.length ? (
+          <p className="mt-2 text-xs font-medium text-foreground">
+            Fits: {product.compatibleMakes.join(", ")}
+          </p>
+        ) : null}
 
         <div className="mt-3 flex items-baseline gap-2">
           <p className="text-lg font-bold text-foreground">

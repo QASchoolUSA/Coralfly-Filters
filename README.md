@@ -24,6 +24,10 @@ Open [http://localhost:3000](http://localhost:3000).
 
 Without Sanity credentials, the shop runs on built-in fixture products so you can develop UI immediately.
 
+## Truck fitment
+
+Add a `compatibleMakes` string array to Sanity product documents to enable truck make filtering. List only truck makes confirmed to fit that product. The Shop page builds its make options from these product values; the repo does not include a Sanity Studio schema, so add the field to the active Studio schema and tag the catalog entries there.
+
 ## Environment variables
 
 See [`.env.local.example`](.env.local.example):

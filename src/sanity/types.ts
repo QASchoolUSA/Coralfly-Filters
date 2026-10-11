@@ -18,6 +18,7 @@ export type Product = {
   currency: string;
   sku?: string;
   category?: string;
+  compatibleMakes?: string[];
   featured?: boolean;
   images: ProductImage[];
   specs?: ProductSpec[];

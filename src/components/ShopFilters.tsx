@@ -10,9 +10,32 @@ type Props = {
   categories: string[];
 };
 
+function getCompatibleMakes(products: Product[]): string[] {
+  const makes = new Map<string, string>();
+
+  for (const product of products) {
+    for (const value of product.compatibleMakes ?? []) {
+      const make = value.trim();
+      if (!make) continue;
+
+      const key = make.toLocaleLowerCase();
+      if (!makes.has(key)) makes.set(key, make);
+    }
+  }
+
+  return [...makes.values()].sort((a, b) => a.localeCompare(b));
+}
+
 export function ShopFilters({ products, categories }: Props) {
   const searchParams = useSearchParams();
   const urlCategory = searchParams.get("category") || "all";
+  const makes = getCompatibleMakes(products);
+  const requestedMake = searchParams.get("make")?.trim();
+  const initialMake = requestedMake
+    ? makes.find(
+        (make) => make.toLocaleLowerCase() === requestedMake.toLocaleLowerCase(),
+      ) || "all"
+    : "all";
   const initial =
     urlCategory !== "all" && categories.includes(urlCategory)
       ? urlCategory
@@ -20,10 +43,12 @@ export function ShopFilters({ products, categories }: Props) {
 
   return (
     <ShopFiltersInner
-      key={initial}
+      key={`${initial}:${initialMake}`}
       products={products}
       categories={categories}
+      makes={makes}
       initialCategory={initial}
+      initialMake={initialMake}
     />
   );
 }
@@ -31,10 +56,13 @@ export function ShopFilters({ products, categories }: Props) {
 function ShopFiltersInner({
   products,
   categories,
+  makes,
   initialCategory,
-}: Props & { initialCategory: string }) {
+  initialMake,
+}: Props & { makes: string[]; initialCategory: string; initialMake: string }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState(initialCategory);
+  const [make, setMake] = useState(initialMake);
   const [sort, setSort] = useState("featured");
 
   const filtered = useMemo(() => {
@@ -42,12 +70,20 @@ function ShopFiltersInner({
     let list = products.filter((product) => {
       const matchesCategory =
         category === "all" || product.category === category;
+      const matchesMake =
+        make === "all" ||
+        product.compatibleMakes?.some(
+          (compatibleMake) => compatibleMake.toLowerCase() === make.toLowerCase(),
+        ) === true;
       const matchesQuery =
         !q ||
         product.name.toLowerCase().includes(q) ||
         product.sku?.toLowerCase().includes(q) ||
-        product.description?.toLowerCase().includes(q);
-      return matchesCategory && matchesQuery;
+        product.description?.toLowerCase().includes(q) ||
+        product.compatibleMakes?.some((compatibleMake) =>
+          compatibleMake.toLowerCase().includes(q),
+        );
+      return matchesCategory && matchesMake && matchesQuery;
     });
 
     if (sort === "price-asc") {
@@ -65,7 +101,7 @@ function ShopFiltersInner({
     }
 
     return list;
-  }, [products, query, category, sort]);
+  }, [products, query, category, make, sort]);
 
   return (
     <div className="space-y-8">
@@ -99,16 +135,39 @@ function ShopFiltersInner({
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <label className="sr-only" htmlFor="shop-search">
-          Search products
+          Search products by name, SKU, or truck make
         </label>
         <input
           id="shop-search"
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by name or SKU"
+          placeholder="Search by name, SKU, or truck make"
           className="h-11 w-full border border-border bg-white px-3 text-sm outline-none ring-brand focus:ring-2 sm:max-w-sm"
         />
+        <label className="sr-only" htmlFor="shop-make">
+          Filter by truck make
+        </label>
+        <select
+          id="shop-make"
+          value={make}
+          onChange={(e) => setMake(e.target.value)}
+          disabled={makes.length === 0}
+          className="h-11 w-full border border-border bg-white px-3 text-sm outline-none ring-brand focus:ring-2 disabled:cursor-not-allowed disabled:bg-surface disabled:text-muted sm:max-w-[220px]"
+        >
+          {makes.length ? (
+            <>
+              <option value="all">All truck makes</option>
+              {makes.map((compatibleMake) => (
+                <option key={compatibleMake} value={compatibleMake}>
+                  {compatibleMake}
+                </option>
+              ))}
+            </>
+          ) : (
+            <option value="all">No truck makes listed</option>
+          )}
+        </select>
         <label className="sr-only" htmlFor="shop-sort">
           Sort
         </label>

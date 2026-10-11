@@ -56,6 +56,11 @@ export async function ProductDetail({ slug }: Props) {
           {product.sku ? (
             <p className="mt-2 text-sm text-muted">SKU: {product.sku}</p>
           ) : null}
+          {product.compatibleMakes?.length ? (
+            <p className="mt-3 text-sm font-medium text-foreground">
+              Compatible truck makes: {product.compatibleMakes.join(", ")}
+            </p>
+          ) : null}
 
           <div className="mt-5 flex items-baseline gap-3">
             <p className="text-3xl font-bold text-foreground">

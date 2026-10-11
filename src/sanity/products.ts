@@ -138,6 +138,22 @@ function normalizeSpecs(raw: RawProduct): ProductSpec[] | undefined {
   return specs.length ? specs : undefined;
 }
 
+function normalizeCompatibleMakes(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+
+  const makes = new Map<string, string>();
+  for (const item of value) {
+    const make = asString(item);
+    if (!make) continue;
+
+    const key = make.toLocaleLowerCase();
+    if (!makes.has(key)) makes.set(key, make);
+  }
+
+  const normalized = [...makes.values()].sort((a, b) => a.localeCompare(b));
+  return normalized.length ? normalized : undefined;
+}
+
 function normalizePrice(raw: RawProduct): number {
   const price = asNumber(raw.priceValue) ?? asNumber(raw.price) ?? 0;
   if (price >= 1000 && Number.isInteger(price)) {
@@ -161,6 +177,7 @@ export function normalizeProduct(raw: RawProduct): Product | null {
     currency: (asString(raw.currency) || "usd").toLowerCase(),
     sku: asString(raw.skuValue) || asString(raw.sku),
     category: asString(raw.categoryTitle) || asString(raw.category),
+    compatibleMakes: normalizeCompatibleMakes(raw.compatibleMakes),
     featured: Boolean(raw.featured),
     images: normalizeImages(raw),
     specs: normalizeSpecs(raw),

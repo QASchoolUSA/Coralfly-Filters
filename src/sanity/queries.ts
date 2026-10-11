@@ -61,6 +61,7 @@ const productFields = /* groq */ `
     categories[0]->name,
     category
   ),
+  compatibleMakes,
   featured,
   images,
   image,
