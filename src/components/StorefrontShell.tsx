@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import type { ReactNode } from "react";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Footer } from "@/components/Footer";
@@ -11,11 +12,15 @@ export function StorefrontShell({ children }: { children: ReactNode }) {
   return (
     <>
       <PromoBar />
-      <Header />
+      <Suspense fallback={<div className="navbar" aria-hidden="true"><div className="navbar-container" /></div>}>
+        <Header />
+      </Suspense>
       <main className="flex-1">{children}</main>
       <Footer />
       <CartDrawer />
-      <MobileTabBar />
+      <Suspense fallback={<div className="mobile-tab-bar" aria-hidden="true" />}>
+        <MobileTabBar />
+      </Suspense>
     </>
   );
 }

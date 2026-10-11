@@ -18,10 +18,13 @@ async function getCollection(brandSlug: string, categorySlug: string) {
 
 export async function generateStaticParams() {
   const products = await getProducts();
-  return getCatalogMakes(products).flatMap(({ slug, name }) => {
+  const collections = getCatalogMakes(products).flatMap(({ slug, name }) => {
     const tagged = products.filter((product) => product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === name.toLocaleLowerCase()));
     return getCatalogCategories(tagged).map(({ slug: category }) => ({ brand: slug, category }));
   });
+  // See the parent truck route: no tagged makes/categories is a valid catalog
+  // state, but Cache Components still needs a param for build-time validation.
+  return collections.length ? collections : [{ brand: "__no-tagged-makes__", category: "__no-tagged-category__" }];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

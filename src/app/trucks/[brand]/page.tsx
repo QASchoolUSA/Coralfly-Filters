@@ -14,7 +14,10 @@ async function resolveMake(slug: string) {
 }
 
 export async function generateStaticParams() {
-  return getCatalogMakes(await getProducts()).map(({ slug }) => ({ brand: slug }));
+  const makes = getCatalogMakes(await getProducts()).map(({ slug }) => ({ brand: slug }));
+  // Cache Components requires at least one build-time param. This placeholder
+  // resolves to notFound() and does not claim a make or catalog fitment exists.
+  return makes.length ? makes : [{ brand: "__no-tagged-makes__" }];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

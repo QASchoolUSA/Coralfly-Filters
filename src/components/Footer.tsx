@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const quickLinks = [
   ["/shop", "All Products"],
@@ -17,6 +20,12 @@ const categories = [
 ];
 
 export function Footer() {
+  const [year, setYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -39,7 +48,7 @@ export function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>© {new Date().getFullYear()} CORALFLY. All rights reserved.</p>
+          <p>© {year ? `${year} ` : ""}CORALFLY. All rights reserved.</p>
           <div className="footer-bottom-links">
             <Link href="/privacy">Privacy Policy</Link>
             <Link href="/terms">Terms of Service</Link>
