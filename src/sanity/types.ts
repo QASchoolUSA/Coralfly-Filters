@@ -8,6 +8,13 @@ export type ProductSpec = {
   value: string;
 };
 
+export type ProductFitment = {
+  brand: string;
+  models?: string[];
+  engines?: string[];
+  notes?: string;
+};
+
 export type Product = {
   _id: string;
   name: string;
@@ -25,6 +32,7 @@ export type Product = {
   brand?: string;
   productType?: string;
   compatibleMakes?: string[];
+  fitmentDetails?: ProductFitment[];
   featured?: boolean;
   images: ProductImage[];
   specs?: ProductSpec[];

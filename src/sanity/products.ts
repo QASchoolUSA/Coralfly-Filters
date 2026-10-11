@@ -7,7 +7,7 @@ import {
   productBySlugQuery,
   productsQuery,
 } from "./queries";
-import type { Product, ProductImage, ProductSpec } from "./types";
+import type { Product, ProductFitment, ProductImage, ProductSpec } from "./types";
 
 type RawProduct = Record<string, unknown>;
 
@@ -172,19 +172,36 @@ function normalizeSpecs(raw: RawProduct): ProductSpec[] | undefined {
 }
 
 function normalizeCompatibleMakes(value: unknown): string[] | undefined {
-  if (!Array.isArray(value)) return undefined;
-
   const makes = new Map<string, string>();
-  for (const item of value) {
-    const make = asString(item);
-    if (!make) continue;
-
-    const key = make.toLocaleLowerCase();
-    if (!makes.has(key)) makes.set(key, make);
+  for (const source of Array.isArray(value) ? value : []) {
+    const make = asString(source);
+    if (make && !makes.has(make.toLocaleLowerCase())) {
+      makes.set(make.toLocaleLowerCase(), make);
+    }
   }
 
   const normalized = [...makes.values()].sort((a, b) => a.localeCompare(b));
   return normalized.length ? normalized : undefined;
+}
+
+function normalizeFitmentDetails(value: unknown): ProductFitment[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+
+  const details = value.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const row = item as Record<string, unknown>;
+    const brand = asString(row.brand);
+    if (!brand) return [];
+
+    return [{
+      brand,
+      models: normalizeCompatibleMakes(row.models),
+      engines: normalizeCompatibleMakes(row.engines),
+      notes: asString(row.notes),
+    }];
+  });
+
+  return details.length ? details : undefined;
 }
 
 function normalizePrice(raw: RawProduct): number {
@@ -207,6 +224,13 @@ export function normalizeProduct(raw: RawProduct): Product | null {
   const slug = asString(raw.slug);
   if (!id || !name || !slug) return null;
 
+  const fitmentDetails = normalizeFitmentDetails(raw.fitmentDetails);
+  const compatibleMakes = normalizeCompatibleMakes([
+    ...(Array.isArray(raw.compatibleMakes) ? raw.compatibleMakes : []),
+    ...(Array.isArray(raw.vehicleFit) ? raw.vehicleFit : []),
+    ...(fitmentDetails ?? []).map((fitment) => fitment.brand),
+  ]);
+
   return {
     _id: id,
     name,
@@ -225,7 +249,8 @@ export function normalizeProduct(raw: RawProduct): Product | null {
     crossReferences: normalizeStringList(raw.crossReferences),
     brand: asString(raw.brand),
     productType: asString(raw.productType),
-    compatibleMakes: normalizeCompatibleMakes(raw.compatibleMakes),
+    compatibleMakes,
+    fitmentDetails,
     featured: Boolean(raw.featured),
     images: normalizeImages(raw),
     specs: normalizeSpecs(raw),

@@ -1,0 +1,22 @@
+{
+  "name": "CORALFLY Filters",
+  "short_name": "CORALFLY",
+  "description": "Shop CORALFLY oil, air, fuel, cabin, hydraulic, and coolant filters.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0081C9",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

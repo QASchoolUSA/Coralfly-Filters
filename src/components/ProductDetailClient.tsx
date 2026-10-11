@@ -71,7 +71,16 @@ export function ProductDetailClient({ product, related }: { product: Product; re
               </div>
             </div>
             {product.description ? <p className="product-detail-description">{product.description}</p> : null}
-            {product.compatibleMakes?.length ? <div className="product-fitment"><h2>Compatible truck makes</h2><div className="compatibility-tags">{product.compatibleMakes.map((make) => <Link className="compat-tag" key={make} href={`/shop?make=${encodeURIComponent(make)}`}>{make}</Link>)}</div></div> : null}
+            {product.compatibleMakes?.length || product.fitmentDetails?.length ? <div className="product-fitment">
+              <h2>Truck fitment</h2>
+              {product.compatibleMakes?.length ? <div className="compatibility-tags">{product.compatibleMakes.map((make) => <Link className="compat-tag" key={make} href={`/shop?make=${encodeURIComponent(make)}`}>{make}</Link>)}</div> : null}
+              {product.fitmentDetails?.length ? <div className="product-fitment-details">{product.fitmentDetails.map((fitment, index) => <div className="product-fitment-detail" key={`${fitment.brand}-${index}`}>
+                <h3><Link href={`/shop?make=${encodeURIComponent(fitment.brand)}`}>{fitment.brand}</Link></h3>
+                {fitment.models?.length ? <p><strong>Models:</strong> {fitment.models.join(", ")}</p> : null}
+                {fitment.engines?.length ? <p><strong>Engines:</strong> {fitment.engines.join(", ")}</p> : null}
+                {fitment.notes ? <p>{fitment.notes}</p> : null}
+              </div>)}</div> : null}
+            </div> : null}
             <div className="quantity-selector" aria-label="Quantity selector"><button className="quantity-btn" type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity">−</button><output className="quantity-value">{quantity}</output><button className="quantity-btn" type="button" onClick={() => setQuantity((value) => value + 1)} aria-label="Increase quantity">+</button></div>
             <div className="product-purchase-actions"><button type="button" className="btn btn-primary btn-lg" onClick={addToCart} disabled={product.inStock === false}>{product.inStock === false ? "Out of Stock" : added ? "Added to Cart ✓" : "Add to Cart"}</button><Link href="/cart" className="btn btn-outline btn-lg">View Cart</Link></div>
             <div className="product-purchase-assurances"><span><CheckIcon /> Secure Stripe checkout</span><span><CheckIcon /> Free shipping on orders $75+</span><span><CheckIcon /> Need help? <Link href="/contact">Contact us</Link></span></div>
@@ -80,7 +89,6 @@ export function ProductDetailClient({ product, related }: { product: Product; re
               {product.description ? <Accordion title="Description" open><p>{product.description}</p></Accordion> : null}
               {product.details ? <Accordion title="Additional Details"><p>{product.details}</p></Accordion> : null}
               {product.specs?.length ? <Accordion title="Specifications"><table className="specs-table"><tbody>{product.specs.map((spec) => <tr key={`${spec.label}-${spec.value}`}><th scope="row">{spec.label}</th><td>{spec.value}</td></tr>)}</tbody></table></Accordion> : null}
-              {product.compatibleMakes?.length ? <Accordion title="Truck Fitment"><p>This product is listed for the following truck makes:</p><div className="compatibility-tags">{product.compatibleMakes.map((make) => <span className="compat-tag" key={make}>{make}</span>)}</div></Accordion> : null}
               {product.crossReferences?.length ? <Accordion title="Cross References"><p className="cross-ref-intro">Compare the listed reference numbers with the part you are replacing before ordering.</p><div className="compatibility-tags">{product.crossReferences.map((reference) => <span className="compat-tag" key={reference}>{reference}</span>)}</div></Accordion> : null}
             </div>
           </div>

@@ -14,6 +14,12 @@ export async function GET(request: Request) {
         product.description,
         product.brand,
         ...(product.compatibleMakes ?? []),
+        ...(product.fitmentDetails ?? []).flatMap((fitment) => [
+          fitment.brand,
+          ...(fitment.models ?? []),
+          ...(fitment.engines ?? []),
+          fitment.notes,
+        ]),
         ...(product.crossReferences ?? []),
       ];
       const score = fields.reduce((total, field) => {
@@ -35,6 +41,7 @@ export async function GET(request: Request) {
       currency: product.currency,
       image: product.images[0],
       inStock: product.inStock,
+      fitment: product.fitmentDetails?.map((fitment) => fitment.brand).join(", ") || product.compatibleMakes?.join(", "),
     }));
 
   return Response.json({ results }, { headers: { "Cache-Control": "no-store" } });

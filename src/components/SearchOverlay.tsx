@@ -11,6 +11,7 @@ type SearchResult = {
   slug: string;
   sku?: string;
   category?: string;
+  fitment?: string;
   price: number;
   currency: string;
   image?: { url: string; alt?: string };
@@ -24,6 +25,14 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
   const [searched, setSearched] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const debounce = useRef<number | null>(null);
+
+  const closeAndReset = useCallback(() => {
+    setQuery("");
+    setResults([]);
+    setSearched(false);
+    setLoading(false);
+    onClose();
+  }, [onClose]);
 
   const search = useCallback(async (term: string) => {
     const value = term.trim();
@@ -47,16 +56,11 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
   }, []);
 
   useEffect(() => {
-    if (!isOpen) {
-      setQuery("");
-      setResults([]);
-      setSearched(false);
-      return;
-    }
+    if (!isOpen) return;
     document.body.style.overflow = "hidden";
     const focusTimer = window.setTimeout(() => input.current?.focus(), 80);
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key === "Escape") closeAndReset();
     };
     document.addEventListener("keydown", handleKey);
     return () => {
@@ -64,7 +68,7 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
       window.clearTimeout(focusTimer);
       document.removeEventListener("keydown", handleKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, closeAndReset]);
 
   useEffect(() => () => {
     if (debounce.current) window.clearTimeout(debounce.current);
@@ -81,7 +85,7 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
 
   return (
     <div className="search-overlay" role="dialog" aria-modal="true" aria-label="Search products">
-      <button type="button" className="search-overlay__backdrop" onClick={onClose} aria-label="Close search" />
+      <button type="button" className="search-overlay__backdrop" onClick={closeAndReset} aria-label="Close search" />
       <div className="search-overlay__panel">
         <div className="search-overlay__header">
           <div className="search-overlay__input-wrap">
@@ -92,32 +96,33 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
               type="search"
               value={query}
               onChange={(event) => handleChange(event.target.value)}
-              placeholder="Search by part number, product name, or truck make..."
+              placeholder="Search by part number, product name, make, model, or engine..."
               autoComplete="off"
               spellCheck={false}
             />
             {query ? <button type="button" className="search-overlay__input-clear" onClick={() => handleChange("")} aria-label="Clear search">×</button> : null}
           </div>
-          <button type="button" className="search-overlay__close" onClick={onClose} aria-label="Close search"><CloseIcon /></button>
+          <button type="button" className="search-overlay__close" onClick={closeAndReset} aria-label="Close search"><CloseIcon /></button>
         </div>
         <div className="search-overlay__body" aria-live="polite">
           {loading ? <div className="search-overlay__loading"><span className="search-overlay__spinner" />Searching...</div> : null}
-          {!loading && query.trim().length < 2 ? <div className="search-overlay__hint"><SearchIcon /><p>Enter a part number, product name, or truck make to search</p></div> : null}
+          {!loading && query.trim().length < 2 ? <div className="search-overlay__hint"><SearchIcon /><p>Enter a part number, product name, truck make, model, or engine to search</p></div> : null}
           {!loading && searched && results.length === 0 ? <div className="search-overlay__empty"><p>No results found for <strong>&ldquo;{query}&rdquo;</strong></p><span>Try a different part number, product name, or truck make.</span></div> : null}
           {!loading && results.length > 0 ? <>
             <p className="search-overlay__count">{results.length} matching products</p>
             <div className="search-overlay__results">
-              {results.map((product) => <Link key={product.id} href={`/shop/${product.slug}`} className="search-result" onClick={onClose}>
+              {results.map((product) => <Link key={product.id} href={`/shop/${product.slug}`} className="search-result" onClick={closeAndReset}>
                 <div className="search-result__image">{product.image ? <Image src={product.image.url} alt={product.image.alt || product.name} width={72} height={72} /> : <SearchIcon />}</div>
                 <div className="search-result__info">
                   <span className="search-result__name">{product.name}</span>
                   {product.sku ? <span className="search-result__part">SKU {product.sku}</span> : null}
                   <span className="search-result__category">{product.category ?? "Filter"}</span>
+                  {product.fitment ? <span className="search-result__category">Fits {product.fitment}</span> : null}
                 </div>
                 <div className="search-result__right"><span className="search-result__price">{formatPrice(product.price, product.currency)}</span><ArrowIcon /></div>
               </Link>)}
             </div>
-            <Link href={allResultsHref} className="search-overlay__all-results" onClick={onClose}>View all results <ArrowIcon /></Link>
+            <Link href={allResultsHref} className="search-overlay__all-results" onClick={closeAndReset}>View all results <ArrowIcon /></Link>
           </> : null}
         </div>
       </div>

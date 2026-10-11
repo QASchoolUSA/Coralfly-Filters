@@ -21,3 +21,12 @@ export function getCatalogCategories(products: Product[]) {
   }
   return [...categories.entries()].map(([slug, name]) => ({ slug, name }));
 }
+
+export function formatFitmentSummary(product: Product) {
+  const details = product.fitmentDetails?.map((fitment) => {
+    const applications = [fitment.models?.join(", "), fitment.engines?.join(", ")].filter(Boolean);
+    return `${fitment.brand}${applications.length ? `: ${applications.join(" · ")}` : ""}`;
+  });
+  if (details?.length) return details.join("; ");
+  return product.compatibleMakes?.join(", ");
+}

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
+import { formatFitmentSummary } from "@/lib/catalog";
 import type { Product } from "@/sanity/types";
 
 export function ProductCard({ product, badge }: { product: Product; index?: number; badge?: string }) {
@@ -15,6 +16,7 @@ export function ProductCard({ product, badge }: { product: Product; index?: numb
     ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
   const image = product.images[0];
+  const fitmentSummary = formatFitmentSummary(product);
 
   function addProduct(open = false) {
     addItem(product, 1);
@@ -41,7 +43,7 @@ export function ProductCard({ product, badge }: { product: Product; index?: numb
           {product.category ? <span className="product-card-category">{product.category}</span> : null}
           <h3 className="product-card-name">{product.name}</h3>
           {product.sku ? <span className="product-card-part">SKU {product.sku}</span> : null}
-          {product.compatibleMakes?.length ? <span className="product-card-fitment">Fits: {product.compatibleMakes.join(", ")}</span> : null}
+          {fitmentSummary ? <span className="product-card-fitment" title={`Fits: ${fitmentSummary}`}>Fits: {fitmentSummary}</span> : null}
           <div className="product-card-pricing">
             <span className="product-card-price">{formatPrice(product.price, product.currency)}</span>
             {discount > 0 && product.compareAtPrice ? <span className="product-card-compare">{formatPrice(product.compareAtPrice, product.currency)}</span> : null}

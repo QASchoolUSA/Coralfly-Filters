@@ -64,6 +64,8 @@ const productFields = /* groq */ `
     category
   ),
   compatibleMakes,
+  vehicleFit,
+  "fitmentDetails": fitmentDetails[]{brand, models, engines, notes},
   inStock,
   details,
   crossReferences,
