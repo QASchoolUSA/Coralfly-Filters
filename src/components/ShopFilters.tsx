@@ -57,28 +57,29 @@ export function ShopFilters({ products, categories }: Props) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
-  const initialCategory = categories.includes(params.get("category") ?? "") ? params.get("category")! : "all";
+  const searchParamsKey = params.toString();
+  const requestedCategory = params.get("category") ?? "";
+  const category = categories.includes(requestedCategory) ? requestedCategory : "all";
   const makes = useMemo(() => getMakes(products), [products]);
   const requestedMake = params.get("make")?.trim();
-  const initialMake = findOption(makes, requestedMake) !== "all"
-    ? findOption(makes, requestedMake)
+  const matchingMake = findOption(makes, requestedMake);
+  const make = matchingMake !== "all"
+    ? matchingMake
     : requestedMake || "all";
-  const initialModels = getModels(products, initialMake);
-  const initialModel = findOption(initialModels, params.get("model"));
-  const initialEngines = getEngines(products, initialMake, initialModel);
-  const initialEngine = findOption(initialEngines, params.get("engine"));
-  const [category, setCategory] = useState(initialCategory);
-  const [make, setMake] = useState(initialMake);
-  const [model, setModel] = useState(initialModel);
-  const [engine, setEngine] = useState(initialEngine);
+  const models = useMemo(() => getModels(products, make), [products, make]);
+  const model = findOption(models, params.get("model"));
+  const engines = useMemo(() => getEngines(products, make, model), [products, make, model]);
+  const engine = findOption(engines, params.get("engine"));
+  const sort = params.get("sort") ?? "default";
   const [query, setQuery] = useState(params.get("search") ?? params.get("q") ?? "");
-  const [sort, setSort] = useState(params.get("sort") ?? "default");
   const [stockOnly, setStockOnly] = useState(params.get("inStock") === "1");
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
 
-  const models = useMemo(() => getModels(products, make), [products, make]);
-  const engines = useMemo(() => getEngines(products, make, model), [products, make, model]);
+  useEffect(() => {
+    const currentParams = new URLSearchParams(searchParamsKey);
+    setQuery(currentParams.get("search") ?? currentParams.get("q") ?? "");
+  }, [searchParamsKey]);
 
   useEffect(() => {
     const closeOutside = (event: MouseEvent) => {
@@ -165,12 +166,7 @@ export function ShopFilters({ products, categories }: Props) {
 
   const hasFilters = category !== "all" || make !== "all" || model !== "all" || engine !== "all" || query || sort !== "default" || stockOnly || minPrice || maxPrice;
   const clear = () => {
-    setCategory("all");
-    setMake("all");
-    setModel("all");
-    setEngine("all");
     setQuery("");
-    setSort("default");
     setStockOnly(false);
     setMinPrice("");
     setMaxPrice("");
@@ -184,10 +180,10 @@ export function ShopFilters({ products, categories }: Props) {
 
   return <div className="shop-layout" ref={layoutRef}>
     <div className="shop-chips" role="group" aria-label="Filter by category">
-      <button type="button" className={`shop-chip${category === "all" ? " shop-chip--active" : ""}`} onClick={() => { setCategory("all"); setUrlFilters("all"); }}>
+      <button type="button" className={`shop-chip${category === "all" ? " shop-chip--active" : ""}`} onClick={() => { setUrlFilters("all"); }}>
         <span className="shop-chip__icon"><GridIcon /></span><span className="shop-chip__label">All</span><span className="shop-chip__count">{products.length}</span>
       </button>
-      {categories.map((name) => <button type="button" key={name} className={`shop-chip${category === name ? " shop-chip--active" : ""}`} onClick={() => { setCategory(name); setUrlFilters(name); }}>
+      {categories.map((name) => <button type="button" key={name} className={`shop-chip${category === name ? " shop-chip--active" : ""}`} onClick={() => { setUrlFilters(name); }}>
         <span className="shop-chip__icon">{getCategoryIcon(slugify(name), 20)}</span><span className="shop-chip__label">{name}</span><span className="shop-chip__count">{categoryCounts[name] ?? 0}</span>
       </button>)}
     </div>
@@ -203,9 +199,6 @@ export function ShopFilters({ products, categories }: Props) {
           <label className="shop-fitment-field"><span>Make</span><span className="shop-select-control">
             <select aria-label="Truck make" value={make} onChange={(event) => {
               const value = event.target.value;
-              setMake(value);
-              setModel("all");
-              setEngine("all");
               setUrlFilters(category, value, "all", "all");
             }}>
               <option value="all">All Makes</option>
@@ -216,8 +209,6 @@ export function ShopFilters({ products, categories }: Props) {
           <label className="shop-fitment-field"><span>Model</span><span className="shop-select-control">
             <select aria-label="Truck model" value={model} disabled={make === "all" || models.length === 0} onChange={(event) => {
               const value = event.target.value;
-              setModel(value);
-              setEngine("all");
               setUrlFilters(category, make, value, "all");
             }}>
               <option value="all">All Models</option>
@@ -227,7 +218,6 @@ export function ShopFilters({ products, categories }: Props) {
           <label className="shop-fitment-field"><span>Engine</span><span className="shop-select-control">
             <select aria-label="Truck engine" value={engine} disabled={make === "all" || engines.length === 0} onChange={(event) => {
               const value = event.target.value;
-              setEngine(value);
               setUrlFilters(category, make, model, value);
             }}>
               <option value="all">All Engines</option>
@@ -245,7 +235,7 @@ export function ShopFilters({ products, categories }: Props) {
         </details>
         <details className="shop-sort shop-filter-dropdown">
           <summary className="shop-sort__trigger" aria-label="Sort products"><SortIcon /><span className="shop-sort__label">{sort === "price-asc" ? "Price: Low → High" : sort === "price-desc" ? "Price: High → Low" : sort === "name" ? "Name: A → Z" : "Default"}</span><ChevronIcon /></summary>
-          <div className="shop-sort__menu" role="listbox" aria-label="Sort order">{[["default", "Default"], ["price-asc", "Price: Low → High"], ["price-desc", "Price: High → Low"], ["name", "Name: A → Z"]].map(([value, label]) => <button type="button" key={value} className={`shop-sort__option${sort === value ? " shop-sort__option--active" : ""}`} role="option" aria-selected={sort === value} onClick={(event) => { setSort(value); setUrlFilters(category, make, model, engine, value); event.currentTarget.closest("details")?.removeAttribute("open"); }}><CheckMark active={sort === value} /><span>{label}</span></button>)}</div>
+          <div className="shop-sort__menu" role="listbox" aria-label="Sort order">{[["default", "Default"], ["price-asc", "Price: Low → High"], ["price-desc", "Price: High → Low"], ["name", "Name: A → Z"]].map(([value, label]) => <button type="button" key={value} className={`shop-sort__option${sort === value ? " shop-sort__option--active" : ""}`} role="option" aria-selected={sort === value} onClick={(event) => { setUrlFilters(category, make, model, engine, value); event.currentTarget.closest("details")?.removeAttribute("open"); }}><CheckMark active={sort === value} /><span>{label}</span></button>)}</div>
         </details>
       </div>
     </div>
