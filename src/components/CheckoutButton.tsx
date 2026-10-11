@@ -33,17 +33,17 @@ export function CheckoutButton() {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="checkout-button-wrap">
       <button
         type="button"
         onClick={handleCheckout}
         disabled={loading || items.length === 0}
-        className="inline-flex h-12 w-full items-center justify-center bg-brand px-7 font-display text-sm uppercase tracking-[0.14em] text-white transition-colors hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-60"
+        className="btn btn-primary btn-lg checkout-button"
       >
         {loading ? "Redirecting to Stripe…" : "Checkout with Stripe"}
       </button>
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      <p className="text-xs text-muted">
+      {error ? <p className="checkout-error" role="alert">{error}</p> : null}
+      <p className="checkout-note">
         You will complete payment on Stripe&apos;s secure hosted checkout page.
       </p>
     </div>

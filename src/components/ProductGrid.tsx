@@ -12,14 +12,14 @@ export function ProductGrid({
 }: Props) {
   if (!products.length) {
     return (
-      <p className="rounded-md border border-dashed border-border bg-surface px-4 py-12 text-center text-sm text-muted">
+      <p className="shop-empty-state">
         {emptyMessage}
       </p>
     );
   }
 
   return (
-    <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="product-grid">
       {products.map((product, index) => (
         <ProductCard key={product._id} product={product} index={index} />
       ))}

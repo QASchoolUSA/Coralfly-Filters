@@ -3,72 +3,32 @@
 import { useState, type FormEvent } from "react";
 
 export function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
-
+  const [status, setStatus] = useState(false);
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = event.currentTarget;
-    const data = new FormData(form);
-    const name = String(data.get("name") || "");
-    const email = String(data.get("email") || "");
-    const message = String(data.get("message") || "");
-
-    const subject = encodeURIComponent(`CORALFLY inquiry from ${name}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\n${message}`,
-    );
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get("name") || "");
+    const email = String(form.get("email") || "");
+    const phone = String(form.get("phone") || "");
+    const subjectLabel = String(form.get("subject") || "General inquiry");
+    const message = String(form.get("message") || "");
+    const subject = encodeURIComponent(`CORALFLY ${subjectLabel}: ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone || "Not provided"}\nSubject: ${subjectLabel}\n\n${message}`);
     window.location.href = `mailto:sales@coralfly.com?subject=${subject}&body=${body}`;
-    setStatus("sent");
+    setStatus(true);
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="mb-1.5 block text-sm font-medium">
-          Name
-        </label>
-        <input
-          id="name"
-          name="name"
-          required
-          className="h-11 w-full rounded-md border border-border px-3 text-sm outline-none ring-brand focus:ring-2"
-        />
-      </div>
-      <div>
-        <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          className="h-11 w-full rounded-md border border-border px-3 text-sm outline-none ring-brand focus:ring-2"
-        />
-      </div>
-      <div>
-        <label htmlFor="message" className="mb-1.5 block text-sm font-medium">
-          Message
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          required
-          rows={5}
-          className="w-full rounded-md border border-border px-3 py-2 text-sm outline-none ring-brand focus:ring-2"
-        />
-      </div>
-      <button
-        type="submit"
-        className="inline-flex h-12 items-center justify-center bg-brand px-7 font-display text-sm uppercase tracking-[0.14em] text-white hover:bg-brand-dark"
-      >
-        Send message
-      </button>
-      {status === "sent" ? (
-        <p className="text-sm text-muted">
-          Opening your email client… If nothing opens, email us at sales@coralfly.com.
-        </p>
-      ) : null}
-    </form>
-  );
+  return <form className="contact-form" onSubmit={handleSubmit}>
+    <div className="form-row">
+      <div className="form-group"><label htmlFor="contact-name">Full Name *</label><input id="contact-name" name="name" type="text" required autoComplete="name" placeholder="Your name" /></div>
+      <div className="form-group"><label htmlFor="contact-email">Email *</label><input id="contact-email" name="email" type="email" required autoComplete="email" placeholder="you@example.com" /></div>
+    </div>
+    <div className="form-row">
+      <div className="form-group"><label htmlFor="contact-phone">Phone</label><input id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder="Optional" /></div>
+      <div className="form-group"><label htmlFor="contact-subject">Subject *</label><select id="contact-subject" name="subject" required defaultValue=""><option value="" disabled>Select a topic</option><option>Product Inquiry</option><option>Order Support</option><option>Bulk / Fleet Pricing</option><option>Compatibility Question</option><option>Returns</option><option>Other</option></select></div>
+    </div>
+    <div className="form-group"><label htmlFor="contact-message">Message *</label><textarea id="contact-message" name="message" required placeholder="Tell us the filter number, truck make, model, and year, or describe your question..." /></div>
+    <button type="submit" className="btn btn-primary btn-lg">Send Message</button>
+    {status ? <p className="contact-form-status" role="status">Opening your email app. If it does not open, email sales@coralfly.com.</p> : null}
+  </form>;
 }

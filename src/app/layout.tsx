@@ -1,21 +1,6 @@
 import type { Metadata } from "next";
-import { Oswald, Source_Sans_3 } from "next/font/google";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { PromoBar } from "@/components/PromoBar";
+import { StorefrontShell } from "@/components/StorefrontShell";
 import "./globals.css";
-
-const display = Oswald({
-  variable: "--font-oswald",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const body = Source_Sans_3({
-  variable: "--font-source",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -35,12 +20,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} h-full`}>
-      <body className="flex min-h-full flex-col antialiased">
-        <PromoBar />
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+    <html lang="en" className="light">
+      <body className="flex min-h-screen flex-col antialiased">
+        <StorefrontShell>{children}</StorefrontShell>
       </body>
     </html>
   );

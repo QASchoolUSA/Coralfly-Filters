@@ -6,7 +6,10 @@ import type { CartItem, Product } from "@/sanity/types";
 
 type CartState = {
   items: CartItem[];
+  isCartOpen: boolean;
   addItem: (product: Product, quantity?: number) => void;
+  openCart: () => void;
+  closeCart: () => void;
   removeItem: (id: string) => void;
   setQuantity: (id: string, quantity: number) => void;
   clear: () => void;
@@ -18,6 +21,9 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      isCartOpen: false,
+      openCart: () => set({ isCartOpen: true }),
+      closeCart: () => set({ isCartOpen: false }),
       addItem: (product, quantity = 1) => {
         set((state) => {
           const existing = state.items.find((item) => item.id === product._id);
@@ -65,6 +71,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "coralfly-cart",
+      partialize: (state) => ({ items: state.items }) as CartState,
     },
   ),
 );

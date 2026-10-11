@@ -23,6 +23,39 @@ function asNumber(value: unknown): number | undefined {
   return undefined;
 }
 
+function asPlainText(value: unknown): string | undefined {
+  if (typeof value === "string") return asString(value);
+  if (!Array.isArray(value)) return undefined;
+
+  const text = value
+    .flatMap((block) => {
+      if (!block || typeof block !== "object") return [];
+      const row = block as Record<string, unknown>;
+      const children = Array.isArray(row.children) ? row.children : [];
+      return children.flatMap((child) => {
+        if (!child || typeof child !== "object") return [];
+        const childText = asString((child as Record<string, unknown>).text);
+        return childText ? [childText] : [];
+      });
+    })
+    .join(" ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return text || undefined;
+}
+
+function normalizeStringList(value: unknown): string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const values = [...new Set(value.map((item) => {
+    if (typeof item === "string") return asString(item);
+    if (!item || typeof item !== "object") return undefined;
+    const row = item as Record<string, unknown>;
+    return asString(row.partNumber) || asString(row.value) || asString(row.number) || asString(row.name);
+  }).filter(Boolean))] as string[];
+  return values.length ? values : undefined;
+}
+
 function pushImage(
   images: ProductImage[],
   seen: Set<string>,
@@ -162,6 +195,12 @@ function normalizePrice(raw: RawProduct): number {
   return price;
 }
 
+function normalizeCompareAtPrice(raw: RawProduct): number | undefined {
+  const price = asNumber(raw.compareAtPrice);
+  if (price === undefined) return undefined;
+  return price >= 1000 && Number.isInteger(price) ? price / 100 : price;
+}
+
 export function normalizeProduct(raw: RawProduct): Product | null {
   const id = asString(raw._id);
   const name = asString(raw.name) || asString(raw.title);
@@ -172,11 +211,20 @@ export function normalizeProduct(raw: RawProduct): Product | null {
     _id: id,
     name,
     slug,
-    description: asString(raw.blurb) || asString(raw.description),
+    description:
+      asPlainText(raw.blurb) ||
+      asPlainText(raw.description) ||
+      asPlainText(raw.shortDescription),
     price: normalizePrice(raw),
+    compareAtPrice: normalizeCompareAtPrice(raw),
     currency: (asString(raw.currency) || "usd").toLowerCase(),
-    sku: asString(raw.skuValue) || asString(raw.sku),
+    sku: asString(raw.skuValue) || asString(raw.sku) || asString(raw.partNumber),
     category: asString(raw.categoryTitle) || asString(raw.category),
+    inStock: typeof raw.inStock === "boolean" ? raw.inStock : undefined,
+    details: asPlainText(raw.details),
+    crossReferences: normalizeStringList(raw.crossReferences),
+    brand: asString(raw.brand),
+    productType: asString(raw.productType),
     compatibleMakes: normalizeCompatibleMakes(raw.compatibleMakes),
     featured: Boolean(raw.featured),
     images: normalizeImages(raw),

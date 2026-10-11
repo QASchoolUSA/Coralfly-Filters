@@ -1,89 +1,66 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const shopLinks = [
-  { href: "/shop", label: "Shop all filters" },
-  { href: "/shop?category=Oil%20Filters", label: "Oil filters" },
-  { href: "/shop?category=Air%20Filters", label: "Air filters" },
-  { href: "/shop?category=Fuel%20Filters", label: "Fuel filters" },
-  { href: "/cart", label: "Cart & checkout" },
+const quickLinks = [
+  ["/shop", "All Products"],
+  ["/guides", "Guides"],
+  ["/faq", "FAQ"],
+  ["/about", "About Us"],
+  ["/contact", "Contact"],
 ];
 
-const companyLinks = [
-  { href: "/about", label: "About CORALFLY" },
-  { href: "/contact", label: "Contact / filter match" },
+const categories = [
+  ["/filters/oil-filters", "Oil Filters"],
+  ["/filters/air-filters", "Air Filters"],
+  ["/filters/fuel-filters", "Fuel Filters"],
+  ["/filters/cabin-filters", "Cabin Filters"],
 ];
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border bg-[#0b1e2d] text-white">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.3fr_1fr_1fr] lg:px-8">
-        <div>
-          <Image
-            src="/brand/logo.png"
-            alt="CORALFLY — Reliable Filter Reliable service"
-            width={240}
-            height={73}
-            className="h-11 w-auto brightness-0 invert sm:h-12"
-          />
-          <p className="mt-5 max-w-md text-sm leading-relaxed text-white/75">
-            Buy CORALFLY filters online with clear pricing, in-stock SKUs, and
-            secure Stripe checkout. Reliable Filter Reliable service.
-          </p>
-          <Link
-            href="/shop"
-            className="mt-6 inline-flex h-11 items-center justify-center bg-brand px-5 font-display text-xs uppercase tracking-[0.14em] text-white hover:bg-brand-dark"
-          >
-            Shop now
-          </Link>
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-grid">
+          <div className="footer-section">
+            <Link href="/" className="footer-logo" aria-label="CORALFLY home">
+              <Image src="/brand/logo.png" alt="CORALFLY — Reliable Filter Reliable service" width={190} height={58} />
+            </Link>
+            <p className="footer-description">Premium filtration solutions for truck and equipment operators. Reliable Filter Reliable service.</p>
+          </div>
+          <FooterLinks title="Quick Links" items={quickLinks} />
+          <FooterLinks title="Filter Types" items={categories} />
+          <div className="footer-section">
+            <h2 className="footer-heading">Contact Us</h2>
+            <ul className="footer-contact">
+              <li><MailIcon /><a href="mailto:sales@coralfly.com">sales@coralfly.com</a></li>
+              <li><ClockIcon /><span>Mon–Fri: 8:00 AM–5:00 PM</span></li>
+            </ul>
+            <p className="footer-shipping-note">Free shipping $75+ · Same-day processing</p>
+          </div>
         </div>
-
-        <div>
-          <h2 className="font-display text-xs uppercase tracking-[0.16em] text-white">
-            Shop
-          </h2>
-          <ul className="mt-3 space-y-2">
-            {shopLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-sm text-white/70 transition-colors hover:text-white"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div>
-          <h2 className="font-display text-xs uppercase tracking-[0.16em] text-white">
-            Help
-          </h2>
-          <ul className="mt-3 space-y-2">
-            {companyLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-sm text-white/70 transition-colors hover:text-white"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-5 text-sm text-white/70">
-            Free shipping $75+ · Same-day processing
-          </p>
-        </div>
-      </div>
-
-      <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-4 text-xs text-white/55 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>© 2026 CORALFLY. All rights reserved.</p>
-          <p>Secure checkout powered by Stripe</p>
+        <div className="footer-bottom">
+          <p>© {new Date().getFullYear()} CORALFLY. All rights reserved.</p>
+          <div className="footer-bottom-links">
+            <Link href="/privacy">Privacy Policy</Link>
+            <Link href="/terms">Terms of Service</Link>
+          </div>
         </div>
       </div>
     </footer>
   );
+}
+
+function FooterLinks({ title, items }: { title: string; items: string[][] }) {
+  return <div className="footer-section">
+    <h2 className="footer-heading">{title}</h2>
+    <ul className="footer-links">{items.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
+  </div>;
+}
+
+function MailIcon() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>;
+}
+
+function ClockIcon() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>;
 }

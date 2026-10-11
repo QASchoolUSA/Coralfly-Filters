@@ -18,6 +18,12 @@ export type Product = {
   currency: string;
   sku?: string;
   category?: string;
+  compareAtPrice?: number;
+  inStock?: boolean;
+  details?: string;
+  crossReferences?: string[];
+  brand?: string;
+  productType?: string;
   compatibleMakes?: string[];
   featured?: boolean;
   images: ProductImage[];

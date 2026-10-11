@@ -3,104 +3,60 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
-import { formatPrice } from "@/lib/format";
 import { useCartStore } from "@/lib/cart-store";
+import { formatPrice } from "@/lib/format";
 import type { Product } from "@/sanity/types";
 
-type Props = {
-  product: Product;
-  index?: number;
-  badge?: string;
-};
-
-export function ProductCard({ product, index = 0, badge }: Props) {
-  const reduceMotion = useReducedMotion();
-  const addItem = useCartStore((s) => s.addItem);
+export function ProductCard({ product, badge }: { product: Product; index?: number; badge?: string }) {
+  const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
   const [added, setAdded] = useState(false);
+  const discount = product.compareAtPrice && product.compareAtPrice > product.price
+    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+    : 0;
   const image = product.images[0];
-  const compareAt =
-    product.price > 0 ? Math.round(product.price * 1.18 * 100) / 100 : null;
+
+  function addProduct(open = false) {
+    addItem(product, 1);
+    setAdded(true);
+    window.setTimeout(() => setAdded(false), 1400);
+    if (open) openCart();
+  }
 
   return (
-    <motion.article
-      initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{
-        duration: 0.45,
-        delay: reduceMotion ? 0 : index * 0.05,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="group flex h-full flex-col border border-border bg-white"
-    >
-      <Link href={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-surface">
-          {badge || product.featured ? (
-            <span className="absolute left-3 top-3 z-10 bg-brand px-2 py-1 font-display text-[10px] uppercase tracking-[0.14em] text-white">
-              {badge || "Best seller"}
-            </span>
-          ) : null}
-          {image ? (
-            <Image
-              src={image.url}
-              alt={image.alt || product.name}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center font-display text-xs uppercase tracking-[0.16em] text-muted">
-              No image
-            </div>
-          )}
+    <article className="product-card">
+      <div className="product-card-visual">
+        <Link href={`/shop/${product.slug}`} className="product-card-link">
+        <div className="product-card-image-wrapper">
+          {image ? <Image src={image.url} alt={image.alt || product.name} className="product-card-image" width={480} height={480} sizes="(max-width: 640px) 70vw, (max-width: 1024px) 33vw, 25vw" /> : <div className="product-card-placeholder"><FilterGlyph /></div>}
+          {badge || product.featured ? <span className="product-card-badge">{badge || "Featured"}</span> : null}
+          {discount > 0 ? <span className="product-card-badge product-card-badge-sale">-{discount}%</span> : null}
+          {product.inStock === false ? <span className="product-card-badge product-card-badge-oos">Out of Stock</span> : null}
+        </div>
+        </Link>
+        {product.inStock === false ? null : <div className="product-card-quick-add"><button className="product-card-quick-add-btn" type="button" onClick={() => addProduct(true)}><BagIcon />{added ? "Added ✓" : "Quick Add"}</button></div>}
+      </div>
+      <Link href={`/shop/${product.slug}`} className="product-card-link">
+        <div className="product-card-info">
+          {product.category ? <span className="product-card-category">{product.category}</span> : null}
+          <h3 className="product-card-name">{product.name}</h3>
+          {product.sku ? <span className="product-card-part">SKU {product.sku}</span> : null}
+          {product.compatibleMakes?.length ? <span className="product-card-fitment">Fits: {product.compatibleMakes.join(", ")}</span> : null}
+          <div className="product-card-pricing">
+            <span className="product-card-price">{formatPrice(product.price, product.currency)}</span>
+            {discount > 0 && product.compareAtPrice ? <span className="product-card-compare">{formatPrice(product.compareAtPrice, product.currency)}</span> : null}
+          </div>
         </div>
       </Link>
-
-      <div className="flex flex-1 flex-col p-4">
-        {product.category ? (
-          <p className="font-display text-[11px] uppercase tracking-[0.16em] text-brand">
-            {product.category}
-          </p>
-        ) : null}
-        <Link href={`/product/${product.slug}`} className="mt-1.5 block">
-          <h3 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-brand">
-            {product.name}
-          </h3>
-        </Link>
-        {product.sku ? (
-          <p className="mt-1 text-xs text-muted">SKU {product.sku}</p>
-        ) : null}
-        {product.compatibleMakes?.length ? (
-          <p className="mt-2 text-xs font-medium text-foreground">
-            Fits: {product.compatibleMakes.join(", ")}
-          </p>
-        ) : null}
-
-        <div className="mt-3 flex items-baseline gap-2">
-          <p className="text-lg font-bold text-foreground">
-            {formatPrice(product.price, product.currency)}
-          </p>
-          {compareAt ? (
-            <p className="text-sm text-muted line-through">
-              {formatPrice(compareAt, product.currency)}
-            </p>
-          ) : null}
-        </div>
-        <p className="mt-1 text-xs font-medium text-emerald-700">In stock · Ships today</p>
-
-        <button
-          type="button"
-          onClick={() => {
-            addItem(product, 1);
-            setAdded(true);
-            window.setTimeout(() => setAdded(false), 1400);
-          }}
-          className="mt-4 inline-flex h-11 w-full items-center justify-center bg-brand font-display text-xs uppercase tracking-[0.14em] text-white transition-colors hover:bg-brand-dark"
-        >
-          {added ? "Added ✓" : "Add to cart"}
-        </button>
-      </div>
-    </motion.article>
+      <button className="product-card-cart-btn" type="button" onClick={() => addProduct(true)} disabled={product.inStock === false}>{product.inStock === false ? "Out of Stock" : added ? "Added to Cart ✓" : "Add to Cart"}</button>
+    </article>
   );
+}
+
+function FilterGlyph() {
+  return <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><rect x="16" y="10" width="32" height="44" rx="5" /><path d="M21 19h22M21 25h22M21 31h22M21 37h22M21 43h22" opacity=".55" /><circle cx="32" cy="32" r="6" opacity=".4" /></svg>;
+}
+
+function BagIcon() {
+  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8Z" /><path d="M9 9V6a3 3 0 0 1 6 0v3" /></svg>;
 }
