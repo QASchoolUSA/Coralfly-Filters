@@ -22,6 +22,14 @@ export function getCatalogCategories(products: Product[]) {
   return [...categories.entries()].map(([slug, name]) => ({ slug, name }));
 }
 
+export function isFilterCategory(category?: string) {
+  return Boolean(category && /\bfilters?\b/i.test(category));
+}
+
+export function getCatalogFilterCategories(products: Product[]) {
+  return getCatalogCategories(products.filter((product) => isFilterCategory(product.category)));
+}
+
 export function formatFitmentSummary(product: Product) {
   const details = product.fitmentDetails?.map((fitment) => {
     const applications = [fitment.models?.join(", "), fitment.engines?.join(", ")].filter(Boolean);

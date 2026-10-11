@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useCartStore } from "@/lib/cart-store";
+import { slugifyCatalogName } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/sanity/types";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -73,9 +74,9 @@ export function ProductDetailClient({ product, related }: { product: Product; re
             {product.description ? <p className="product-detail-description">{product.description}</p> : null}
             {product.compatibleMakes?.length || product.fitmentDetails?.length ? <div className="product-fitment">
               <h2>Truck fitment</h2>
-              {product.compatibleMakes?.length ? <div className="compatibility-tags">{product.compatibleMakes.map((make) => <Link className="compat-tag" key={make} href={`/shop?make=${encodeURIComponent(make)}`}>{make}</Link>)}</div> : null}
+              {product.compatibleMakes?.length ? <div className="compatibility-tags">{product.compatibleMakes.map((make) => <Link className="compat-tag" key={make} href={`/trucks/${slugifyCatalogName(make)}`}>{make}</Link>)}</div> : null}
               {product.fitmentDetails?.length ? <div className="product-fitment-details">{product.fitmentDetails.map((fitment, index) => <div className="product-fitment-detail" key={`${fitment.brand}-${index}`}>
-                <h3><Link href={`/shop?make=${encodeURIComponent(fitment.brand)}`}>{fitment.brand}</Link></h3>
+                <h3><Link href={`/trucks/${slugifyCatalogName(fitment.brand)}`}>{fitment.brand}</Link></h3>
                 {fitment.models?.length ? <p><strong>Models:</strong> {fitment.models.join(", ")}</p> : null}
                 {fitment.engines?.length ? <p><strong>Engines:</strong> {fitment.engines.join(", ")}</p> : null}
                 {fitment.notes ? <p>{fitment.notes}</p> : null}

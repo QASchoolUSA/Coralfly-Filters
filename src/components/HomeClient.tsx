@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { getCategoryIcon } from "@/components/CategoryIcons";
 import { ProductGrid } from "@/components/ProductGrid";
-import { getCatalogMakes } from "@/lib/catalog";
+import { getCatalogFilterCategories, getCatalogMakes, isFilterCategory } from "@/lib/catalog";
 import type { Product } from "@/sanity/types";
 
 const makerColors: Record<string, string> = {
@@ -17,7 +17,7 @@ const makerColors: Record<string, string> = {
 };
 
 export function HomeClient({ products, featured }: { products: Product[]; featured: Product[] }) {
-  const makes = getCatalogMakes(products).map((item) => item.name);
+  const makes = getCatalogMakes(products.filter((product) => isFilterCategory(product.category)));
   const features = [
     { icon: <ShieldIcon />, title: "Quality Filters", description: "Clear product specifications and catalog details help you choose the right filter for your application." },
     { icon: <TruckIcon />, title: "Fast Shipping", description: "Same-day processing before 2pm and free shipping on orders of $75 or more." },
@@ -34,16 +34,16 @@ export function HomeClient({ products, featured }: { products: Product[]; featur
           <p className="section-subtitle">Choose a truck make and jump to filters with matching fitment in the catalog.</p>
         </div>
         {makes.length ? <div className="maker-grid">
-          {makes.map((make) => {
-            const compatible = products.filter((product) => product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === make.toLocaleLowerCase()));
-            const categories = [...new Set(compatible.map((product) => product.category).filter(Boolean))] as string[];
+          {makes.map(({ slug, name: make }) => {
+            const compatible = products.filter((product) => isFilterCategory(product.category) && product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === make.toLocaleLowerCase()));
+            const categories = getCatalogFilterCategories(compatible);
             return <article key={make} className="maker-card" style={{ "--maker-accent": makerColors[make.toLocaleLowerCase()] || "var(--color-accent)" } as CSSProperties}>
-              <div className="maker-card__head"><span className="maker-card__dot" /><div className="maker-card__head-text"><span className="maker-card__tagline">{compatible.length} tagged product{compatible.length === 1 ? "" : "s"}</span><h3 className="maker-card__brand">{make}</h3></div></div>
-              <p className="maker-card__desc">Browse catalog products explicitly marked as compatible with {make}.</p>
+              <div className="maker-card__head"><span className="maker-card__dot" /><div className="maker-card__head-text"><span className="maker-card__tagline">{compatible.length} tagged filter product{compatible.length === 1 ? "" : "s"}</span><h3 className="maker-card__brand">{make}</h3></div></div>
+              <p className="maker-card__desc">Browse filter products explicitly marked as compatible with {make}.</p>
               <ul className="maker-card__cats">
-                {categories.map((category) => <li key={category}><Link className="maker-cat" href={`/shop?make=${encodeURIComponent(make)}&category=${encodeURIComponent(category)}`}><span className="maker-cat__icon">{getCategoryIcon(category.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), 22)}</span><span className="maker-cat__name">{category.replace(/ Filters$/i, "")}</span><span className="maker-cat__arrow" aria-hidden="true">→</span></Link></li>)}
+                {categories.map(({ slug: categorySlug, name: category }) => <li key={category}><Link className="maker-cat" href={`/shop?make=${encodeURIComponent(make)}&category=${encodeURIComponent(category)}`}><span className="maker-cat__icon">{getCategoryIcon(categorySlug, 22)}</span><span className="maker-cat__name">{category}</span><span className="maker-cat__arrow" aria-hidden="true">→</span></Link></li>)}
               </ul>
-              <Link href={`/shop?make=${encodeURIComponent(make)}`} className="maker-card__cta"><span>View all {make} filters</span><span aria-hidden="true">→</span></Link>
+              <Link href={`/trucks/${slug}`} className="maker-card__cta"><span>View all {make} filters</span><span aria-hidden="true">→</span></Link>
             </article>;
           })}
         </div> : <p className="maker-empty-state">Truck fitment will appear here when products are tagged with verified compatible makes. <Link href="/shop">Browse all filters</Link> or <Link href="/contact">ask us about a match</Link>.</p>}

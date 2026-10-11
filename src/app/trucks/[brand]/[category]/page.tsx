@@ -3,24 +3,24 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductGrid } from "@/components/ProductGrid";
-import { getCatalogCategories, getCatalogMakes } from "@/lib/catalog";
+import { getCatalogFilterCategories, getCatalogMakes, isFilterCategory } from "@/lib/catalog";
 import { getProducts } from "@/sanity/products";
 
 type Props = { params: Promise<{ brand: string; category: string }> };
 
 async function getCollection(brandSlug: string, categorySlug: string) {
-  const products = await getProducts();
+  const products = (await getProducts()).filter((product) => isFilterCategory(product.category));
   const make = getCatalogMakes(products).find((item) => item.slug === brandSlug)?.name;
-  const category = getCatalogCategories(products).find((item) => item.slug === categorySlug)?.name;
+  const category = getCatalogFilterCategories(products).find((item) => item.slug === categorySlug)?.name;
   const matching = products.filter((product) => product.category === category && product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === make?.toLocaleLowerCase()));
   return { make, category, products: matching };
 }
 
 export async function generateStaticParams() {
-  const products = await getProducts();
+  const products = (await getProducts()).filter((product) => isFilterCategory(product.category));
   const collections = getCatalogMakes(products).flatMap(({ slug, name }) => {
     const tagged = products.filter((product) => product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === name.toLocaleLowerCase()));
-    return getCatalogCategories(tagged).map(({ slug: category }) => ({ brand: slug, category }));
+    return getCatalogFilterCategories(tagged).map(({ slug: category }) => ({ brand: slug, category }));
   });
   // See the parent truck route: no tagged makes/categories is a valid catalog
   // state, but Cache Components still needs a param for build-time validation.
