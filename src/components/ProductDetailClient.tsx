@@ -55,10 +55,10 @@ export function ProductDetailClient({ product, related }: { product: Product; re
           <div className="product-detail-images">
             <div className="product-detail-main-image" role={image ? "button" : undefined} tabIndex={image ? 0 : undefined} onClick={() => image && setLightboxOpen(true)} onKeyDown={(event) => { if (image && (event.key === "Enter" || event.key === " ")) setLightboxOpen(true); }}>
               {product.featured ? <span className="product-card-badge">Featured</span> : null}
-              {image ? <Image src={image.url} alt={image.alt || product.name} fill priority sizes="(max-width: 768px) 100vw, 50vw" /> : <FilterGlyph />}
+              {image ? <Image src={image.url} alt={image.alt || product.name} fill priority sizes="(max-width: 480px) min(320px, calc(100vw - 32px)), (max-width: 960px) min(420px, calc(100vw - 40px)), min(560px, 42vw)" /> : <FilterGlyph />}
               {image ? <span className="lightbox-zoom-hint" aria-hidden="true"><ZoomIcon /></span> : null}
             </div>
-            {product.images.length > 1 ? <div className="product-detail-thumbs" aria-label="Product images">{product.images.map((item, index) => <button key={`${item.url}-${index}`} type="button" className={`product-detail-thumb${activeImage === index ? " active" : ""}`} onClick={() => setActiveImage(index)} aria-label={`View image ${index + 1}`} aria-pressed={activeImage === index}><Image src={item.url} alt={item.alt || `${product.name} image ${index + 1}`} width={100} height={100} /></button>)}</div> : null}
+            {product.images.length > 1 ? <div className="product-detail-thumbs" role="group" aria-label="Product images">{product.images.map((item, index) => <button key={`${item.url}-${index}`} type="button" className={`product-detail-thumb${activeImage === index ? " active" : ""}`} onClick={() => setActiveImage(index)} aria-label={`View image ${index + 1}`} aria-pressed={activeImage === index}><Image src={item.url} alt={item.alt || `${product.name} image ${index + 1}`} width={100} height={100} /></button>)}</div> : null}
           </div>
 
           <div className="product-detail-info">
@@ -71,7 +71,6 @@ export function ProductDetailClient({ product, related }: { product: Product; re
                 <div className="product-detail-pricing"><span className="product-detail-price">{formatPrice(product.price, product.currency)}</span>{discount > 0 && product.compareAtPrice ? <><span className="product-detail-compare">{formatPrice(product.compareAtPrice, product.currency)}</span><span className="product-detail-save">Save {discount}%</span></> : null}</div>
               </div>
             </div>
-            {product.description ? <p className="product-detail-description">{product.description}</p> : null}
             {product.compatibleMakes?.length || product.fitmentDetails?.length ? <div className="product-fitment">
               <h2>Truck fitment</h2>
               {product.compatibleMakes?.length ? <div className="compatibility-tags">{product.compatibleMakes.map((make) => <Link className="compat-tag" key={make} href={`/trucks/${slugifyCatalogName(make)}`}>{make}</Link>)}</div> : null}
@@ -87,7 +86,7 @@ export function ProductDetailClient({ product, related }: { product: Product; re
             <div className="product-purchase-assurances"><span><CheckIcon /> Secure Stripe checkout</span><span><CheckIcon /> Free shipping on orders $75+</span><span><CheckIcon /> Need help? <Link href="/contact">Contact us</Link></span></div>
 
             <div className="product-accordions-group">
-              {product.description ? <Accordion title="Description" open><p>{product.description}</p></Accordion> : null}
+              {product.description ? <Accordion title="Description"><p>{product.description}</p></Accordion> : null}
               {product.details ? <Accordion title="Additional Details"><p>{product.details}</p></Accordion> : null}
               {product.specs?.length ? <Accordion title="Specifications"><table className="specs-table"><tbody>{product.specs.map((spec) => <tr key={`${spec.label}-${spec.value}`}><th scope="row">{spec.label}</th><td>{spec.value}</td></tr>)}</tbody></table></Accordion> : null}
               {product.crossReferences?.length ? <Accordion title="Cross References"><p className="cross-ref-intro">Compare the listed reference numbers with the part you are replacing before ordering.</p><div className="compatibility-tags">{product.crossReferences.map((reference) => <span className="compat-tag" key={reference}>{reference}</span>)}</div></Accordion> : null}

@@ -1,15 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ProductImage } from "@/sanity/types";
 
-export function Hero() {
+const desktopHeroImage = "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1920&q=80";
+
+export function Hero({ featuredImage, featuredAlt }: { featuredImage?: ProductImage; featuredAlt?: string }) {
   return <section className="hero">
     <div className="hero-background-wrapper">
-      <Image src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1920&q=80" alt="" className="hero-bg-image" width={1920} height={800} sizes="100vw" priority />
+      <Image src={desktopHeroImage} alt="" className="hero-bg-image" width={1920} height={800} sizes="100vw" priority />
       <div className="hero-overlay" />
       <div className="hero-radial-glow" />
     </div>
     <div className="container hero-container">
       <div className="hero-split">
+        <div className="hero-mobile-visual" aria-hidden={!featuredImage?.url}>
+          <Image
+            src={featuredImage?.url || desktopHeroImage}
+            alt={featuredImage?.url ? featuredImage.alt || featuredAlt || "Featured truck filter" : ""}
+            fill
+            sizes="(max-width: 768px) calc(100vw - 32px), 1px"
+            className="hero-mobile-visual__image"
+          />
+          <span className="hero-mobile-visual__label">Featured filter</span>
+        </div>
         <div className="hero-content fade-in-up">
           <div className="hero-discount-wrapper"><span className="hero-discount">CORALFLY · Reliable Filter Reliable service</span></div>
           <h1 className="hero-heading">Premium Filters for Semi Trucks</h1>
