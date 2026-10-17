@@ -1,21 +1,188 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
-import { FaqSection, type FaqItem } from "@/components/FaqSection";
+import { useState } from "react";
 
-export const metadata: Metadata = { title: "FAQ — Filters, Shipping & Fitment", description: "Answers about CORALFLY filters, product compatibility, shipping, checkout, and fleet inquiries." };
-
-const faqs: FaqItem[] = [
-  { question: "What types of filters does CORALFLY sell?", answer: "The catalog includes oil, air, fuel, cabin, hydraulic, and coolant filters. Browse the Shop page to see current products." },
-  { question: "Do CORALFLY products meet OEM specifications?", answer: "Review each product's description and specifications for its listed performance and application information. Match the part number to your equipment before ordering." },
-  { question: "How do I make sure a filter fits my truck?", answer: "Compare the part number and application details with the filter you are replacing. A truck make appears as compatible only when it is explicitly listed in the product catalog. Contact us if you need help confirming a match." },
-  { question: "Can I use a cross-reference number?", answer: "Use cross-reference numbers shown on the product page as a starting point and verify them against your equipment's requirements before purchase." },
-  { question: "How much is shipping and how quickly are orders processed?", answer: "Free shipping is available on orders of $75 or more. Orders placed before 2pm are processed the same day. Shipping options and timing are shown at checkout." },
-  { question: "Do you offer bulk or fleet pricing?", answer: "For volume or fleet inquiries, contact our team with the products and quantities you need." },
-  { question: "How do returns work?", answer: "Please contact CORALFLY at sales@coralfly.com for return assistance and current return eligibility." },
-  { question: "How can I contact CORALFLY?", answer: "Email sales@coralfly.com Monday through Friday, 8:00 AM to 5:00 PM." },
+const FAQ_SECTIONS = [
+  {
+    category: "Shipping & Fulfillment",
+    items: [
+      {
+        q: "What is your shipping cutoff for same-day dispatch?",
+        a: "All in-stock orders placed Monday through Friday before 2:00 PM EST are picked, packed, and handed over to freight or parcel carriers (UPS, FedEx) the very same day.",
+      },
+      {
+        q: "How does the free shipping threshold work?",
+        a: "Every domestic US order with a subtotal of $75.00 or greater automatically qualifies for free standard ground shipping at checkout. No promo code needed.",
+      },
+      {
+        q: "Do you ship bulk pallet quantities to commercial fleet terminals?",
+        a: "Yes. For volume fleet orders and case pallet loads, our logistics team arranges LTL freight delivery with liftgate service directly to your terminal or repair shop dock.",
+      },
+    ],
+  },
+  {
+    category: "Compatibility & Cross-Reference",
+    items: [
+      {
+        q: "How can I verify a filter will fit my specific truck engine?",
+        a: "Use our vehicle selector at the top of the page to select your rig's Year, Make, Model, and Engine. Compatible products will display a green 'Verified Fit' badge. You can also search by OEM part numbers.",
+      },
+      {
+        q: "Can I cross-reference aftermarket filter part numbers like Baldwin, Fleetguard, or Wix?",
+        a: "Yes! Enter any recognized cross-reference number (e.g. LF16015, B7299, 57746XD) into the top search bar, and our catalog will locate the equivalent CORALFLY specification.",
+      },
+      {
+        q: "Do CORALFLY filters meet or exceed OEM warranty requirements?",
+        a: "Yes. All CORALFLY filters are engineered and manufactured under ISO 9001 and IATF 16949 certified quality management systems, fully preserving engine warranties under the Magnuson-Moss Warranty Act.",
+      },
+    ],
+  },
+  {
+    category: "Fleet Billing & Orders",
+    items: [
+      {
+        q: "Do you offer Net 30 corporate purchase order terms?",
+        a: "Yes. Fleets operating 5 or more commercial power units can establish credit terms with Net 30 billing. Contact sales@coralfly.com or select 'Fleet Purchase Order' at checkout.",
+      },
+      {
+        q: "Can I receive wholesale pricing on full carton quantities?",
+        a: "Yes. When ordering case packs (typically 6 or 12 filters per master carton), volume discounts are automatically reflected in your cart totals.",
+      },
+    ],
+  },
+  {
+    category: "Returns & Exchanges",
+    items: [
+      {
+        q: "What is your return policy for unused filters?",
+        a: "We offer a 30-day hassle-free return policy for unopened, uninstalled filters in their original packaging. Contact support to generate a prepaid return authorization slip.",
+      },
+    ],
+  },
 ];
 
+export function FaqClient() {
+  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
+    "0-0": true,
+    "1-0": true,
+  });
+
+  const toggleItem = (key: string) => {
+    setOpenItems((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
+
+  return (
+    <div className="block">
+      {/* Header Breadcrumbs */}
+      <div className="block-header block-header--has-breadcrumb block-header--has-title">
+        <div className="container">
+          <div className="block-header__body">
+            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
+              <ol className="breadcrumb__list">
+                <li className="breadcrumb__item breadcrumb__item--first">
+                  <Link href="/" className="breadcrumb__item-link">Home</Link>
+                </li>
+                <li className="breadcrumb__item breadcrumb__item--last" aria-current="page">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <span className="breadcrumb__item-link">FAQ</span>
+                </li>
+              </ol>
+            </nav>
+            <h1 className="block-header__title">Frequently Asked Questions</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ paddingBottom: 60 }}>
+        <div className="row justify-content-center">
+          <div className="col-12 col-lg-9">
+            {FAQ_SECTIONS.map((section, sIdx) => (
+              <div key={section.category} className="mb-5">
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 16 }}>
+                  {section.category}
+                </h3>
+
+                <div className="accordion" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {section.items.map((item, iIdx) => {
+                    const key = `${sIdx}-${iIdx}`;
+                    const isOpen = !!openItems[key];
+                    return (
+                      <div
+                        key={item.q}
+                        className="card"
+                        style={{
+                          border: "1px solid #ebebeb",
+                          borderRadius: 4,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => toggleItem(key)}
+                          style={{
+                            width: "100%",
+                            padding: "16px 20px",
+                            background: isOpen ? "#f8f9fa" : "#fff",
+                            border: "none",
+                            textAlign: "left",
+                            fontWeight: 700,
+                            fontSize: 15,
+                            color: isOpen ? "#0081c9" : "#1a1d21",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <span>{item.q}</span>
+                          <span style={{ fontSize: 18, color: "#999", marginLeft: 12 }}>
+                            {isOpen ? "−" : "+"}
+                          </span>
+                        </button>
+
+                        {isOpen && (
+                          <div style={{ padding: "16px 20px", fontSize: 14, lineHeight: 1.6, color: "#5c6570", borderTop: "1px solid #ebebeb" }}>
+                            {item.a}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+
+            <div
+              className="card text-center"
+              style={{
+                background: "#f8f9fa",
+                border: "1px solid #ebebeb",
+                padding: 36,
+                borderRadius: 4,
+              }}
+            >
+              <h4 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Still have questions?</h4>
+              <p style={{ color: "#6c757d", fontSize: 14, marginBottom: 16 }}>
+                Our heavy duty filtration engineers are ready to assist with fitment confirmation or custom fleet setups.
+              </p>
+              <div>
+                <Link
+                  href="/contact"
+                  className="btn btn-primary"
+                  style={{ backgroundColor: "#0081c9", borderColor: "#0081c9", padding: "10px 28px" }}
+                >
+                  Contact Our Support Team
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FaqPage() {
-  return <section className="section"><div className="container"><Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "FAQ" }]} /><header className="landing-header"><h1 className="landing-header__title">Frequently Asked Questions</h1><p className="landing-header__intro">Straight answers on filter selection, listed fitment, shipping, and fleet purchasing. Still stuck? <Link href="/contact">Contact us</Link>.</p></header><FaqSection title="Common questions" faqs={faqs} id="site-faq" /><p className="landing-footer-links"><Link href="/guides">Read filter guides</Link> · <Link href="/shop">Shop all filters</Link></p></div></section>;
+  return <FaqClient />;
 }

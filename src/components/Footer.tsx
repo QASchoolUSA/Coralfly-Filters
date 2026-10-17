@@ -1,75 +1,171 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-
-const quickLinks = [
-  ["/shop", "All Products"],
-  ["/guides", "Guides"],
-  ["/faq", "FAQ"],
-  ["/about", "About Us"],
-  ["/contact", "Contact"],
-];
-
-const categories = [
-  ["/filters/oil-filters", "Oil Filters"],
-  ["/filters/air-filters", "Air Filters"],
-  ["/filters/fuel-filters", "Fuel Filters"],
-  ["/filters/cabin-filters", "Cabin Filters"],
-];
+import { useState } from "react";
 
 export function Footer() {
-  const [year, setYear] = useState<number | null>(null);
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
 
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail("");
+    }
+  };
 
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        <div className="footer-grid">
-          <div className="footer-section">
-            <Link href="/" className="footer-logo" aria-label="CORALFLY home">
-              <Image src="/brand/logo.png" alt="CORALFLY — Reliable Filter Reliable service" width={190} height={58} />
-            </Link>
-            <p className="footer-description">Premium filtration solutions for truck and equipment operators. Reliable Filter Reliable service.</p>
-          </div>
-          <FooterLinks title="Quick Links" items={quickLinks} />
-          <FooterLinks title="Filter Types" items={categories} />
-          <div className="footer-section">
-            <h2 className="footer-heading">Contact Us</h2>
-            <ul className="footer-contact">
-              <li><MailIcon /><a href="mailto:sales@coralfly.com">sales@coralfly.com</a></li>
-              <li><ClockIcon /><span>Mon–Fri: 8:00 AM–5:00 PM</span></li>
-            </ul>
-            <p className="footer-shipping-note">Free shipping $75+ · Same-day processing</p>
+    <footer className="site__footer">
+      <div className="site-footer">
+        <div className="decor site-footer__decor decor--type--bottom">
+          <div className="decor__body">
+            <div className="decor__start" />
+            <div className="decor__end" />
+            <div className="decor__center" />
           </div>
         </div>
-        <div className="footer-bottom">
-          <p>© {year ? `${year} ` : ""}CORALFLY. All rights reserved.</p>
-          <div className="footer-bottom-links">
-            <Link href="/privacy">Privacy Policy</Link>
-            <Link href="/terms">Terms of Service</Link>
+
+        <div className="site-footer__widgets">
+          <div className="container">
+            <div className="row">
+              {/* Column 1: Contacts */}
+              <div className="col-12 col-xl-4">
+                <div className="site-footer__widget footer-contacts">
+                  <h5 className="footer-contacts__title">Contact Us</h5>
+                  <div className="footer-contacts__text">
+                    CORALFLY is a premier provider of heavy duty commercial and industrial filtration solutions. Reliable Filter Reliable Service.
+                  </div>
+                  <address className="footer-contacts__contacts">
+                    <dl>
+                      <dt>Phone Number</dt>
+                      <dd>(800) 060-0730</dd>
+                    </dl>
+                    <dl>
+                      <dt>Email Address</dt>
+                      <dd>sales@coralfly.com</dd>
+                    </dl>
+                    <dl>
+                      <dt>Warehouse Location</dt>
+                      <dd>715 Industrial Pkwy, Logistics Hub, USA</dd>
+                    </dl>
+                    <dl>
+                      <dt>Working Hours</dt>
+                      <dd>Mon-Fri 08:00am - 05:00pm EST</dd>
+                    </dl>
+                  </address>
+                </div>
+              </div>
+
+              {/* Column 2: Information */}
+              <div className="col-6 col-md-3 col-xl-2">
+                <div className="site-footer__widget footer-links">
+                  <h5 className="footer-links__title">Information</h5>
+                  <ul className="footer-links__list">
+                    <li className="footer-links__item">
+                      <Link href="/about" className="footer-links__link">About Us</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/shop" className="footer-links__link">Delivery Information</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/privacy" className="footer-links__link">Privacy Policy</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/terms" className="footer-links__link">Terms &amp; Conditions</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/trucks" className="footer-links__link">Truck Brands</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/contact" className="footer-links__link">Contact Us</Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Column 3: Customer Service / My Account */}
+              <div className="col-6 col-md-3 col-xl-2">
+                <div className="site-footer__widget footer-links">
+                  <h5 className="footer-links__title">Customer Care</h5>
+                  <ul className="footer-links__list">
+                    <li className="footer-links__item">
+                      <Link href="/account/dashboard" className="footer-links__link">Dashboard</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/account/garage" className="footer-links__link">My Garage</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/track-order" className="footer-links__link">Order History</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/wishlist" className="footer-links__link">Wish List</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/compare" className="footer-links__link">Compare Products</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/faq" className="footer-links__link">Filtration FAQ</Link>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Column 4: Newsletter */}
+              <div className="col-12 col-md-6 col-xl-4">
+                <div className="site-footer__widget footer-newsletter">
+                  <h5 className="footer-newsletter__title">Newsletter</h5>
+                  <div className="footer-newsletter__text">
+                    Enter your email address below to receive our latest filtration engineering guides and fleet discount coupons.
+                  </div>
+
+                  {subscribed ? (
+                    <div style={{ color: "#28a745", fontWeight: 600, fontSize: 14, margin: "16px 0" }}>
+                      ✓ Thank you for subscribing to CORALFLY updates!
+                    </div>
+                  ) : (
+                    <form className="footer-newsletter__form" onSubmit={handleSubscribe}>
+                      <label className="sr-only" htmlFor="footer-newsletter-address">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        required
+                        className="footer-newsletter__form-input"
+                        id="footer-newsletter-address"
+                        placeholder="Email Address..."
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                      <button type="submit" className="footer-newsletter__form-button">
+                        Subscribe
+                      </button>
+                    </form>
+                  )}
+
+                  <div className="footer-newsletter__text footer-newsletter__text--social">
+                    Free shipping on orders $75+ · Same-day fulfillment before 2 PM EST
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Copyright & Payments Strip */}
+        <div className="site-footer__bottom">
+          <div className="container">
+            <div className="site-footer__bottom-row">
+              <div className="site-footer__copyright">
+                © 2026 CORALFLY Filters — Reliable Filter Reliable Service. All Rights Reserved.
+              </div>
+              <div className="site-footer__payments">
+                <img src="/images/payments.png" alt="Stripe, Visa, MasterCard, PayPal, Amex" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </footer>
   );
-}
-
-function FooterLinks({ title, items }: { title: string; items: string[][] }) {
-  return <div className="footer-section">
-    <h2 className="footer-heading">{title}</h2>
-    <ul className="footer-links">{items.map(([href, label]) => <li key={href}><Link href={href}>{label}</Link></li>)}</ul>
-  </div>;
-}
-
-function MailIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></svg>;
-}
-
-function ClockIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>;
 }

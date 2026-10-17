@@ -1,262 +1,465 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ProductGrid } from "@/components/ProductGrid";
-import { getCategoryIcon } from "@/components/CategoryIcons";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { ProductCard } from "@/components/ProductCard";
+import { useVehicleStore } from "@/lib/vehicle-store";
 import type { Product } from "@/sanity/types";
 
 type Props = { products: Product[]; categories: string[] };
 
-function slugify(value: string) {
-  return value.toLocaleLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
-function uniqueValues(values: (string | undefined)[]) {
-  const names = new Map<string, string>();
-  for (const value of values) {
-    const normalized = value?.trim();
-    if (normalized && !names.has(normalized.toLocaleLowerCase())) {
-      names.set(normalized.toLocaleLowerCase(), normalized);
-    }
-  }
-  return [...names.values()].sort((a, b) => a.localeCompare(b));
-}
-
-function getMakes(products: Product[]) {
-  return uniqueValues(products.flatMap((product) => product.compatibleMakes ?? []));
-}
-
-function getModels(products: Product[], make: string) {
-  if (make === "all") return [];
-  return uniqueValues(products.flatMap((product) =>
-    (product.fitmentDetails ?? [])
-      .filter((fitment) => fitment.brand.toLocaleLowerCase() === make.toLocaleLowerCase())
-      .flatMap((fitment) => fitment.models ?? []),
-  ));
-}
-
-function getEngines(products: Product[], make: string, model: string) {
-  if (make === "all") return [];
-  return uniqueValues(products.flatMap((product) =>
-    (product.fitmentDetails ?? [])
-      .filter((fitment) => fitment.brand.toLocaleLowerCase() === make.toLocaleLowerCase())
-      .filter((fitment) => model === "all" || fitment.models?.some((value) => value.toLocaleLowerCase() === model.toLocaleLowerCase()))
-      .flatMap((fitment) => fitment.engines ?? []),
-  ));
-}
-
-function findOption(options: string[], requested?: string | null) {
-  const value = requested?.trim();
-  if (!value) return "all";
-  return options.find((option) => option.toLocaleLowerCase() === value.toLocaleLowerCase()) ?? "all";
-}
-
 export function ShopFilters({ products, categories }: Props) {
-  const layoutRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pathname = usePathname();
-  const params = useSearchParams();
-  const searchParamsKey = params.toString();
-  const requestedCategory = params.get("category") ?? "";
-  const category = categories.includes(requestedCategory) ? requestedCategory : "all";
-  const makes = useMemo(() => getMakes(products), [products]);
-  const requestedMake = params.get("make")?.trim();
-  const matchingMake = findOption(makes, requestedMake);
-  const make = matchingMake !== "all"
-    ? matchingMake
-    : requestedMake || "all";
-  const models = useMemo(() => getModels(products, make), [products, make]);
-  const model = findOption(models, params.get("model"));
-  const engines = useMemo(() => getEngines(products, make, model), [products, make, model]);
-  const engine = findOption(engines, params.get("engine"));
-  const sort = params.get("sort") ?? "default";
-  const [query, setQuery] = useState(params.get("search") ?? params.get("q") ?? "");
-  const [stockOnly, setStockOnly] = useState(params.get("inStock") === "1");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
+  const searchParams = useSearchParams();
+  const queryParam = searchParams.get("q") || "";
+  const categoryParam = searchParams.get("category") || "all";
+  const makeParam = searchParams.get("make") || "all";
 
-  useEffect(() => {
-    const currentParams = new URLSearchParams(searchParamsKey);
-    setQuery(currentParams.get("search") ?? currentParams.get("q") ?? "");
-  }, [searchParamsKey]);
+  const { currentVehicle, openPicker } = useVehicleStore();
 
-  useEffect(() => {
-    const closeOutside = (event: MouseEvent) => {
-      if (event.target instanceof Node && !layoutRef.current?.contains(event.target)) {
-        layoutRef.current?.querySelectorAll("details[open]").forEach((details) => details.removeAttribute("open"));
+  // Filters State
+  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam);
+  const [selectedMake, setSelectedMake] = useState<string>(makeParam);
+  const [priceMax, setPriceMax] = useState<number>(150);
+  const [inStockOnly, setInStockOnly] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<"grid-4" | "grid-3" | "list">("grid-4");
+  const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "name">("default");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 12;
+
+  // Extract all truck makes available in catalog
+  const availableMakes = useMemo(() => {
+    const set = new Set<string>();
+    products.forEach((p) => {
+      p.compatibleMakes?.forEach((m) => set.add(m));
+    });
+    return Array.from(set).sort();
+  }, [products]);
+
+  // Filter products
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      // Query filter
+      if (queryParam) {
+        const q = queryParam.toLowerCase();
+        const matchesName = p.name.toLowerCase().includes(q);
+        const matchesSku = p.sku?.toLowerCase().includes(q);
+        const matchesDesc = p.description?.toLowerCase().includes(q);
+        if (!matchesName && !matchesSku && !matchesDesc) return false;
       }
-    };
-    document.addEventListener("mousedown", closeOutside);
-    return () => document.removeEventListener("mousedown", closeOutside);
-  }, []);
 
-  const categoryCounts = useMemo(
-    () => Object.fromEntries(categories.map((name) => [name, products.filter((product) => product.category === name).length])),
-    [categories, products],
+      // Category filter
+      if (selectedCategory !== "all") {
+        if (!p.category || p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
+          return false;
+        }
+      }
+
+      // Make filter
+      if (selectedMake !== "all") {
+        const matches = p.compatibleMakes?.some(
+          (m) => m.toLowerCase() === selectedMake.toLowerCase()
+        );
+        if (!matches) return false;
+      }
+
+      // Price filter
+      if (p.price > priceMax) return false;
+
+      // In-stock filter
+      if (inStockOnly && p.inStock === false) return false;
+
+      return true;
+    });
+  }, [products, queryParam, selectedCategory, selectedMake, priceMax, inStockOnly]);
+
+  // Sort products
+  const sortedProducts = useMemo(() => {
+    const list = [...filteredProducts];
+    if (sortBy === "price-asc") list.sort((a, b) => a.price - b.price);
+    else if (sortBy === "price-desc") list.sort((a, b) => b.price - a.price);
+    else if (sortBy === "name") list.sort((a, b) => a.name.localeCompare(b.name));
+    return list;
+  }, [filteredProducts, sortBy]);
+
+  // Paginated products
+  const totalPages = Math.ceil(sortedProducts.length / itemsPerPage) || 1;
+  const paginatedProducts = sortedProducts.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
-  const filtered = useMemo(() => {
-    const term = query.trim().toLocaleLowerCase();
-    let result = products.filter((product) => {
-      const matchesCategory = category === "all" || product.category === category;
-      const makeFitments = (product.fitmentDetails ?? []).filter(
-        (fitment) => fitment.brand.toLocaleLowerCase() === make.toLocaleLowerCase(),
-      );
-      const matchesMake = make === "all" || product.compatibleMakes?.some(
-        (value) => value.toLocaleLowerCase() === make.toLocaleLowerCase(),
-      ) === true;
-      const modelFitments = model === "all"
-        ? makeFitments
-        : makeFitments.filter((fitment) => fitment.models?.some(
-          (value) => value.toLocaleLowerCase() === model.toLocaleLowerCase(),
-        ));
-      const matchesModel = model === "all" || modelFitments.length > 0;
-      const matchesEngine = engine === "all" || modelFitments.some((fitment) => fitment.engines?.some(
-        (value) => value.toLocaleLowerCase() === engine.toLocaleLowerCase(),
-      ));
-      const fitmentSearchTerms = (product.fitmentDetails ?? []).flatMap((fitment) => [
-        fitment.brand,
-        ...(fitment.models ?? []),
-        ...(fitment.engines ?? []),
-        fitment.notes,
-      ]);
-      const searchable = [
-        product.name,
-        product.sku,
-        product.category,
-        product.description,
-        product.details,
-        product.brand,
-        ...(product.compatibleMakes ?? []),
-        ...fitmentSearchTerms,
-        ...(product.crossReferences ?? []),
-      ].filter(Boolean).join(" ").toLocaleLowerCase();
-      const matchesSearch = !term || searchable.includes(term);
-      const matchesStock = !stockOnly || product.inStock === true;
-      const matchesMin = minPrice === "" || product.price >= Number(minPrice);
-      const matchesMax = maxPrice === "" || product.price <= Number(maxPrice);
-      return matchesCategory && matchesMake && matchesModel && matchesEngine && matchesSearch && matchesStock && matchesMin && matchesMax;
-    });
-    if (sort === "price-asc") result = [...result].sort((a, b) => a.price - b.price);
-    else if (sort === "price-desc") result = [...result].sort((a, b) => b.price - a.price);
-    else if (sort === "name") result = [...result].sort((a, b) => a.name.localeCompare(b.name));
-    else result = [...result].sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
-    return result;
-  }, [products, query, category, make, model, engine, stockOnly, minPrice, maxPrice, sort]);
-
-  function setUrlFilters(
-    nextCategory = category,
-    nextMake = make,
-    nextModel = model,
-    nextEngine = engine,
-    nextSort = sort,
-  ) {
-    const next = new URLSearchParams(params.toString());
-    if (nextCategory === "all") next.delete("category"); else next.set("category", nextCategory);
-    if (nextMake === "all") next.delete("make"); else next.set("make", nextMake);
-    if (nextModel === "all") next.delete("model"); else next.set("model", nextModel);
-    if (nextEngine === "all") next.delete("engine"); else next.set("engine", nextEngine);
-    if (nextSort === "default") next.delete("sort"); else next.set("sort", nextSort);
-    const search = query.trim();
-    if (search) next.set("search", search); else next.delete("search");
-    const suffix = next.toString();
-    router.replace(suffix ? `${pathname}?${suffix}` : pathname, { scroll: false });
-  }
-
-  const hasFilters = category !== "all" || make !== "all" || model !== "all" || engine !== "all" || query || sort !== "default" || stockOnly || minPrice || maxPrice;
-  const clear = () => {
-    setQuery("");
-    setStockOnly(false);
-    setMinPrice("");
-    setMaxPrice("");
-    router.replace(pathname, { scroll: false });
+  const handleResetFilters = () => {
+    setSelectedCategory("all");
+    setSelectedMake("all");
+    setPriceMax(150);
+    setInStockOnly(false);
+    setSortBy("default");
+    setCurrentPage(1);
+    router.push("/shop");
   };
 
-  const selectedTruck = [make, model, engine].filter((value) => value !== "all").join(" ");
-  const emptyMessage = selectedTruck
-    ? `No products match ${selectedTruck} and these filters.`
-    : "No products match your filters.";
-
-  return <div className="shop-layout" ref={layoutRef}>
-    <div className="shop-chips" role="group" aria-label="Filter by category">
-      <button type="button" className={`shop-chip${category === "all" ? " shop-chip--active" : ""}`} onClick={() => { setUrlFilters("all"); }}>
-        <span className="shop-chip__icon"><GridIcon /></span><span className="shop-chip__label">All</span><span className="shop-chip__count">{products.length}</span>
-      </button>
-      {categories.map((name) => <button type="button" key={name} className={`shop-chip${category === name ? " shop-chip--active" : ""}`} onClick={() => { setUrlFilters(name); }}>
-        <span className="shop-chip__icon">{getCategoryIcon(slugify(name), 20)}</span><span className="shop-chip__label">{name}</span><span className="shop-chip__count">{categoryCounts[name] ?? 0}</span>
-      </button>)}
-    </div>
-
-    <div className="shop-toolbar">
-      <div className="shop-toolbar__left">
-        <p className="shop-toolbar__count"><strong>{filtered.length}</strong> product{filtered.length === 1 ? "" : "s"}</p>
-        {hasFilters ? <button className="shop-toolbar__clear" type="button" onClick={clear}>Clear all</button> : null}
-      </div>
-      <div className="shop-toolbar__right">
-        <label className="shop-toggle"><input type="checkbox" checked={stockOnly} onChange={(event) => setStockOnly(event.target.checked)} /><span className="shop-toggle__track"><span className="shop-toggle__thumb" /></span><span className="shop-toggle__text">In Stock</span></label>
-        <div className="shop-fitment-filters" aria-label="Filter by truck fitment">
-          <label className="shop-fitment-field"><span>Make</span><span className="shop-select-control">
-            <select aria-label="Truck make" value={make} onChange={(event) => {
-              const value = event.target.value;
-              setUrlFilters(category, value, "all", "all");
-            }}>
-              <option value="all">All Makes</option>
-              {make !== "all" && !makes.some((value) => value.toLocaleLowerCase() === make.toLocaleLowerCase()) ? <option value={make}>{make} (no tagged products)</option> : null}
-              {makes.map((value) => <option value={value} key={value}>{value}</option>)}
-            </select>
-          </span></label>
-          <label className="shop-fitment-field"><span>Model</span><span className="shop-select-control">
-            <select aria-label="Truck model" value={model} disabled={make === "all" || models.length === 0} onChange={(event) => {
-              const value = event.target.value;
-              setUrlFilters(category, make, value, "all");
-            }}>
-              <option value="all">All Models</option>
-              {models.map((value) => <option value={value} key={value}>{value}</option>)}
-            </select>
-          </span></label>
-          <label className="shop-fitment-field"><span>Engine</span><span className="shop-select-control">
-            <select aria-label="Truck engine" value={engine} disabled={make === "all" || engines.length === 0} onChange={(event) => {
-              const value = event.target.value;
-              setUrlFilters(category, make, model, value);
-            }}>
-              <option value="all">All Engines</option>
-              {engines.map((value) => <option value={value} key={value}>{value}</option>)}
-            </select>
-          </span></label>
-        </div>
-        <details className="shop-sort shop-price-control">
-          <summary className={`shop-sort__trigger${minPrice || maxPrice ? " shop-sort__trigger--filtered" : ""}`} aria-label="Filter by price"><CurrencyIcon /><span className="shop-sort__label">{minPrice || maxPrice ? `$${minPrice || "0"} – $${maxPrice || "∞"}` : "Price"}</span><ChevronIcon /></summary>
-          <div className="shop-sort__menu shop-price-menu">
-            <div className="shop-price__header">Price Range</div>
-            <div className="shop-price__inputs"><div className="shop-price__field"><div className="shop-price__input-wrap"><span className="shop-price__currency">$</span><input className="shop-price__input" type="number" min="0" step="any" placeholder="Min" aria-label="Minimum price" value={minPrice} onChange={(event) => setMinPrice(event.target.value)} /></div><label className="shop-price__label">Min</label></div><span className="shop-price__separator">–</span><div className="shop-price__field"><div className="shop-price__input-wrap"><span className="shop-price__currency">$</span><input className="shop-price__input" type="number" min="0" step="any" placeholder="Max" aria-label="Maximum price" value={maxPrice} onChange={(event) => setMaxPrice(event.target.value)} /></div><label className="shop-price__label">Max</label></div></div>
-            <div className="shop-price__actions"><button type="button" className="shop-price__clear" onClick={(event) => { setMinPrice(""); setMaxPrice(""); event.currentTarget.closest("details")?.removeAttribute("open"); }}>Clear</button><button type="button" className="shop-price__apply" onClick={(event) => event.currentTarget.closest("details")?.removeAttribute("open")}>Apply</button></div>
+  return (
+    <div className="block">
+      {/* Block Header with Breadcrumb and Title */}
+      <div className="block-header block-header--has-breadcrumb block-header--has-title">
+        <div className="container">
+          <div className="block-header__body">
+            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
+              <ol className="breadcrumb__list">
+                <li className="breadcrumb__item breadcrumb__item--first">
+                  <Link href="/" className="breadcrumb__item-link">
+                    Home
+                  </Link>
+                </li>
+                <li className="breadcrumb__item">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <Link href="/shop" className="breadcrumb__item-link">
+                    Shop
+                  </Link>
+                </li>
+                <li className="breadcrumb__item breadcrumb__item--last" aria-current="page">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <span className="breadcrumb__item-link">
+                    {selectedCategory !== "all" ? selectedCategory : "Filters"}
+                  </span>
+                </li>
+              </ol>
+            </nav>
+            <h1 className="block-header__title">
+              {selectedCategory !== "all" ? selectedCategory : "All Truck &amp; Equipment Filters"}
+            </h1>
           </div>
-        </details>
-        <details className="shop-sort shop-filter-dropdown">
-          <summary className="shop-sort__trigger" aria-label="Sort products"><SortIcon /><span className="shop-sort__label">{sort === "price-asc" ? "Price: Low → High" : sort === "price-desc" ? "Price: High → Low" : sort === "name" ? "Name: A → Z" : "Default"}</span><ChevronIcon /></summary>
-          <div className="shop-sort__menu" role="listbox" aria-label="Sort order">{[["default", "Default"], ["price-asc", "Price: Low → High"], ["price-desc", "Price: High → Low"], ["name", "Name: A → Z"]].map(([value, label]) => <button type="button" key={value} className={`shop-sort__option${sort === value ? " shop-sort__option--active" : ""}`} role="option" aria-selected={sort === value} onClick={(event) => { setUrlFilters(category, make, model, engine, value); event.currentTarget.closest("details")?.removeAttribute("open"); }}><CheckMark active={sort === value} /><span>{label}</span></button>)}</div>
-        </details>
+        </div>
       </div>
+
+      <div className="container">
+        <div className="block-split block-split--has-sidebar">
+          <div className="block-split__row row">
+            {/* Left Sidebar: Red-Parts Exact Filter Widgets */}
+            <div className="block-split__item-sidebar col-12 col-lg-3">
+              <div className="card widget widget-filters">
+                <div className="widget-filters__header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #ebebeb" }}>
+                  <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Filters</h4>
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                    style={{ background: "none", border: "none", color: "#0081c9", fontSize: 13, cursor: "pointer", fontWeight: 600 }}
+                  >
+                    Reset
+                  </button>
+                </div>
+
+                <div className="widget-filters__list" style={{ padding: 20 }}>
+                  {/* Filter 1: Active Vehicle Filter Box */}
+                  <div className="widget-filters__item mb-4" style={{ paddingBottom: 16, borderBottom: "1px solid #ebebeb" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", color: "#333", marginBottom: 10 }}>
+                      Vehicle Fitment
+                    </div>
+                    {currentVehicle ? (
+                      <div style={{ background: "#e8f4fb", border: "1px solid #0081c9", borderRadius: 4, padding: "10px 12px" }}>
+                        <div style={{ fontSize: 11, color: "#0081c9", fontWeight: 700, textTransform: "uppercase" }}>
+                          Active Rig
+                        </div>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1d21", marginTop: 2 }}>
+                          {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={openPicker}
+                          style={{ background: "none", border: "none", color: "#0081c9", fontSize: 12, textDecoration: "underline", padding: 0, marginTop: 4, cursor: "pointer" }}
+                        >
+                          Change Vehicle
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={openPicker}
+                        style={{ width: "100%", borderColor: "#0081c9", color: "#0081c9" }}
+                      >
+                        + Select Vehicle
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Filter 2: Categories Tree */}
+                  <div className="widget-filters__item mb-4" style={{ paddingBottom: 16, borderBottom: "1px solid #ebebeb" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", color: "#333", marginBottom: 10 }}>
+                      Categories
+                    </div>
+                    <ul style={{ listStyle: "none", padding: 0, margin: 0, fontSize: 14 }}>
+                      <li style={{ marginBottom: 8 }}>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedCategory("all")}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            padding: 0,
+                            cursor: "pointer",
+                            fontWeight: selectedCategory === "all" ? 700 : 400,
+                            color: selectedCategory === "all" ? "#0081c9" : "#495057",
+                            textAlign: "left",
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <span>All Categories</span>
+                          <span style={{ color: "#999", fontSize: 12 }}>({products.length})</span>
+                        </button>
+                      </li>
+                      {categories.map((cat) => {
+                        const count = products.filter((p) => p.category?.toLowerCase() === cat.toLowerCase()).length;
+                        const isSelected = selectedCategory.toLowerCase() === cat.toLowerCase();
+                        return (
+                          <li key={cat} style={{ marginBottom: 8 }}>
+                            <button
+                              type="button"
+                              onClick={() => setSelectedCategory(cat)}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                cursor: "pointer",
+                                fontWeight: isSelected ? 700 : 400,
+                                color: isSelected ? "#0081c9" : "#495057",
+                                textAlign: "left",
+                                width: "100%",
+                                display: "flex",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <span>{cat}</span>
+                              <span style={{ color: "#999", fontSize: 12 }}>({count})</span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+
+                  {/* Filter 3: Price Range Slider */}
+                  <div className="widget-filters__item mb-4" style={{ paddingBottom: 16, borderBottom: "1px solid #ebebeb" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", color: "#333", marginBottom: 10 }}>
+                      Price Range
+                    </div>
+                    <input
+                      type="range"
+                      min={10}
+                      max={150}
+                      step={5}
+                      value={priceMax}
+                      onChange={(e) => setPriceMax(Number(e.target.value))}
+                      style={{ width: "100%", accentColor: "#0081c9" }}
+                    />
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 13, color: "#6c757d", marginTop: 6 }}>
+                      <span>$10</span>
+                      <strong style={{ color: "#0081c9" }}>Up to ${priceMax}</strong>
+                    </div>
+                  </div>
+
+                  {/* Filter 4: Truck Makes */}
+                  {availableMakes.length > 0 && (
+                    <div className="widget-filters__item mb-4" style={{ paddingBottom: 16, borderBottom: "1px solid #ebebeb" }}>
+                      <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", color: "#333", marginBottom: 10 }}>
+                        Truck Make
+                      </div>
+                      <div style={{ maxHeight: 180, overflowY: "auto" }}>
+                        {availableMakes.map((m) => {
+                          const isChecked = selectedMake.toLowerCase() === m.toLowerCase();
+                          const count = products.filter((p) => p.compatibleMakes?.some((cm) => cm.toLowerCase() === m.toLowerCase())).length;
+                          return (
+                            <label
+                              key={m}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                fontSize: 14,
+                                color: "#495057",
+                                marginBottom: 8,
+                                cursor: "pointer",
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                <input
+                                  type="radio"
+                                  name="truckMake"
+                                  checked={isChecked}
+                                  onChange={() => setSelectedMake(isChecked ? "all" : m)}
+                                  style={{ accentColor: "#0081c9" }}
+                                />
+                                <span>{m}</span>
+                              </div>
+                              <span style={{ color: "#999", fontSize: 12 }}>({count})</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Filter 5: Availability */}
+                  <div className="widget-filters__item mb-2">
+                    <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, cursor: "pointer", color: "#333" }}>
+                      <input
+                        type="checkbox"
+                        checked={inStockOnly}
+                        onChange={(e) => setInStockOnly(e.target.checked)}
+                        style={{ accentColor: "#0081c9" }}
+                      />
+                      <span>In Stock Only</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Main Content */}
+            <div className="block-split__item-content col-12 col-lg-9">
+              <div className="block">
+                {/* View Options Control Bar */}
+                <div className="view-options" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, marginBottom: 24 }}>
+                  {/* View Switchers */}
+                  <div className="view-options__layout" style={{ display: "flex", gap: 6 }}>
+                    <button
+                      type="button"
+                      className={`btn btn-sm ${viewMode === "grid-4" ? "btn-primary" : "btn-light"}`}
+                      onClick={() => setViewMode("grid-4")}
+                      title="4 Columns Grid"
+                      style={{ backgroundColor: viewMode === "grid-4" ? "#0081c9" : undefined }}
+                    >
+                      ⊞ 4
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-sm ${viewMode === "grid-3" ? "btn-primary" : "btn-light"}`}
+                      onClick={() => setViewMode("grid-3")}
+                      title="3 Columns Grid"
+                      style={{ backgroundColor: viewMode === "grid-3" ? "#0081c9" : undefined }}
+                    >
+                      ⊞ 3
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-light"}`}
+                      onClick={() => setViewMode("list")}
+                      title="List View"
+                      style={{ backgroundColor: viewMode === "list" ? "#0081c9" : undefined }}
+                    >
+                      ☰ List
+                    </button>
+                  </div>
+
+                  {/* Legend / Counters */}
+                  <div className="view-options__legend" style={{ fontSize: 13, color: "#6c757d" }}>
+                    Showing {sortedProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}–
+                    {Math.min(currentPage * itemsPerPage, sortedProducts.length)} of {sortedProducts.length} filters
+                  </div>
+
+                  {/* Sort By Dropdown */}
+                  <div className="view-options__select" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <label style={{ fontSize: 13, color: "#6c757d", margin: 0 }}>Sort by:</label>
+                    <select
+                      className="form-control form-control-sm"
+                      value={sortBy}
+                      onChange={(e) => setSortBy(e.target.value as "default" | "price-asc" | "price-desc" | "name")}
+                      style={{ height: 32, fontSize: 13, width: "auto" }}
+                    >
+                      <option value="default">Default</option>
+                      <option value="price-asc">Price: Low to High</option>
+                      <option value="price-desc">Price: High to Low</option>
+                      <option value="name">Product Name</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Product Results */}
+                {paginatedProducts.length === 0 ? (
+                  <div style={{ padding: "48px 24px", textAlign: "center", background: "#fff", border: "1px solid #ebebeb", borderRadius: 4 }}>
+                    <h3 style={{ fontSize: 18, color: "#333", marginBottom: 8 }}>No filters matched your search criteria</h3>
+                    <p style={{ color: "#6c757d", fontSize: 14, marginBottom: 16 }}>
+                      Try relaxing your price limit or clearing specific truck fitment filters.
+                    </p>
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleResetFilters}
+                      style={{ backgroundColor: "#0081c9", borderColor: "#0081c9" }}
+                    >
+                      Reset All Filters
+                    </button>
+                  </div>
+                ) : viewMode === "list" ? (
+                  <div className="products-list products-list--grid--1">
+                    {paginatedProducts.map((product) => (
+                      <div key={product._id} className="mb-3">
+                        <ProductCard product={product} layout="list" />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="row">
+                    {paginatedProducts.map((product) => {
+                      const colClass =
+                        viewMode === "grid-3"
+                          ? "col-12 col-sm-6 col-md-4 mb-4"
+                          : "col-12 col-sm-6 col-md-4 col-xl-3 mb-4";
+                      return (
+                        <div key={product._id} className={colClass}>
+                          <ProductCard product={product} layout="grid" />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div style={{ display: "flex", justifyContent: "center", marginTop: 32, gap: 6 }}>
+                    <button
+                      type="button"
+                      className="btn btn-light btn-sm"
+                      disabled={currentPage === 1}
+                      onClick={() => setCurrentPage(currentPage - 1)}
+                    >
+                      ‹ Previous
+                    </button>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                      <button
+                        key={i + 1}
+                        type="button"
+                        className={`btn btn-sm ${currentPage === i + 1 ? "btn-primary" : "btn-light"}`}
+                        onClick={() => setCurrentPage(i + 1)}
+                        style={{
+                          backgroundColor: currentPage === i + 1 ? "#0081c9" : undefined,
+                          borderColor: currentPage === i + 1 ? "#0081c9" : undefined,
+                          minWidth: 32,
+                        }}
+                      >
+                        {i + 1}
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      className="btn btn-light btn-sm"
+                      disabled={currentPage === totalPages}
+                      onClick={() => setCurrentPage(currentPage + 1)}
+                    >
+                      Next ›
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="block-space block-space--layout--before-footer" />
     </div>
-    <label className="shop-search">
-      <SearchGlyph />
-      <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search by part number, product name, make, model, or engine..." aria-label="Search by part number, product name, truck make, model, or engine" />
-      {query ? <button type="button" onClick={() => setQuery("")} aria-label="Clear search">×</button> : null}
-    </label>
-    <ProductGrid products={filtered} emptyMessage={emptyMessage} />
-  </div>;
+  );
 }
-
-function GridIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>;
-}
-
-function SearchGlyph() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8" /><path d="m16 16 5 5" /></svg>;
-}
-
-function CheckMark({ active }: { active: boolean }) { return <svg className="shop-sort__check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true" style={{ opacity: active ? 1 : 0 }}><path d="m5 12 4 4L19 6" /></svg>; }
-function ChevronIcon() { return <svg className="shop-sort__chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>; }
-function CurrencyIcon() { return <svg className="shop-sort__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>; }
-function SortIcon() { return <svg className="shop-sort__icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" aria-hidden="true"><path d="M3 6h18M6 12h12M9 18h6" /></svg>; }

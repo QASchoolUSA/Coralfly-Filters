@@ -1,16 +1,67 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-export const metadata: Metadata = { title: "Terms of Service", description: "Terms for ordering from the CORALFLY online store." };
+export const metadata: Metadata = {
+  title: "Terms and Conditions",
+  description: "Terms and conditions for purchasing from the CORALFLY commercial filtration store.",
+};
 
 export default function TermsPage() {
-  return <><div className="page-header"><h1>Terms of Service</h1><p>Last updated: October 2026</p></div><section className="section"><div className="container legal-content">
-    <h2>Agreement to Terms</h2><p>By accessing and using the CORALFLY website, you agree to these terms. If you do not agree, please do not use the site or its services.</p>
-    <h2>Products and Pricing</h2><p>Products are subject to availability. Prices are shown in US dollars and may change. Product descriptions, specifications, and listed compatibility are provided to help with selection; confirm the part number and application before ordering.</p>
-    <h2>Orders and Payment</h2><p>Orders are subject to acceptance and availability. By placing an order, you confirm that the information you provide is accurate and that you are authorized to use the selected payment method. Payment is completed through Stripe&apos;s hosted checkout.</p>
-    <h2>Shipping</h2><p>Orders placed before 2:00 PM are processed the same day. Free shipping is available on orders of $75 or more. Shipping options and delivery estimates are presented during checkout.</p>
-    <h2>Returns</h2><p>For return assistance and eligibility, contact CORALFLY at <a href="mailto:sales@coralfly.com">sales@coralfly.com</a> before sending a product back.</p>
-    <h2>Product Use</h2><p>Customers are responsible for verifying the filter&apos;s part number, application, and installation requirements. Contact the equipment manufacturer or a qualified technician if you are unsure about service requirements.</p>
-    <h2>Limitation of Liability</h2><p>To the extent permitted by law, CORALFLY is not liable for indirect, incidental, or consequential damages arising from the use of this site or products purchased through it.</p>
-    <h2>Contact</h2><p>Questions about these terms? Email <a href="mailto:sales@coralfly.com">sales@coralfly.com</a>.</p>
-  </div></section></>;
+  return (
+    <div className="block">
+      {/* Header Breadcrumbs */}
+      <div className="block-header block-header--has-breadcrumb block-header--has-title">
+        <div className="container">
+          <div className="block-header__body">
+            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
+              <ol className="breadcrumb__list">
+                <li className="breadcrumb__item breadcrumb__item--first">
+                  <Link href="/" className="breadcrumb__item-link">Home</Link>
+                </li>
+                <li className="breadcrumb__item breadcrumb__item--last" aria-current="page">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <span className="breadcrumb__item-link">Terms and Conditions</span>
+                </li>
+              </ol>
+            </nav>
+            <h1 className="block-header__title">Terms and Conditions</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ paddingBottom: 60 }}>
+        <div className="card" style={{ padding: 40, border: "1px solid #ebebeb", borderRadius: 4, maxWidth: 860, margin: "0 auto", fontSize: 15, lineHeight: 1.7, color: "#495057" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>1. Agreement to Terms</h2>
+          <p style={{ marginBottom: 20 }}>
+            By accessing or ordering from the CORALFLY online store, you agree to be bound by these Terms and Conditions.
+            Our catalog is designed to provide commercial fleets, owner-operators, and repair facilities with high-quality filtration hardware.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>2. Product Information &amp; Fitment</h2>
+          <p style={{ marginBottom: 20 }}>
+            While we take rigorous measures to ensure fitment data, thread sizes, and micron ratings are completely accurate,
+            purchasers are responsible for confirming equipment model numbers and existing part numbers before ordering.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>3. Orders &amp; Payments</h2>
+          <p style={{ marginBottom: 20 }}>
+            We accept credit cards, debit cards, and Apple Pay processed through secure, PCI-compliant Stripe gateways.
+            Corporate fleet accounts approved for Net 30 terms must settle invoices within 30 calendar days from delivery receipt.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Shipping &amp; Delivery</h2>
+          <p style={{ marginBottom: 20 }}>
+            Orders placed prior to 2:00 PM EST on standard business days are processed for same-day dispatch.
+            Orders of $75 or more qualify for free standard ground shipping across the contiguous United States.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>5. Returns &amp; Warranty</h2>
+          <p style={{ marginBottom: 20 }}>
+            Unused filters in original, unblemished cartons may be returned within 30 days of receipt.
+            All CORALFLY products carry a 12-month manufacturer defect warranty under standard operating hours and maintenance intervals.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { ProductGrid } from "@/components/ProductGrid";
 import { getCatalogFilterCategories, getCatalogMakes, isFilterCategory } from "@/lib/catalog";
 import { getProducts } from "@/sanity/products";
@@ -12,18 +11,22 @@ async function getCollection(brandSlug: string, categorySlug: string) {
   const products = (await getProducts()).filter((product) => isFilterCategory(product.category));
   const make = getCatalogMakes(products).find((item) => item.slug === brandSlug)?.name;
   const category = getCatalogFilterCategories(products).find((item) => item.slug === categorySlug)?.name;
-  const matching = products.filter((product) => product.category === category && product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === make?.toLocaleLowerCase()));
+  const matching = products.filter(
+    (product) =>
+      product.category === category &&
+      product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === make?.toLocaleLowerCase())
+  );
   return { make, category, products: matching };
 }
 
 export async function generateStaticParams() {
   const products = (await getProducts()).filter((product) => isFilterCategory(product.category));
   const collections = getCatalogMakes(products).flatMap(({ slug, name }) => {
-    const tagged = products.filter((product) => product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === name.toLocaleLowerCase()));
+    const tagged = products.filter((product) =>
+      product.compatibleMakes?.some((value) => value.toLocaleLowerCase() === name.toLocaleLowerCase())
+    );
     return getCatalogFilterCategories(tagged).map(({ slug: category }) => ({ brand: slug, category }));
   });
-  // See the parent truck route: no tagged makes/categories is a valid catalog
-  // state, but Cache Components still needs a param for build-time validation.
   return collections.length ? collections : [{ brand: "__no-tagged-makes__", category: "__no-tagged-category__" }];
 }
 
@@ -38,9 +41,57 @@ export default async function TruckCategoryPage({ params }: Props) {
   const { brand, category: categorySlug } = await params;
   const { make, category, products } = await getCollection(brand, categorySlug);
   if (!make || !category) notFound();
-  return <section className="section"><div className="container">
-    <Breadcrumbs items={[{ name: "Home", href: "/" }, { name: "Shop", href: "/shop" }, { name: `${make} Filters`, href: `/trucks/${brand}` }, { name: category }]} />
-    <header className="landing-header"><h1 className="landing-header__title">{make} {category}</h1><p className="landing-header__intro">Products in this collection are tagged as compatible with {make} in the catalog. Confirm the part number and application before ordering.</p><p className="landing-header__meta">{products.length} products</p></header>
-    {products.length ? <ProductGrid products={products} /> : <p className="shop-empty-state">No {category.toLocaleLowerCase()} are currently tagged for {make}. <Link href={`/trucks/${brand}`}>Browse all {make} filters</Link>.</p>}
-  </div></section>;
+
+  return (
+    <div className="block">
+      {/* Header Breadcrumbs */}
+      <div className="block-header block-header--has-breadcrumb block-header--has-title">
+        <div className="container">
+          <div className="block-header__body">
+            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
+              <ol className="breadcrumb__list">
+                <li className="breadcrumb__item breadcrumb__item--first">
+                  <Link href="/" className="breadcrumb__item-link">Home</Link>
+                </li>
+                <li className="breadcrumb__item">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <Link href="/trucks" className="breadcrumb__item-link">Trucks</Link>
+                </li>
+                <li className="breadcrumb__item">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <Link href={`/trucks/${brand}`} className="breadcrumb__item-link">{make}</Link>
+                </li>
+                <li className="breadcrumb__item breadcrumb__item--last" aria-current="page">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <span className="breadcrumb__item-link">{category}</span>
+                </li>
+              </ol>
+            </nav>
+            <h1 className="block-header__title">{make} {category}</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ paddingBottom: 60 }}>
+        <p style={{ color: "#6c757d", fontSize: 15, marginBottom: 32 }}>
+          Showing {products.length} {category.toLowerCase()} verified for {make} rigs.
+        </p>
+
+        {products.length ? (
+          <ProductGrid products={products} />
+        ) : (
+          <div className="card text-center" style={{ padding: 48, border: "1px solid #ebebeb", borderRadius: 4 }}>
+            <p style={{ color: "#6c757d", fontSize: 15, marginBottom: 16 }}>
+              No {category.toLowerCase()} are currently tagged for {make}.
+            </p>
+            <div>
+              <Link href={`/trucks/${brand}`} className="btn btn-primary" style={{ backgroundColor: "#0081c9", borderColor: "#0081c9" }}>
+                Browse All {make} Filters
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }

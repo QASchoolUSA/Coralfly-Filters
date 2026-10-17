@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "./semi-layout.css";
+@import "./redparts.css";
 
 :root {
   --coralfly-blue: #0081c9;

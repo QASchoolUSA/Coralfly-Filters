@@ -8,20 +8,24 @@ type Props = {
 
 export function ProductGrid({
   products,
-  emptyMessage = "No products found.",
+  emptyMessage = "No products found in this category.",
 }: Props) {
   if (!products.length) {
     return (
-      <p className="shop-empty-state">
-        {emptyMessage}
-      </p>
+      <div className="card text-center" style={{ padding: 48, border: "1px solid #ebebeb", borderRadius: 4 }}>
+        <p style={{ color: "#6c757d", fontSize: 15, margin: 0 }}>
+          {emptyMessage}
+        </p>
+      </div>
     );
   }
 
   return (
-    <div className="product-grid">
+    <div className="row">
       {products.map((product, index) => (
-        <ProductCard key={product._id} product={product} index={index} />
+        <div key={product._id} className="col-12 col-sm-6 col-md-4 col-xl-3 mb-4">
+          <ProductCard product={product} index={index} layout="grid" />
+        </div>
       ))}
     </div>
   );

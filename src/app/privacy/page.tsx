@@ -1,14 +1,66 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-export const metadata: Metadata = { title: "Privacy Policy", description: "CORALFLY privacy information for online shoppers." };
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "CORALFLY privacy policy and customer data protection information.",
+};
 
 export default function PrivacyPage() {
-  return <><div className="page-header"><h1>Privacy Policy</h1><p>Last updated: October 2026</p></div><section className="section"><div className="container legal-content">
-    <h2>Information You Provide</h2><p>When you place an order or contact CORALFLY, you may provide information such as your name, email address, phone number, shipping address, and order details.</p>
-    <h2>How Information Is Used</h2><p>Information is used to process orders, communicate about purchases, respond to customer support requests, and operate the CORALFLY storefront.</p>
-    <h2>Payment Security</h2><p>Payments are completed through Stripe&apos;s hosted checkout. CORALFLY does not receive your full card details through the storefront checkout flow.</p>
-    <h2>Shopping Cart Storage</h2><p>Your cart is saved in your browser so it can be available when you return to the site. You can clear your cart from the cart page.</p>
-    <h2>Third-Party Services</h2><p>When you continue to checkout, information needed to complete your payment and order is shared with Stripe. Those services handle information under their own privacy terms.</p>
-    <h2>Your Questions</h2><p>For privacy questions or requests about information you provided to CORALFLY, email <a href="mailto:sales@coralfly.com">sales@coralfly.com</a>.</p>
-  </div></section></>;
+  return (
+    <div className="block">
+      {/* Header Breadcrumbs */}
+      <div className="block-header block-header--has-breadcrumb block-header--has-title">
+        <div className="container">
+          <div className="block-header__body">
+            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
+              <ol className="breadcrumb__list">
+                <li className="breadcrumb__item breadcrumb__item--first">
+                  <Link href="/" className="breadcrumb__item-link">Home</Link>
+                </li>
+                <li className="breadcrumb__item breadcrumb__item--last" aria-current="page">
+                  <span className="breadcrumb__item-arrow">/</span>
+                  <span className="breadcrumb__item-link">Privacy Policy</span>
+                </li>
+              </ol>
+            </nav>
+            <h1 className="block-header__title">Privacy Policy</h1>
+          </div>
+        </div>
+      </div>
+
+      <div className="container" style={{ paddingBottom: 60 }}>
+        <div className="card" style={{ padding: 40, border: "1px solid #ebebeb", borderRadius: 4, maxWidth: 860, margin: "0 auto", fontSize: 15, lineHeight: 1.7, color: "#495057" }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>1. Information We Collect</h2>
+          <p style={{ marginBottom: 20 }}>
+            When you purchase filtration products, register an account, or contact our support engineers,
+            we collect your name, company name, delivery address, email, phone number, and selected vehicle specs.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>2. How Your Information is Handled</h2>
+          <p style={{ marginBottom: 20 }}>
+            Customer data is strictly used to fulfill shipments, provide tracking updates, verify vehicle fitment,
+            and service ongoing warranty requests. We do not sell or lease customer information to third parties.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>3. Payment Information Security</h2>
+          <p style={{ marginBottom: 20 }}>
+            All payments are encrypted using 256-bit SSL encryption through Stripe. CORALFLY does not store credit card numbers
+            or sensitive banking credentials on our local servers.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Local Storage &amp; Cookies</h2>
+          <p style={{ marginBottom: 20 }}>
+            We utilize browser local storage to preserve your selected active vehicle, garage fleet list, and shopping cart
+            items across sessions. You may clear this data anytime via your browser settings.
+          </p>
+
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>5. Contact Our Privacy Team</h2>
+          <p style={{ margin: 0 }}>
+            For questions or data access requests, please contact us at <a href="mailto:privacy@coralfly.com" style={{ color: "#0081c9" }}>privacy@coralfly.com</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
