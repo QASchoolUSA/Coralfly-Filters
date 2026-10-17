@@ -103,17 +103,17 @@ export default function CheckoutPage() {
           <div className="block-header__body">
             <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
               <ol className="breadcrumb__list">
-                <li className="breadcrumb__item breadcrumb__item--first">
+                <li className="breadcrumb__spaceship-safe-area" role="presentation" />
+                <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--first">
                   <Link href="/" className="breadcrumb__item-link">Home</Link>
                 </li>
-                <li className="breadcrumb__item">
-                  <span className="breadcrumb__item-arrow">/</span>
+                <li className="breadcrumb__item breadcrumb__item--parent">
                   <Link href="/cart" className="breadcrumb__item-link">Cart</Link>
                 </li>
-                <li className="breadcrumb__item breadcrumb__item--last" aria-current="page">
-                  <span className="breadcrumb__item-arrow">/</span>
+                <li className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last" aria-current="page">
                   <span className="breadcrumb__item-link">Checkout</span>
                 </li>
+                <li className="breadcrumb__title-safe-area" role="presentation" />
               </ol>
             </nav>
             <h1 className="block-header__title">Checkout</h1>

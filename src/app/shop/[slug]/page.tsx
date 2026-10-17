@@ -17,7 +17,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: product.name, description: product.description };
 }
 
-export default async function ProductPage({ params }: Props) {
+async function ProductDetailLoader({ params }: Props) {
   const { slug } = await params;
-  return <Suspense fallback={<div className="container loading">Loading product…</div>}><ProductDetail slug={slug} /></Suspense>;
+  return <ProductDetail slug={slug} />;
+}
+
+export default function ProductPage({ params }: Props) {
+  return (
+    <Suspense
+      fallback={
+        <div className="container" style={{ padding: "60px 0", textAlign: "center" }}>
+          Loading filter specifications…
+        </div>
+      }
+    >
+      <ProductDetailLoader params={params} />
+    </Suspense>
+  );
 }

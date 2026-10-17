@@ -36,6 +36,8 @@ export type Product = {
   featured?: boolean;
   images: ProductImage[];
   specs?: ProductSpec[];
+  rating?: number;
+  reviewsCount?: number;
 };
 
 export type CartItem = {

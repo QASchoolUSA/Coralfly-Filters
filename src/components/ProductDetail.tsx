@@ -7,6 +7,6 @@ export async function ProductDetail({ slug }: { slug: string }) {
   if (!product) notFound();
   const related = products
     .filter((candidate) => candidate._id !== product._id && candidate.category === product.category)
-    .slice(0, 4);
+    .slice(0, 5);
   return <ProductDetailClient product={product} related={related} />;
 }
