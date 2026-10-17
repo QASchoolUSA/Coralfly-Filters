@@ -5,9 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
-import { useCompareStore } from "@/lib/compare-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
-import { useWishlistStore } from "@/lib/wishlist-store";
 import { formatPrice } from "@/lib/format";
 
 type SearchResult = {
@@ -30,20 +28,12 @@ export function Header() {
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const cartSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const { items: wishlistItems } = useWishlistStore();
-  const wishlistCount = wishlistItems.length;
-
-  const { items: compareItems } = useCompareStore();
-  const compareCount = compareItems.length;
-
   const { currentVehicle, openPicker } = useVehicleStore();
 
   // State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
-  const [currency, setCurrency] = useState("USD");
   const [language, setLanguage] = useState("EN");
-  const [currencyMenuOpen, setCurrencyMenuOpen] = useState(false);
   const [languageMenuOpen, setLanguageMenuOpen] = useState(false);
 
   // Live Search
@@ -155,17 +145,6 @@ export function Header() {
 
               <div className="mobile-header__indicators">
                 <div className="mobile-indicator">
-                  <Link href="/wishlist" className="mobile-indicator__button">
-                    <span className="mobile-indicator__icon">
-                      <svg width="20" height="20">
-                        <path d="M14,3c2.2,0,4,1.8,4,4c0,4-5.2,10-8,10S2,11,2,7c0-2.2,1.8-4,4-4c1,0,1.9,0.4,2.7,1L10,5.2L11.3,4C12.1,3.4,13,3,14,3 M14,1c-1.5,0-2.9,0.6-4,1.5C8.9,1.6,7.5,1,6,1C2.7,1,0,3.7,0,7c0,5,6,12,10,12s10-7,10-12C20,3.7,17.3,1,14,1L14,1z" />
-                      </svg>
-                      {wishlistCount > 0 && <span className="mobile-indicator__counter">{wishlistCount}</span>}
-                    </span>
-                  </Link>
-                </div>
-
-                <div className="mobile-indicator">
                   <button type="button" className="mobile-indicator__button" onClick={openCart} aria-label="Cart">
                     <span className="mobile-indicator__icon">
                       <svg width="20" height="20">
@@ -202,8 +181,8 @@ export function Header() {
                 </Link>
               </div>
               <div className="topbar__item-text">
-                <Link className="topbar__link" href="/track-order">
-                  Track Order
+                <Link className="topbar__link" href="/faq">
+                  FAQ
                 </Link>
               </div>
             </div>
@@ -212,42 +191,6 @@ export function Header() {
           <div className="header__topbar-end-bg" />
           <div className="header__topbar-end">
             <div className="topbar topbar--spaceship-end">
-              <div className="topbar__item-button">
-                <Link href="/compare" className="topbar__button">
-                  <span className="topbar__button-label">Compare:</span>
-                  <span className="topbar__button-title">{compareCount}</span>
-                </Link>
-              </div>
-
-              {/* Currency Dropdown */}
-              <div className={`topbar__item-button topbar__menu ${currencyMenuOpen ? "topbar__menu--open" : ""}`}>
-                <button
-                  className="topbar__button topbar__button--has-arrow topbar__menu-button"
-                  type="button"
-                  onClick={() => setCurrencyMenuOpen(!currencyMenuOpen)}
-                  onBlur={() => setTimeout(() => setCurrencyMenuOpen(false), 200)}
-                >
-                  <span className="topbar__button-label">Currency:</span>
-                  <span className="topbar__button-title">{currency}</span>
-                  <span className="topbar__button-arrow">
-                    <svg width="7px" height="5px">
-                      <path d="M0.280,0.282 C0.645,-0.084 1.238,-0.077 1.596,0.297 L3.504,2.310 L5.413,0.297 C5.770,-0.077 6.363,-0.084 6.728,0.282 C7.080,0.634 7.088,1.203 6.746,1.565 L3.504,5.007 L0.262,1.565 C-0.080,1.203 -0.072,0.634 0.280,0.282 Z" />
-                    </svg>
-                  </span>
-                </button>
-                <div className="topbar__menu-body">
-                  <button type="button" className="topbar__menu-item" onClick={() => setCurrency("USD")}>
-                    $ US Dollar
-                  </button>
-                  <button type="button" className="topbar__menu-item" onClick={() => setCurrency("EUR")}>
-                    € Euro
-                  </button>
-                  <button type="button" className="topbar__menu-item" onClick={() => setCurrency("GBP")}>
-                    £ Pound Sterling
-                  </button>
-                </div>
-              </div>
-
               {/* Language Dropdown */}
               <div className={`topbar__menu ${languageMenuOpen ? "topbar__menu--open" : ""}`}>
                 <button
@@ -406,35 +349,8 @@ export function Header() {
             </div>
           </div>
 
-          {/* Indicators: Wishlist, Account, Dropcart */}
+          {/* Indicators: Dropcart */}
           <div className="header__indicators">
-            {/* Wishlist */}
-            <div className="indicator indicator--trigger--click">
-              <Link href="/wishlist" className="indicator__button">
-                <span className="indicator__icon">
-                  <svg width="32" height="32">
-                    <path d="M23,24.8L23,24.8c-0.4-0.4-0.4-1.2,0-1.6l4-4.1c1.2-1.2,1.9-2.9,1.9-4.7c0-3.6-2.9-6.5-6.5-6.5c-2.4,0-4.4,1.3-5.5,3.2c-1-1.9-3.1-3.2-5.5-3.2C7.9,7.9,5,10.8,5,14.4c0,1.8,0.7,3.5,1.9,4.7l4,4.1c0.4,0.4,0.4,1.2,0,1.6l0,0c-0.4,0.4-1.2,0.4-1.6,0l-4-4.1C3.8,19.2,3,16.9,3,14.4c0-4.7,3.8-8.5,8.5-8.5c2.6,0,5,1.2,6.5,3.2c1.6-2,3.9-3.2,6.5-3.2c4.7,0,8.5,3.8,8.5,8.5c0,2.5-1,4.8-2.6,6.4l-4,4.1C24.2,25.2,23.4,25.2,23,24.8z" />
-                  </svg>
-                  {wishlistCount > 0 && <span className="indicator__counter">{wishlistCount}</span>}
-                </span>
-                <span className="indicator__title">Wishlist</span>
-                <span className="indicator__value">{wishlistCount} items</span>
-              </Link>
-            </div>
-
-            {/* Account */}
-            <div className="indicator indicator--trigger--click">
-              <Link href="/account/dashboard" className="indicator__button">
-                <span className="indicator__icon">
-                  <svg width="32" height="32">
-                    <path d="M16,18C9.4,18,4,23.4,4,30H2c0-7.7,6.3-14,14-14s14,6.3,14,14h-2C28,23.4,22.6,18,16,18z M16,16c-4.4,0-8-3.6-8-8s3.6-8,8-8s8,3.6,8,8S20.4,16,16,16z M16,2c-3.3,0-6,2.7-6,6s2.7,6,6,6s6-2.7,6-6S19.3,2,16,2z" />
-                  </svg>
-                </span>
-                <span className="indicator__title">Hello, Log In</span>
-                <span className="indicator__value">My Account</span>
-              </Link>
-            </div>
-
             {/* Cart with Dropcart Preview */}
             <div className="indicator indicator--trigger--click">
               <Link href="/cart" className="indicator__button" onClick={(e) => { e.preventDefault(); openCart(); }}>
@@ -787,21 +703,6 @@ export function Header() {
                             Checkout
                           </Link>
                         </li>
-                        <li className="menu__item">
-                          <Link href="/wishlist" className="menu__link">
-                            Wishlist
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/compare" className="menu__link">
-                            Compare Products
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/track-order" className="menu__link">
-                            Track Order
-                          </Link>
-                        </li>
                       </ul>
                     </div>
                   </li>
@@ -818,70 +719,22 @@ export function Header() {
                     </Link>
                   </li>
 
-                  <li className="main-menu__item main-menu__item--submenu--menu main-menu__item--has-submenu">
-                    <Link href="/account/dashboard" className="main-menu__link">
-                      Account
-                      <svg width="7px" height="5px">
-                        <path d="M0.280,0.282 C0.645,-0.084 1.238,-0.077 1.596,0.297 L3.504,2.310 L5.413,0.297 C5.770,-0.077 6.363,-0.084 6.728,0.282 C7.080,0.634 7.088,1.203 6.746,1.565 L3.504,5.007 L0.262,1.565 C-0.080,1.203 -0.072,0.634 0.280,0.282 Z" />
-                      </svg>
+                  <li className="main-menu__item">
+                    <Link href="/about" className="main-menu__link">
+                      About Us
                     </Link>
-                    <div className="main-menu__submenu">
-                      <ul className="menu">
-                        <li className="menu__item">
-                          <Link href="/account/login" className="menu__link">
-                            Login &amp; Register
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/account/dashboard" className="menu__link">
-                            Dashboard
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/account/garage" className="menu__link">
-                            My Garage
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
                   </li>
 
-                  <li className="main-menu__item main-menu__item--submenu--menu main-menu__item--has-submenu">
-                    <Link href="/about" className="main-menu__link">
-                      Pages
-                      <svg width="7px" height="5px">
-                        <path d="M0.280,0.282 C0.645,-0.084 1.238,-0.077 1.596,0.297 L3.504,2.310 L5.413,0.297 C5.770,-0.077 6.363,-0.084 6.728,0.282 C7.080,0.634 7.088,1.203 6.746,1.565 L3.504,5.007 L0.262,1.565 C-0.080,1.203 -0.072,0.634 0.280,0.282 Z" />
-                      </svg>
+                  <li className="main-menu__item">
+                    <Link href="/contact" className="main-menu__link">
+                      Contact
                     </Link>
-                    <div className="main-menu__submenu">
-                      <ul className="menu">
-                        <li className="menu__item">
-                          <Link href="/about" className="menu__link">
-                            About Us
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/contact" className="menu__link">
-                            Contact Us
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/faq" className="menu__link">
-                            FAQ
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/terms" className="menu__link">
-                            Terms &amp; Conditions
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/privacy" className="menu__link">
-                            Privacy Policy
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
+                  </li>
+
+                  <li className="main-menu__item">
+                    <Link href="/faq" className="main-menu__link">
+                      FAQ
+                    </Link>
                   </li>
                 </ul>
               </div>
@@ -1010,24 +863,7 @@ export function Header() {
                 Guides &amp; Cross-Reference
               </Link>
 
-              <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
-                Customer Account &amp; Orders
-              </div>
-              <Link href="/account/dashboard" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                My Account
-              </Link>
-              <Link href="/account/garage" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                My Garage
-              </Link>
-              <Link href="/wishlist" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                Wishlist ({wishlistCount})
-              </Link>
-              <Link href="/compare" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                Compare ({compareCount})
-              </Link>
-              <Link href="/track-order" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                Track Order
-              </Link>
+
 
               <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
                 Information

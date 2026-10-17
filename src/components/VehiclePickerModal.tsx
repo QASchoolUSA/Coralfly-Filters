@@ -59,8 +59,7 @@ const VEHICLE_DATA = [
 const YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"];
 
 export function VehiclePickerModal() {
-  const { isPickerOpen, closePicker, selectVehicle, garage, currentVehicle, removeFromGarage } = useVehicleStore();
-  const [activeTab, setActiveTab] = useState<"select" | "garage">("select");
+  const { isPickerOpen, closePicker, selectVehicle } = useVehicleStore();
 
   const [selectedYear, setSelectedYear] = useState<string>("2023");
   const [selectedMake, setSelectedMake] = useState<string>("Volvo");
@@ -118,49 +117,11 @@ export function VehiclePickerModal() {
             </button>
           </div>
 
-          <div style={{ display: "flex", borderBottom: "1px solid #ebebeb", background: "#f7f7f7" }}>
-            <button
-              type="button"
-              onClick={() => setActiveTab("select")}
-              style={{
-                flex: 1,
-                padding: "12px 16px",
-                border: "none",
-                background: activeTab === "select" ? "#fff" : "transparent",
-                fontWeight: activeTab === "select" ? 700 : 500,
-                color: activeTab === "select" ? "#0081c9" : "#6c757d",
-                borderBottom: activeTab === "select" ? "2px solid #0081c9" : "none",
-                cursor: "pointer",
-                fontSize: 14,
-              }}
-            >
-              Add / Select Vehicle
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("garage")}
-              style={{
-                flex: 1,
-                padding: "12px 16px",
-                border: "none",
-                background: activeTab === "garage" ? "#fff" : "transparent",
-                fontWeight: activeTab === "garage" ? 700 : 500,
-                color: activeTab === "garage" ? "#0081c9" : "#6c757d",
-                borderBottom: activeTab === "garage" ? "2px solid #0081c9" : "none",
-                cursor: "pointer",
-                fontSize: 14,
-              }}
-            >
-              My Garage ({garage.length})
-            </button>
-          </div>
-
           <div className="modal-body" style={{ padding: 24 }}>
-            {activeTab === "select" ? (
-              <form onSubmit={handleSave}>
-                <p style={{ fontSize: 14, color: "#6c757d", marginBottom: 20 }}>
-                  Filters will be automatically filtered and verified for compatibility with your selected rig.
-                </p>
+            <form onSubmit={handleSave}>
+              <p style={{ fontSize: 14, color: "#6c757d", marginBottom: 20 }}>
+                Filters will be automatically filtered and verified for compatibility with your selected rig.
+              </p>
 
                 <div className="form-group mb-3">
                   <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
@@ -252,70 +213,6 @@ export function VehiclePickerModal() {
                   </button>
                 </div>
               </form>
-            ) : (
-              <div>
-                {garage.length === 0 ? (
-                  <p style={{ color: "#6c757d", fontSize: 14, textAlign: "center", padding: "20px 0" }}>
-                    Your garage is empty. Add a truck to quickly switch between your rigs.
-                  </p>
-                ) : (
-                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                    {garage.map((v, idx) => {
-                      const isCurrent =
-                        currentVehicle?.year === v.year &&
-                        currentVehicle?.make === v.make &&
-                        currentVehicle?.model === v.model;
-                      return (
-                        <div
-                          key={idx}
-                          style={{
-                            padding: "14px 16px",
-                            border: isCurrent ? "2px solid #0081c9" : "1px solid #ebebeb",
-                            borderRadius: 4,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            background: isCurrent ? "#e8f4fb" : "#fff",
-                          }}
-                        >
-                          <div>
-                            <div style={{ fontWeight: 700, fontSize: 15, color: "#1a1d21" }}>
-                              {v.year} {v.make} {v.model}
-                            </div>
-                            <div style={{ fontSize: 13, color: "#6c757d" }}>{v.engine}</div>
-                            {isCurrent && (
-                              <span style={{ fontSize: 11, fontWeight: 700, color: "#0081c9", textTransform: "uppercase" }}>
-                                Active Vehicle
-                              </span>
-                            )}
-                          </div>
-                          <div style={{ display: "flex", gap: 8 }}>
-                            {!isCurrent && (
-                              <button
-                                type="button"
-                                className="btn btn-sm btn-primary"
-                                onClick={() => selectVehicle(v)}
-                                style={{ backgroundColor: "#0081c9", borderColor: "#0081c9" }}
-                              >
-                                Select
-                              </button>
-                            )}
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-secondary"
-                              onClick={() => removeFromGarage(idx)}
-                              title="Remove from garage"
-                            >
-                              &times;
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>

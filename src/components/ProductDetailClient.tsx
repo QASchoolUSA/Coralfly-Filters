@@ -5,9 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { useCartStore } from "@/lib/cart-store";
-import { useCompareStore } from "@/lib/compare-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
-import { useWishlistStore } from "@/lib/wishlist-store";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/sanity/types";
 
@@ -22,8 +20,6 @@ export function ProductDetailClient({
   const openCart = useCartStore((state) => state.openCart);
 
   const { currentVehicle, openPicker } = useVehicleStore();
-  const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-  const { addItem: addToCompare, removeItem: removeFromCompare, isInCompare } = useCompareStore();
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -35,9 +31,6 @@ export function ProductDetailClient({
   const [reviewEmail, setReviewEmail] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
-
-  const inWishlist = isInWishlist(product._id);
-  const inCompare = isInCompare(product._id);
 
   const images = product.images.length > 0 ? product.images : [{ url: "/images/products/product-1-245x245.jpg" }];
   const activeImage = images[activeImageIndex] || images[0];
@@ -305,50 +298,7 @@ export function ProductDetailClient({
                     </button>
                   </div>
 
-                  {/* Secondary Actions */}
-                  <div style={{ display: "flex", gap: 20, borderTop: "1px solid #ebebeb", paddingTop: 16, fontSize: 13 }}>
-                    <button
-                      type="button"
-                      onClick={() => (inWishlist ? removeFromWishlist(product._id) : addToWishlist(product))}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        color: inWishlist ? "#0081c9" : "#6c757d",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        fontWeight: 500,
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill={inWishlist ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
-                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                      </svg>
-                      {inWishlist ? "In Wishlist" : "Add to Wishlist"}
-                    </button>
 
-                    <button
-                      type="button"
-                      onClick={() => (inCompare ? removeFromCompare(product._id) : addToCompare(product))}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        padding: 0,
-                        color: inCompare ? "#0081c9" : "#6c757d",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        fontWeight: 500,
-                      }}
-                    >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                      {inCompare ? "In Compare" : "Add to Compare"}
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

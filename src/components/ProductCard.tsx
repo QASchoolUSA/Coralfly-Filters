@@ -3,10 +3,8 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
-import { useCompareStore } from "@/lib/compare-store";
 import { useQuickviewStore } from "@/lib/quickview-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
-import { useWishlistStore } from "@/lib/wishlist-store";
 import { formatPrice } from "@/lib/format";
 import type { Product } from "@/sanity/types";
 
@@ -25,13 +23,8 @@ export function ProductCard({
   const openQuickview = useQuickviewStore((state) => state.openQuickview);
 
   const { currentVehicle } = useVehicleStore();
-  const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-  const { addItem: addToCompare, removeItem: removeFromCompare, isInCompare } = useCompareStore();
 
   const [added, setAdded] = useState(false);
-
-  const inWishlist = isInWishlist(product._id);
-  const inCompare = isInCompare(product._id);
 
   const isCompatible =
     !currentVehicle ||
@@ -50,20 +43,6 @@ export function ProductCard({
     openCart();
   };
 
-  const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (inWishlist) removeFromWishlist(product._id);
-    else addToWishlist(product);
-  };
-
-  const handleCompareToggle = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (inCompare) removeFromCompare(product._id);
-    else addToCompare(product);
-  };
-
   const imageUrl =
     product.images[0]?.url || "/images/products/product-1-245x245.jpg";
 
@@ -74,7 +53,7 @@ export function ProductCard({
 
   return (
     <div className={`product-card product-card--layout--${layout}`}>
-      {/* Action Buttons: Quickview, Wishlist, Compare */}
+      {/* Action Buttons: Quickview */}
       <div className="product-card__actions-list">
         <button
           className="product-card__action product-card__action--quickview"
@@ -88,37 +67,6 @@ export function ProductCard({
         >
           <svg width="16" height="16">
             <path d="M14,15h-4v-2h3v-3h2v4C15,14.6,14.6,15,14,15z M13,3h-3V1h4c0.6,0,1,0.4,1,1v4h-2V3z M6,3H3v3H1V2c0-0.6,0.4-1,1-1h4V3z M3,13h3v2H2c-0.6,0-1-0.4-1-1v-4h2V13z" />
-          </svg>
-        </button>
-
-        <button
-          className="product-card__action product-card__action--wishlist"
-          type="button"
-          aria-label={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
-          onClick={handleWishlistToggle}
-          style={{ color: inWishlist ? "#0081c9" : "inherit" }}
-        >
-          <svg width="16" height="16">
-            <path
-              fill={inWishlist ? "currentColor" : "none"}
-              stroke="currentColor"
-              strokeWidth="1.5"
-              d="M13.9,8.4l-5.4,5.4c-0.3,0.3-0.7,0.3-1,0L2.1,8.4c-1.5-1.5-1.5-3.8,0-5.3C2.8,2.4,3.8,2,4.8,2s1.9,0.4,2.6,1.1L8,3.7l0.6-0.6C9.3,2.4,10.3,2,11.3,2c1,0,1.9,0.4,2.6,1.1C15.4,4.6,15.4,6.9,13.9,8.4z"
-            />
-          </svg>
-        </button>
-
-        <button
-          className="product-card__action product-card__action--compare"
-          type="button"
-          aria-label={inCompare ? "Remove from compare" : "Add to compare"}
-          onClick={handleCompareToggle}
-          style={{ color: inCompare ? "#0081c9" : "inherit" }}
-        >
-          <svg width="16" height="16">
-            <path d="M9,15H7c-0.6,0-1-0.4-1-1V2c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v12C10,14.6,9.6,15,9,15z" />
-            <path d="M1,9h2c0.6,0,1,0.4,1,1v4c0,0.6-0.4,1-1,1H1c-0.6,0-1-0.4-1-1v-4C0,9.4,0.4,9,1,9z" />
-            <path d="M15,5h-2c-0.6,0-1,0.4-1,1v8c0,0.6,0.4,1,1,1h2c0.6,0,1-0.4,1-1V6C16,5.4,15.6,5,15,5z" />
           </svg>
         </button>
       </div>

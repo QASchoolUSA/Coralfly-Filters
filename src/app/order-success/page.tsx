@@ -60,11 +60,11 @@ export default function OrderSuccessPage() {
 
           <div style={{ display: "flex", justifyContent: "center", gap: 16 }}>
             <Link
-              href="/track-order"
+              href="/contact"
               className="btn btn-secondary"
               style={{ padding: "12px 24px" }}
             >
-              Track Your Order
+              Contact Support
             </Link>
             <Link
               href="/shop"

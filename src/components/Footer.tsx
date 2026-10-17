@@ -84,28 +84,25 @@ export function Footer() {
                 </div>
               </div>
 
-              {/* Column 3: Customer Service / My Account */}
+              {/* Column 3: Customer Care */}
               <div className="col-6 col-md-3 col-xl-2">
                 <div className="site-footer__widget footer-links">
                   <h5 className="footer-links__title">Customer Care</h5>
                   <ul className="footer-links__list">
                     <li className="footer-links__item">
-                      <Link href="/account/dashboard" className="footer-links__link">Dashboard</Link>
-                    </li>
-                    <li className="footer-links__item">
-                      <Link href="/account/garage" className="footer-links__link">My Garage</Link>
-                    </li>
-                    <li className="footer-links__item">
-                      <Link href="/track-order" className="footer-links__link">Order History</Link>
-                    </li>
-                    <li className="footer-links__item">
-                      <Link href="/wishlist" className="footer-links__link">Wish List</Link>
-                    </li>
-                    <li className="footer-links__item">
-                      <Link href="/compare" className="footer-links__link">Compare Products</Link>
-                    </li>
-                    <li className="footer-links__item">
                       <Link href="/faq" className="footer-links__link">Filtration FAQ</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/trucks" className="footer-links__link">Truck Directory</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/guides" className="footer-links__link">Maintenance Guides</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/contact" className="footer-links__link">Technical Support</Link>
+                    </li>
+                    <li className="footer-links__item">
+                      <Link href="/terms" className="footer-links__link">Warranty &amp; Terms</Link>
                     </li>
                   </ul>
                 </div>
