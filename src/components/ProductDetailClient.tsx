@@ -293,7 +293,6 @@ export function ProductDetailClient({
                   <div className="product__info">
                     <div className="product__info-card">
                       <div className="product__info-body">
-                        <div className="product__badge tag-badge tag-badge--sale">SALE</div>
                         <div className="product__prices-stock">
                           <div className="product__prices">
                             {oldPrice && (
@@ -627,12 +626,6 @@ export function ProductDetailClient({
                                 <td>Anthem, Pinnacle, Granite</td>
                                 <td>2018–2026</td>
                                 <td>Mack MP8, MP7</td>
-                              </tr>
-                              <tr>
-                                <td><strong>International</strong></td>
-                                <td>LT Series, RH Series, Lonestar</td>
-                                <td>2017–2026</td>
-                                <td>Cummins X15, A26</td>
                               </tr>
                             </tbody>
                           </table>

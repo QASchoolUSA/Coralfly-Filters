@@ -674,37 +674,10 @@ export function Header() {
                     </Link>
                   </li>
 
-                  <li className="main-menu__item main-menu__item--submenu--menu main-menu__item--has-submenu">
+                  <li className="main-menu__item">
                     <Link href="/shop" className="main-menu__link">
                       Shop
-                      <svg width="7px" height="5px">
-                        <path d="M0.280,0.282 C0.645,-0.084 1.238,-0.077 1.596,0.297 L3.504,2.310 L5.413,0.297 C5.770,-0.077 6.363,-0.084 6.728,0.282 C7.080,0.634 7.088,1.203 6.746,1.565 L3.504,5.007 L0.262,1.565 C-0.080,1.203 -0.072,0.634 0.280,0.282 Z" />
-                      </svg>
                     </Link>
-                    <div className="main-menu__submenu">
-                      <ul className="menu">
-                        <li className="menu__item">
-                          <Link href="/shop" className="menu__link">
-                            Catalog Grid (4 Columns)
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/shop?view=list" className="menu__link">
-                            Catalog List View
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/cart" className="menu__link">
-                            Shopping Cart
-                          </Link>
-                        </li>
-                        <li className="menu__item">
-                          <Link href="/checkout" className="menu__link">
-                            Checkout
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
                   </li>
 
                   <li className="main-menu__item">

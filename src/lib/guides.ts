@@ -80,7 +80,7 @@ export const guides: Guide[] = [
     slug: "davco-fuel-pro-filter-guide",
     title: "Fuel Pro / Diesel Pro Filter & Water-Separator Guide",
     excerpt: "How to identify DAVCO Fuel Pro and Diesel Pro housings and pick the correct fuel/water separator element.",
-    relatedTruckBrands: ["Freightliner", "Volvo", "Kenworth", "Peterbilt", "International", "Western Star"],
+    relatedTruckBrands: ["Freightliner", "Volvo", "Kenworth", "Peterbilt", "Western Star"],
     sections: [
       { heading: "Identify the housing", paragraphs: ["DAVCO Fuel Pro and Diesel Pro systems combine particulate filtration with water separation. The wrong element length or seal can cause a no-start or leak."] , items: ["Look for the model tag on the Fuel Pro / Diesel Pro unit", "Note the bowl style and whether the unit takes a standard or long element", "Photograph the current cartridge part number before removal"] },
       { heading: "Common elements", items: ["FS20083 — Fuel Pro 485/487/488 standard-length EleMax element", "FS19764 — Volvo/Mack Fuel Pro style applications", "FS19765 — Kenworth/Peterbilt Fuel Pro / Diesel Pro applications", "FS20313 — Volvo/Mack EleMax separator on listed D11/D13 and MP7/MP8 applications"] },

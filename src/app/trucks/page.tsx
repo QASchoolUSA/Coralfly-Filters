@@ -6,7 +6,7 @@ import { getCatalogMakes } from "@/lib/catalog";
 export const metadata: Metadata = {
   title: "Commercial Truck Fitment Hub",
   description:
-    "Find heavy duty filters tailored for Volvo, Freightliner, Kenworth, Peterbilt, Mack, and International trucks.",
+    "Find heavy duty filters tailored for Volvo, Freightliner, Kenworth, Peterbilt, and Mack trucks.",
 };
 
 const TRUCK_DETAILS: Record<string, { desc: string; models: string; engines: string }> = {
@@ -35,11 +35,6 @@ const TRUCK_DETAILS: Record<string, { desc: string; models: string; engines: str
     models: "Anthem, Pinnacle, Granite, TerraPro",
     engines: "Mack MP7, MP8, MP8-TC, MP10",
   },
-  international: {
-    desc: "Uptime-focused commercial vehicles designed for efficient payload delivery.",
-    models: "LT Series, RH Series, Lonestar, HV Series",
-    engines: "International A26, Cummins X15",
-  },
 };
 
 export default async function TrucksIndexPage() {
@@ -52,7 +47,6 @@ export default async function TrucksIndexPage() {
     { slug: "kenworth", name: "Kenworth" },
     { slug: "peterbilt", name: "Peterbilt" },
     { slug: "mack", name: "Mack" },
-    { slug: "international", name: "International" },
   ];
 
   const displayMakes = makes.length > 0 ? makes : fallbackMakes;

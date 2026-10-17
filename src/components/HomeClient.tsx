@@ -33,11 +33,6 @@ const VEHICLE_DATA = [
     models: ["Anthem", "Pinnacle", "Granite"],
     engines: ["Mack MP8 505 HP", "Mack MP7 425 HP"],
   },
-  {
-    make: "International",
-    models: ["LT Series", "RH Series", "Lonestar"],
-    engines: ["International A26 475 HP", "Cummins X15 500 HP"],
-  },
 ];
 
 const YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
@@ -63,6 +58,13 @@ export function HomeClient({
 
   // Tab filters for Zone block
   const [zoneTab, setZoneTab] = useState("Featured");
+
+  const zoneProducts =
+    zoneTab === "Featured"
+      ? (featured && featured.length > 0 ? featured : products.filter((p) => p.featured).concat(products)).slice(0, 4)
+      : zoneTab === "Bestsellers"
+      ? products.slice(0, 4)
+      : [...products].reverse().slice(0, 4);
 
   // Countdown timer state
   const [timeLeft, setTimeLeft] = useState({
@@ -449,40 +451,48 @@ export function HomeClient({
       <div className="block block-zone">
         <div className="container">
           <div className="block-zone__body">
-            {/* Left Category Card */}
+            {/* Left Category Card with Red-Parts Overlay Design */}
             <div className="block-zone__card category-card category-card--layout--overlay">
-              <div className="category-card__image">
-                <img src="/images/categories/category-overlay-1.jpg" alt="Air Filtration" />
-              </div>
-              <div className="category-card__overlay" />
-              <div className="category-card__content">
-                <div className="category-card__title">
-                  <Link href="/shop?category=Air%20Filters">Engine &amp; Cabin Filtration</Link>
+              <div className="category-card__body">
+                <div className="category-card__overlay-image">
+                  <img src="/images/categories/category-overlay-1.jpg" alt="Engine & Cabin Filtration" />
                 </div>
-                <ul className="category-card__links">
-                  <li>
-                    <Link href="/shop?category=Air%20Filters">Primary RadialSeal Air</Link>
-                  </li>
-                  <li>
-                    <Link href="/shop?category=Air%20Filters">Secondary Inner Elements</Link>
-                  </li>
-                  <li>
-                    <Link href="/shop?category=Cabin%20Filters">Carbon Activated Cabin</Link>
-                  </li>
-                  <li>
-                    <Link href="/shop?category=Air%20Filters">Heavy-Duty Pre-Cleaners</Link>
-                  </li>
-                  <li>
-                    <Link href="/shop?category=Air%20Filters">Industrial Gaskets &amp; Seals</Link>
-                  </li>
-                </ul>
-                <div className="category-card__all">
-                  <Link href="/shop?category=Air%20Filters">Shop All Intake Filters</Link>
+                <div className="category-card__overlay-image category-card__overlay-image--blur">
+                  <img src="/images/categories/category-overlay-1.jpg" alt="" />
+                </div>
+                <div className="category-card__content">
+                  <div className="category-card__info">
+                    <div className="category-card__name">
+                      <Link href="/shop?category=Air%20Filters">Engine &amp; Cabin Filtration</Link>
+                    </div>
+                    <ul className="category-card__children">
+                      <li>
+                        <Link href="/shop?category=Air%20Filters">Primary RadialSeal Air</Link>
+                      </li>
+                      <li>
+                        <Link href="/shop?category=Air%20Filters">Secondary Inner Elements</Link>
+                      </li>
+                      <li>
+                        <Link href="/shop?category=Cabin%20Filters">Carbon Activated Cabin</Link>
+                      </li>
+                      <li>
+                        <Link href="/shop?category=Air%20Filters">Heavy-Duty Pre-Cleaners</Link>
+                      </li>
+                      <li>
+                        <Link href="/shop?category=Air%20Filters">Industrial Gaskets &amp; Seals</Link>
+                      </li>
+                    </ul>
+                    <div className="category-card__actions">
+                      <Link href="/shop?category=Air%20Filters" className="btn btn-primary btn-sm">
+                        Shop All
+                      </Link>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Right Widget Product Carousel with Tabs */}
+            {/* Right Widget Product Showcase with Tabs */}
             <div className="block-zone__widget">
               <div className="block-zone__widget-header">
                 <div className="block-zone__tabs">
@@ -511,12 +521,14 @@ export function HomeClient({
               </div>
 
               <div className="block-zone__widget-body">
-                <div className="row">
-                  {products.slice(0, 4).map((product) => (
-                    <div key={product._id} className="col-12 col-sm-6 col-lg-3 mb-3">
-                      <ProductCard product={product} layout="grid" />
-                    </div>
-                  ))}
+                <div className="block-zone__carousel">
+                  <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-xl-4 w-100">
+                    {zoneProducts.map((product) => (
+                      <div key={product._id} className="col mb-3">
+                        <ProductCard product={product} layout="grid" />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

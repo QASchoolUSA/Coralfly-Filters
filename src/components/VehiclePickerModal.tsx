@@ -46,14 +46,6 @@ const VEHICLE_DATA = [
       { name: "Granite", engines: ["Mack MP8 505 HP", "Mack MP7 425 HP"] },
     ],
   },
-  {
-    make: "International",
-    models: [
-      { name: "LT Series", engines: ["International A26 475 HP", "Cummins X15 500 HP"] },
-      { name: "RH Series", engines: ["International A26 450 HP"] },
-      { name: "Lonestar", engines: ["Cummins X15 565 HP"] },
-    ],
-  },
 ];
 
 const YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"];

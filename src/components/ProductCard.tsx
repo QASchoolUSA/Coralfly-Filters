@@ -104,16 +104,11 @@ export function ProductCard({
 
         <div className="product-card__name">
           <div>
-            <div className="product-card__badges">
-              {badge ? (
+            {badge && (
+              <div className="product-card__badges">
                 <div className="tag-badge tag-badge--hot">{badge}</div>
-              ) : (
-                <>
-                  <div className="tag-badge tag-badge--sale">sale</div>
-                  <div className="tag-badge tag-badge--new">new</div>
-                </>
-              )}
-            </div>
+              </div>
+            )}
             <Link href={`/shop/${product.slug}`}>{product.name}</Link>
           </div>
         </div>
