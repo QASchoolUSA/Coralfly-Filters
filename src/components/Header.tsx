@@ -918,7 +918,7 @@ export function Header() {
               </div>
               <div className="topbar__item-text">
                 <Link className="topbar__link" href="/contact">
-                  Contacts
+                  Contact Us
                 </Link>
               </div>
               <div className="topbar__item-text">
@@ -1401,19 +1401,6 @@ export function Header() {
                   <li className="main-menu__item">
                     <Link href="/guides" className="main-menu__link">
                       Guides & Tech
-                    </Link>
-                  </li>
-
-                  <li className="main-menu__item">
-                    <Link href="/about" className="main-menu__link">
-                      About Us
-                    </Link>
-                  </li>
-
-
-                  <li className="main-menu__item">
-                    <Link href="/faq" className="main-menu__link">
-                      FAQ
                     </Link>
                   </li>
                 </ul>
