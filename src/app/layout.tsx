@@ -10,12 +10,37 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.coralflyfilters.com"),
   title: {
-    default: "CORALFLY | Reliable Filter Reliable service",
+    default: "CORALFLY | Heavy Duty Filters for Semi Trucks",
     template: "%s | CORALFLY",
   },
   description:
-    "Buy CORALFLY filters online — oil, air, fuel, and cabin filters. In-stock SKUs, free shipping $75+, secure Stripe checkout.",
+    "Buy CORALFLY filters online — heavy duty oil, air, fuel, and cabin filters for commercial semi trucks. In-stock SKUs, fast USA shipping, secure checkout.",
+  openGraph: {
+    title: "CORALFLY | Heavy Duty Filters for Semi Trucks",
+    description:
+      "Heavy duty commercial semi truck filters — Oil, Air, Fuel, and Cabin filters for Volvo, Freightliner, Kenworth, and Peterbilt.",
+    url: "https://www.coralflyfilters.com",
+    siteName: "CORALFLY Filters",
+    locale: "en_US",
+    type: "website",
+    images: [
+      {
+        url: "/images/og-business-card.png",
+        width: 1200,
+        height: 630,
+        alt: "CORALFLY - Heavy Duty Filters for Semi Trucks",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "CORALFLY | Heavy Duty Filters for Semi Trucks",
+    description:
+      "Heavy duty commercial semi truck filters — Oil, Air, Fuel, and Cabin filters for Volvo, Freightliner, Kenworth, and Peterbilt.",
+    images: ["/images/og-business-card.png"],
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
