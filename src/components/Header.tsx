@@ -650,7 +650,7 @@ export function Header() {
                   alt="CORALFLY"
                   width={130}
                   height={32}
-                  style={{ objectFit: "contain", height: "auto" }}
+                  style={{ objectFit: "contain", width: "auto", height: "auto", maxHeight: 32 }}
                   priority
                 />
               </Link>
