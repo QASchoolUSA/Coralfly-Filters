@@ -24,7 +24,7 @@ export function ProductDetailClient({
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"desc" | "specs" | "fitment" | "reviews">("desc");
+  const [activeTab, setActiveTab] = useState<"desc" | "specs" | "fitment">("desc");
   const [added, setAdded] = useState(false);
 
   // Gallery multi-angle dataset & Lightbox modal state
@@ -33,10 +33,19 @@ export function ProductDetailClient({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [isZoomed, setIsZoomed] = useState(false);
 
-  // Touch swipe refs
-  const touchStartX = useRef<number>(0);
-  const touchStartY = useRef<number>(0);
-  const touchStartTime = useRef<number>(0);
+  // Always scroll to top when opening or switching products
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [product.slug]);
+
+  // Real-time touch swipe & dragging state for zero-delay image sliding
+  const [dragDelta, setDragDelta] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const startXRef = useRef<number>(0);
+  const startYRef = useRef<number>(0);
+  const isHorizontalSwipe = useRef<boolean | null>(null);
 
   const goToNext = useCallback(() => {
     setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
@@ -46,25 +55,44 @@ export function ProductDetailClient({
     setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
   }, [galleryImages.length]);
 
-  // Touch gesture handlers for mobile swipe
+  // Touch gesture handlers for instant swipe response
   const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchStartY.current = e.touches[0].clientY;
-    touchStartTime.current = Date.now();
+    startXRef.current = e.touches[0].clientX;
+    startYRef.current = e.touches[0].clientY;
+    isHorizontalSwipe.current = null;
+    setIsDragging(true);
+    setDragDelta(0);
   };
 
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const dx = e.changedTouches[0].clientX - touchStartX.current;
-    const dy = e.changedTouches[0].clientY - touchStartY.current;
-    const dt = Date.now() - touchStartTime.current;
-    // Valid horizontal swipe: > 40px delta, predominantly horizontal, within 600ms
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && dt < 600) {
-      if (dx < 0) {
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isDragging) return;
+    const currentX = e.touches[0].clientX;
+    const currentY = e.touches[0].clientY;
+    const diffX = currentX - startXRef.current;
+    const diffY = currentY - startYRef.current;
+
+    if (isHorizontalSwipe.current === null) {
+      if (Math.abs(diffX) > 6 || Math.abs(diffY) > 6) {
+        isHorizontalSwipe.current = Math.abs(diffX) > Math.abs(diffY);
+      }
+    }
+
+    if (isHorizontalSwipe.current) {
+      setDragDelta(diffX);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+    if (isHorizontalSwipe.current) {
+      if (dragDelta < -40) {
         goToNext();
-      } else {
+      } else if (dragDelta > 40) {
         goToPrev();
       }
     }
+    setDragDelta(0);
+    isHorizontalSwipe.current = null;
   };
 
   // Fullscreen keyboard navigation & scroll locking
@@ -88,12 +116,6 @@ export function ProductDetailClient({
       document.body.style.overflow = originalOverflow;
     };
   }, [isLightboxOpen, goToPrev, goToNext]);
-
-  // Review form state
-  const [reviewName, setReviewName] = useState("");
-  const [reviewEmail, setReviewEmail] = useState("");
-  const [reviewText, setReviewText] = useState("");
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   const images = galleryImages;
 
@@ -129,14 +151,6 @@ export function ProductDetailClient({
     }
   };
 
-  const handleReviewSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (reviewName && reviewText) {
-      setReviewSubmitted(true);
-      setReviewText("");
-    }
-  };
-
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -159,11 +173,6 @@ export function ProductDetailClient({
         "@type": "Organization",
         name: "CORALFLY Filters",
       },
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating || "4.9",
-      reviewCount: product.reviewsCount || "18",
     },
   };
 
@@ -191,7 +200,7 @@ export function ProductDetailClient({
                   </Link>
                 </li>
                 {product.category && (
-                  <li className="breadcrumb__item breadcrumb__item--parent">
+                  <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--category-crumb">
                     <Link
                       href={`/shop?category=${encodeURIComponent(product.category)}`}
                       className="breadcrumb__item-link"
@@ -201,7 +210,7 @@ export function ProductDetailClient({
                   </li>
                 )}
                 <li
-                  className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last"
+                  className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last breadcrumb__item--product-name"
                   aria-current="page"
                 >
                   <span className="breadcrumb__item-link">{product.name}</span>
@@ -231,9 +240,6 @@ export function ProductDetailClient({
                     {/* Main Interactive Stage */}
                     <div
                       className="cf-gallery-stage"
-                      onClick={() => setIsLightboxOpen(true)}
-                      onTouchStart={handleTouchStart}
-                      onTouchEnd={handleTouchEnd}
                       role="region"
                       aria-label="Product Image Viewer"
                       tabIndex={0}
@@ -250,12 +256,6 @@ export function ProductDetailClient({
                         }
                       }}
                     >
-                      {/* Top Left Perspective Angle Badge */}
-                      <div className="cf-gallery-badge-angle">
-                        <span className="cf-gallery-pulse-dot" />
-                        <span>{activeItem.tag}</span>
-                      </div>
-
                       {/* Top Right Photo Counter Badge */}
                       <div className="cf-gallery-badge-counter">
                         <span>
@@ -293,17 +293,44 @@ export function ProductDetailClient({
                         </svg>
                       </button>
 
-                      {/* Featured Main Image */}
-                      <div className="cf-gallery-image-wrapper">
-                        <Image
-                          className="image__tag"
-                          src={activeItem.url}
-                          alt={activeItem.alt || product.name}
-                          fill
-                          priority
-                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 450px"
-                          style={{ objectFit: "contain" }}
-                        />
+                      {/* Continuous Smooth Horizontal Slider Viewport */}
+                      <div
+                        className="cf-slider-viewport"
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                        onTouchCancel={handleTouchEnd}
+                      >
+                        <div
+                          className="cf-slider-track"
+                          style={{
+                            transform: `translateX(calc(-${activeImageIndex * 100}% + ${isDragging ? dragDelta : 0}px))`,
+                            transition: isDragging ? "none" : "transform 0.28s cubic-bezier(0.2, 0.9, 0.4, 1)",
+                          }}
+                        >
+                          {galleryImages.map((img, idx) => (
+                            <div
+                              key={idx}
+                              className="cf-slider-slide"
+                              onClick={() => {
+                                if (Math.abs(dragDelta) < 6) {
+                                  setIsLightboxOpen(true);
+                                }
+                              }}
+                            >
+                              <Image
+                                className="image__tag"
+                                src={img.url}
+                                alt={`${product.name} - View ${idx + 1}`}
+                                fill
+                                priority={idx === 0}
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 450px"
+                                style={{ objectFit: "contain" }}
+                                draggable={false}
+                              />
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
                       {/* Bottom Right Zoom / Lightbox Trigger */}
@@ -328,43 +355,41 @@ export function ProductDetailClient({
 
                     {/* Mobile Pagination Indicator Dots */}
                     <div className="cf-gallery-dots" role="tablist" aria-label="Product image slides">
-                      {galleryImages.map((img, idx) => (
+                      {galleryImages.map((_, idx) => (
                         <button
                           key={idx}
                           type="button"
                           role="tab"
                           className={`cf-gallery-dot ${activeImageIndex === idx ? "cf-gallery-dot--active" : ""}`}
-                          aria-label={`Go to slide ${idx + 1}: ${img.tag}`}
+                          aria-label={`Go to slide ${idx + 1}`}
                           aria-selected={activeImageIndex === idx}
                           onClick={() => setActiveImageIndex(idx)}
                         />
                       ))}
                     </div>
 
-                    {/* Horizontal Thumbnails Carousel */}
-                    <div className="cf-gallery-thumbs-row" role="tablist" aria-label="Product angle thumbnails">
+                    {/* Horizontal Thumbnails Row - Clean without angle descriptions */}
+                    <div className="cf-gallery-thumbs-row" role="tablist" aria-label="Product thumbnails">
                       {galleryImages.map((img, idx) => (
-                        <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-                          <button
-                            type="button"
-                            role="tab"
-                            className={`cf-gallery-thumb-item ${
-                              activeImageIndex === idx ? "cf-gallery-thumb-item--active" : ""
-                            }`}
-                            onClick={() => setActiveImageIndex(idx)}
-                            aria-label={`Inspect ${img.tag}`}
-                            aria-selected={activeImageIndex === idx}
-                          >
-                            <Image
-                              src={img.url}
-                              alt={img.alt}
-                              fill
-                              sizes="74px"
-                              style={{ objectFit: "contain" }}
-                            />
-                          </button>
-                          <span className="cf-gallery-thumb-label">{img.tag}</span>
-                        </div>
+                        <button
+                          key={idx}
+                          type="button"
+                          role="tab"
+                          className={`cf-gallery-thumb-item ${
+                            activeImageIndex === idx ? "cf-gallery-thumb-item--active" : ""
+                          }`}
+                          onClick={() => setActiveImageIndex(idx)}
+                          aria-label={`Product thumbnail ${idx + 1}`}
+                          aria-selected={activeImageIndex === idx}
+                        >
+                          <Image
+                            src={img.url}
+                            alt=""
+                            fill
+                            sizes="74px"
+                            style={{ objectFit: "contain" }}
+                          />
+                        </button>
                       ))}
                     </div>
                   </div>
@@ -373,34 +398,6 @@ export function ProductDetailClient({
                   <div className="product__header">
                     <h1 className="product__title">{product.name}</h1>
                     <div className="product__subtitle">
-                      <div className="product__rating">
-                        <div className="product__rating-stars">
-                          <div className="rating">
-                            <div className="rating__body">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <div
-                                  key={s}
-                                  className={`rating__star ${
-                                    s <= Math.round(product.rating || 5) ? "rating__star--active" : ""
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="product__rating-label">
-                          <a
-                            href="#tab-reviews"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setActiveTab("reviews");
-                            }}
-                          >
-                            {product.rating || 4.9} on {product.reviewsCount || 18} reviews
-                          </a>
-                        </div>
-                      </div>
-
                       {/* Vehicle Fit Status Badge */}
                       <div
                         className={`status-badge status-badge--style--${
@@ -686,21 +683,6 @@ export function ProductDetailClient({
                           Truck Fitment
                         </a>
                       </li>
-                      <li
-                        className={`product-tabs__item ${
-                          activeTab === "reviews" ? "product-tabs__item--active" : ""
-                        }`}
-                      >
-                        <a
-                          href="#tab-reviews"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveTab("reviews");
-                          }}
-                        >
-                          Reviews <span className="product-tabs__item-counter">3</span>
-                        </a>
-                      </li>
                     </ul>
 
                     <div className="product-tabs__content">
@@ -856,217 +838,6 @@ export function ProductDetailClient({
                         </div>
                       </div>
 
-                      {/* Customer Reviews Pane */}
-                      <div
-                        className={`product-tabs__pane ${
-                          activeTab === "reviews" ? "product-tabs__pane--active" : ""
-                        }`}
-                        id="tab-reviews"
-                      >
-                        <div className="reviews-view">
-                          <div className="reviews-view__list">
-                            <h3 className="reviews-view__header">Customer Reviews (3)</h3>
-                            <div className="reviews-list">
-                              <ol className="reviews-list__content">
-                                <li className="reviews-list__item">
-                                  <div className="review">
-                                    <div className="review__body">
-                                      <div className="review__avatar">
-                                        <div
-                                          style={{
-                                            width: 48,
-                                            height: 48,
-                                            borderRadius: "50%",
-                                            background: "#0081c9",
-                                            color: "#fff",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            fontWeight: 700,
-                                            fontSize: 18,
-                                          }}
-                                        >
-                                          DM
-                                        </div>
-                                      </div>
-                                      <div className="review__meta">
-                                        <div className="review__author">Dave M. — Fleet Maintenance Director</div>
-                                        <div className="review__date">Verified Purchaser • Oct 12, 2026</div>
-                                      </div>
-                                      <div className="review__rating">
-                                        <div className="rating">
-                                          <div className="rating__body">
-                                            {[1, 2, 3, 4, 5].map((s) => (
-                                              <div key={s} className="rating__star rating__star--active" />
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="review__content typography">
-                                        <p>
-                                          We run 42 Cascadia rigs with DD15s. CORALFLY filters hold up through our entire 45,000-mile drain interval without collapse or pressure spikes. Outstanding value.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li className="reviews-list__item">
-                                  <div className="review">
-                                    <div className="review__body">
-                                      <div className="review__avatar">
-                                        <div
-                                          style={{
-                                            width: 48,
-                                            height: 48,
-                                            borderRadius: "50%",
-                                            background: "#28a745",
-                                            color: "#fff",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            fontWeight: 700,
-                                            fontSize: 18,
-                                          }}
-                                        >
-                                          CR
-                                        </div>
-                                      </div>
-                                      <div className="review__meta">
-                                        <div className="review__author">Carlos R. — Owner-Operator</div>
-                                        <div className="review__date">Verified Purchaser • Sep 28, 2026</div>
-                                      </div>
-                                      <div className="review__rating">
-                                        <div className="rating">
-                                          <div className="rating__body">
-                                            {[1, 2, 3, 4, 5].map((s) => (
-                                              <div key={s} className="rating__star rating__star--active" />
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="review__content typography">
-                                        <p>
-                                          Exact fit on my 2022 Volvo VNL 760. High-quality heavy canister and pre-lubed gasket. Free shipping arrived in two days.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-
-                                <li className="reviews-list__item">
-                                  <div className="review">
-                                    <div className="review__body">
-                                      <div className="review__avatar">
-                                        <div
-                                          style={{
-                                            width: 48,
-                                            height: 48,
-                                            borderRadius: "50%",
-                                            background: "#6f42c1",
-                                            color: "#fff",
-                                            display: "flex",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            fontWeight: 700,
-                                            fontSize: 18,
-                                          }}
-                                        >
-                                          TB
-                                        </div>
-                                      </div>
-                                      <div className="review__meta">
-                                        <div className="review__author">Tyler B. — Rig Tech</div>
-                                        <div className="review__date">Verified Purchaser • Aug 14, 2026</div>
-                                      </div>
-                                      <div className="review__rating">
-                                        <div className="rating">
-                                          <div className="rating__body">
-                                            {[1, 2, 3, 4, 5].map((s) => (
-                                              <div key={s} className="rating__star rating__star--active" />
-                                            ))}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div className="review__content typography">
-                                        <p>
-                                          Best price-to-performance ratio in the industry. Seals sit flush with zero bypass. Will be restocking in bulk.
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </li>
-                              </ol>
-                            </div>
-                          </div>
-
-                          {/* Write Review Form */}
-                          <div className="reviews-view__form">
-                            <h3 className="reviews-view__header">Write A Customer Review</h3>
-                            {reviewSubmitted ? (
-                              <div className="alert alert-success">
-                                ✓ Thank you! Your review has been submitted for moderation.
-                              </div>
-                            ) : (
-                              <form onSubmit={handleReviewSubmit} className="reviews-view__form-body">
-                                <div className="form-row">
-                                  <div className="form-group col-md-4">
-                                    <label htmlFor="review-stars">Your Rating</label>
-                                    <select id="review-stars" className="form-control">
-                                      <option value="5">5 Stars Rating</option>
-                                      <option value="4">4 Stars Rating</option>
-                                      <option value="3">3 Stars Rating</option>
-                                      <option value="2">2 Stars Rating</option>
-                                      <option value="1">1 Star Rating</option>
-                                    </select>
-                                  </div>
-                                  <div className="form-group col-md-4">
-                                    <label htmlFor="review-author">Your Name</label>
-                                    <input
-                                      type="text"
-                                      className="form-control"
-                                      id="review-author"
-                                      placeholder="Your Name"
-                                      required
-                                      value={reviewName}
-                                      onChange={(e) => setReviewName(e.target.value)}
-                                    />
-                                  </div>
-                                  <div className="form-group col-md-4">
-                                    <label htmlFor="review-email">Email Address</label>
-                                    <input
-                                      type="email"
-                                      className="form-control"
-                                      id="review-email"
-                                      placeholder="Email Address"
-                                      required
-                                      value={reviewEmail}
-                                      onChange={(e) => setReviewEmail(e.target.value)}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="form-group">
-                                  <label htmlFor="review-text">Your Review</label>
-                                  <textarea
-                                    className="form-control"
-                                    id="review-text"
-                                    rows={4}
-                                    required
-                                    placeholder="Share details of your experience with this filter..."
-                                    value={reviewText}
-                                    onChange={(e) => setReviewText(e.target.value)}
-                                  />
-                                </div>
-                                <div className="form-group mb-0">
-                                  <button type="submit" className="btn btn-primary btn-lg">
-                                    Submit Review
-                                  </button>
-                                </div>
-                              </form>
-                            )}
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -1122,7 +893,6 @@ export function ProductDetailClient({
           >
             <div className="cf-lightbox-title-area">
               <span className="cf-lightbox-title">{product.name}</span>
-              <span className="cf-lightbox-tag">{activeItem.tag}</span>
               <span style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.7)", fontFamily: "monospace" }}>
                 ({activeImageIndex + 1} of {galleryImages.length})
               </span>

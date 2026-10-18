@@ -128,18 +128,13 @@ export function QuickviewModal() {
                 </div>
 
                 <h3 style={{ fontSize: 20, fontWeight: 700, lineHeight: 1.3, marginBottom: 12, color: "#1a1d21" }}>
-                  <Link href={`/shop/${activeProduct.slug}`} onClick={closeQuickview} style={{ color: "inherit", textDecoration: "none" }}>
+                  <Link href={`/shop/${activeProduct.slug}`} scroll={true} onClick={closeQuickview} style={{ color: "inherit", textDecoration: "none" }}>
                     {activeProduct.name}
                   </Link>
                 </h3>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-                  <div style={{ display: "flex", color: "#ffc107" }}>
-                    {"★★★★★"}
-                  </div>
-                  <span style={{ fontSize: 13, color: "#6c757d" }}>4.9 on 18 reviews</span>
-                  <span style={{ margin: "0 4px", color: "#ccc" }}>•</span>
-                  <span style={{ fontSize: 13, color: "#28a745", fontWeight: 600 }}>In Stock</span>
+                  <span style={{ fontSize: 13, color: "#28a745", fontWeight: 600 }}>● In Stock — Ships Today</span>
                 </div>
 
                 <div style={{ fontSize: 26, fontWeight: 700, color: "#0081c9", marginBottom: 16 }}>
@@ -201,6 +196,7 @@ export function QuickviewModal() {
                 <div style={{ fontSize: 13 }}>
                   <Link
                     href={`/shop/${activeProduct.slug}`}
+                    scroll={true}
                     onClick={closeQuickview}
                     style={{ color: "#0081c9", fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
                   >

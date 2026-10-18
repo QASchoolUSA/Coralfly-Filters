@@ -86,7 +86,7 @@ export default function AboutPage() {
           <div className="col-6 col-md-3">
             <div className="card" style={{ padding: 32, border: "1px solid #ebebeb", borderRadius: 4, background: "#f8f9fa" }}>
               <div style={{ fontSize: 36, fontWeight: 800, color: "#0081c9", marginBottom: 4 }}>99.8%</div>
-              <div style={{ fontSize: 14, color: "#6c757d", fontWeight: 600 }}>Fitment Accuracy Rating</div>
+              <div style={{ fontSize: 14, color: "#6c757d", fontWeight: 600 }}>Fitment Accuracy Rate</div>
             </div>
           </div>
           <div className="col-6 col-md-3">

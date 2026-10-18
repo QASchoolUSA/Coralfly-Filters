@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useVehicleStore, isAllowedMake, DEFAULT_VEHICLE, type Vehicle } from "@/lib/vehicle-store";
+import { useVehicleStore, type Vehicle } from "@/lib/vehicle-store";
 
 const VEHICLE_DATA = [
   {
@@ -75,38 +75,30 @@ function VehiclePickerModalContent({
   closePicker: () => void;
   selectVehicle: (v: Vehicle) => void;
 }) {
-  const initial =
-    currentVehicle && isAllowedMake(currentVehicle.make)
-      ? currentVehicle
-      : DEFAULT_VEHICLE;
+  const [selectedYear, setSelectedYear] = useState<string>(currentVehicle?.year || "");
+  const [selectedMake, setSelectedMake] = useState<string>(currentVehicle?.make || "");
+  const [selectedModel, setSelectedModel] = useState<string>(currentVehicle?.model || "");
+  const [selectedEngine, setSelectedEngine] = useState<string>(currentVehicle?.engine || "");
 
-  const [selectedYear, setSelectedYear] = useState<string>(initial.year);
-  const [selectedMake, setSelectedMake] = useState<string>(initial.make);
-  const [selectedModel, setSelectedModel] = useState<string>(initial.model);
-  const [selectedEngine, setSelectedEngine] = useState<string>(initial.engine);
-
-  const makeObj = VEHICLE_DATA.find((m) => m.make.toLowerCase() === selectedMake.toLowerCase()) || VEHICLE_DATA[0];
-  const modelObj = makeObj.models.find((m) => m.name.toLowerCase() === selectedModel.toLowerCase()) || makeObj.models[0];
+  const makeObj = VEHICLE_DATA.find((m) => m.make.toLowerCase() === selectedMake.toLowerCase());
+  const modelObj = makeObj?.models.find((m) => m.name.toLowerCase() === selectedModel.toLowerCase());
 
   const handleMakeChange = (make: string) => {
     setSelectedMake(make);
-    const found = VEHICLE_DATA.find((m) => m.make.toLowerCase() === make.toLowerCase());
-    if (found && found.models.length > 0) {
-      setSelectedModel(found.models[0].name);
-      setSelectedEngine(found.models[0].engines[0]);
-    }
+    setSelectedModel("");
+    setSelectedEngine("");
   };
 
   const handleModelChange = (model: string) => {
     setSelectedModel(model);
-    const foundModel = makeObj.models.find((m) => m.name.toLowerCase() === model.toLowerCase());
-    if (foundModel && foundModel.engines.length > 0) {
-      setSelectedEngine(foundModel.engines[0]);
-    }
+    setSelectedEngine("");
   };
+
+  const isComplete = Boolean(selectedYear && selectedMake && selectedModel && selectedEngine);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isComplete) return;
     selectVehicle({
       year: selectedYear,
       make: selectedMake,
@@ -118,17 +110,22 @@ function VehiclePickerModalContent({
   return (
     <div className="modal fade show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.6)", zIndex: 1050 }}>
       <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 540 }}>
-        <div className="modal-content" style={{ borderRadius: 4, overflow: "hidden" }}>
-          <div className="modal-header" style={{ padding: "16px 24px", borderBottom: "1px solid #ebebeb", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <h5 className="modal-title" style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>
-              Select Vehicle For Exact Fitment
-            </h5>
+        <div className="modal-content" style={{ borderRadius: 6, overflow: "hidden", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
+          <div className="modal-header" style={{ padding: "18px 24px", borderBottom: "1px solid #ebebeb", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              <h5 className="modal-title" style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>
+                {currentVehicle ? "Change Selected Rig" : "Select Your Rig For Exact Fitment"}
+              </h5>
+              <div style={{ fontSize: 13, color: "#6c757d", marginTop: 2 }}>
+                {currentVehicle ? `Currently Selected: ${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}` : "Choose your truck to verify guaranteed filter compatibility"}
+              </div>
+            </div>
             <button
               type="button"
               className="close"
               aria-label="Close"
               onClick={closePicker}
-              style={{ background: "none", border: "none", fontSize: 24, cursor: "pointer", color: "#999", lineHeight: 1 }}
+              style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#999", lineHeight: 1 }}
             >
               &times;
             </button>
@@ -136,20 +133,19 @@ function VehiclePickerModalContent({
 
           <div className="modal-body" style={{ padding: 24 }}>
             <form onSubmit={handleSave}>
-              <p style={{ fontSize: 14, color: "#6c757d", marginBottom: 20 }}>
-                Filters will be automatically filtered and verified for compatibility with your selected rig.
-              </p>
-
               <div className="form-group mb-3">
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                  Select Year
+                <label htmlFor="vehicle-picker-year" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  1. Select Year *
                 </label>
                 <select
+                  id="vehicle-picker-year"
                   className="form-control"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                  style={{ height: 42, fontSize: 14, borderRadius: 4 }}
+                  required
                 >
+                  <option value="">— Choose Year —</option>
                   {YEARS.map((y) => (
                     <option key={y} value={y}>
                       {y}
@@ -159,15 +155,18 @@ function VehiclePickerModalContent({
               </div>
 
               <div className="form-group mb-3">
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                  Select Make
+                <label htmlFor="vehicle-picker-make" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  2. Select Make *
                 </label>
                 <select
+                  id="vehicle-picker-make"
                   className="form-control"
                   value={selectedMake}
                   onChange={(e) => handleMakeChange(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                  style={{ height: 42, fontSize: 14, borderRadius: 4 }}
+                  required
                 >
+                  <option value="">— Choose Commercial Truck Make —</option>
                   {VEHICLE_DATA.map((v) => (
                     <option key={v.make} value={v.make}>
                       {v.make}
@@ -177,16 +176,20 @@ function VehiclePickerModalContent({
               </div>
 
               <div className="form-group mb-3">
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                  Select Model
+                <label htmlFor="vehicle-picker-model" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  3. Select Model *
                 </label>
                 <select
+                  id="vehicle-picker-model"
                   className="form-control"
                   value={selectedModel}
+                  disabled={!selectedMake || !makeObj}
                   onChange={(e) => handleModelChange(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                  style={{ height: 42, fontSize: 14, borderRadius: 4, backgroundColor: !selectedMake ? "#f8f9fa" : "#ffffff" }}
+                  required
                 >
-                  {makeObj.models.map((m) => (
+                  <option value="">{selectedMake ? "— Choose Truck Model —" : "— Select Make First —"}</option>
+                  {makeObj?.models.map((m) => (
                     <option key={m.name} value={m.name}>
                       {m.name}
                     </option>
@@ -195,16 +198,20 @@ function VehiclePickerModalContent({
               </div>
 
               <div className="form-group mb-4">
-                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                  Select Engine
+                <label htmlFor="vehicle-picker-engine" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  4. Select Engine *
                 </label>
                 <select
+                  id="vehicle-picker-engine"
                   className="form-control"
                   value={selectedEngine}
+                  disabled={!selectedModel || !modelObj}
                   onChange={(e) => setSelectedEngine(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                  style={{ height: 42, fontSize: 14, borderRadius: 4, backgroundColor: !selectedModel ? "#f8f9fa" : "#ffffff" }}
+                  required
                 >
-                  {modelObj.engines.map((eng) => (
+                  <option value="">{selectedModel ? "— Choose Engine Configuration —" : "— Select Model First —"}</option>
+                  {modelObj?.engines.map((eng) => (
                     <option key={eng} value={eng}>
                       {eng}
                     </option>
@@ -223,10 +230,19 @@ function VehiclePickerModalContent({
                 </button>
                 <button
                   type="submit"
+                  disabled={!isComplete}
                   className="btn btn-primary"
-                  style={{ height: 42, padding: "0 24px", fontSize: 14, backgroundColor: "#0081c9", borderColor: "#0081c9" }}
+                  style={{
+                    height: 42,
+                    padding: "0 24px",
+                    fontSize: 14,
+                    fontWeight: 600,
+                    backgroundColor: isComplete ? "#0081c9" : "#cbd5e1",
+                    borderColor: isComplete ? "#0081c9" : "#cbd5e1",
+                    cursor: isComplete ? "pointer" : "not-allowed",
+                  }}
                 >
-                  Select Vehicle
+                  Save & Confirm Fitment
                 </button>
               </div>
             </form>

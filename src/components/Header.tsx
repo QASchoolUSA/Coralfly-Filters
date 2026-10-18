@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { useVehicleStore, isAllowedMake } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
@@ -34,13 +34,34 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
 
-  // Live Search
+  // Live Search State
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
+  const [mobileSearchFocused, setMobileSearchFocused] = useState(false);
+  const [desktopSearchFocused, setDesktopSearchFocused] = useState(false);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const desktopSearchRef = useRef<HTMLDivElement>(null);
   const searchTimer = useRef<NodeJS.Timeout | null>(null);
   const [headerCheckoutLoading, setHeaderCheckoutLoading] = useState(false);
+
+  // Close search suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent | TouchEvent) => {
+      if (mobileSearchRef.current && !mobileSearchRef.current.contains(e.target as Node)) {
+        setMobileSearchFocused(false);
+      }
+      if (desktopSearchRef.current && !desktopSearchRef.current.contains(e.target as Node)) {
+        setDesktopSearchFocused(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
 
   const handleHeaderCheckout = async () => {
     if (cartItems.length === 0) return;
@@ -67,7 +88,8 @@ export function Header() {
     setPrevPathname(pathname);
     setMobileMenuOpen(false);
     setDepartmentsOpen(false);
-    setSearchFocused(false);
+    setMobileSearchFocused(false);
+    setDesktopSearchFocused(false);
   }
 
   const handleSearchChange = (val: string) => {
@@ -96,7 +118,8 @@ export function Header() {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      setSearchFocused(false);
+      setMobileSearchFocused(false);
+      setDesktopSearchFocused(false);
       router.push(`/shop?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
@@ -130,140 +153,6 @@ export function Header() {
                 />
               </Link>
 
-              <div className="mobile-header__search mobile-search" style={{ position: "relative" }}>
-                <form className="mobile-search__body" onSubmit={handleSearchSubmit}>
-                  <input
-                    type="text"
-                    className="mobile-search__input"
-                    placeholder="Enter Keyword or Part Number"
-                    value={searchQuery}
-                    onChange={(e) => handleSearchChange(e.target.value)}
-                    onFocus={() => setSearchFocused(true)}
-                  />
-                  <button
-                    type="button"
-                    className="mobile-search__vehicle-picker"
-                    aria-label="Select Vehicle"
-                    onClick={openPicker}
-                    title={
-                      currentVehicle && isAllowedMake(currentVehicle.make)
-                        ? `${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}`
-                        : "Select Vehicle"
-                    }
-                  >
-                    <svg width="20" height="20">
-                      <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z M4,10c-0.4-0.3-1.5-0.5-2,0c-0.4,0.4-0.4,1.6,0,2c0.5,0.5,4,0.4,4,0C6,11.2,4.5,10.3,4,10z M14,12c0,0.4,3.5,0.5,4,0c0.4-0.4,0.4-1.6,0-2c-0.5-0.5-1.3-0.3-2,0C15.5,10.2,14,11.3,14,12z" />
-                    </svg>
-                    <span className="mobile-search__vehicle-picker-label">
-                      {currentVehicle && isAllowedMake(currentVehicle.make)
-                        ? currentVehicle.make
-                        : "Vehicle"}
-                    </span>
-                  </button>
-                  <button type="submit" className="mobile-search__button mobile-search__button--search" aria-label="Search">
-                    <svg width="20" height="20">
-                      <path d="M19.2,17.8c0,0-0.2,0.5-0.5,0.8c-0.4,0.4-0.9,0.6-0.9,0.6s-0.9,0.7-2.8-1.6c-1.1-1.4-2.2-2.8-3.1-3.9C10.9,14.5,9.5,15,8,15c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4c1.1,0.8,2.5,2,4,3.1C20,16.8,19.2,17.8,19.2,17.8z M8,3C5.2,3,3,5.2,3,8c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5C13,5.2,10.8,3,8,3z" />
-                    </svg>
-                  </button>
-                </form>
-
-                {/* Mobile Search Auto-Suggest Dropdown */}
-                {searchFocused && (searchQuery.trim().length >= 2 || searchResults.length > 0) && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "100%",
-                      left: 0,
-                      right: 0,
-                      background: "#ffffff",
-                      boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
-                      borderRadius: 4,
-                      zIndex: 1050,
-                      marginTop: 4,
-                      maxHeight: "65vh",
-                      overflowY: "auto",
-                      border: "1px solid #ebebeb",
-                    }}
-                  >
-                    <div className="suggestions">
-                      {searchLoading && (
-                        <div style={{ padding: "12px 16px", fontSize: 13, color: "#6c757d" }}>
-                          Searching CORALFLY catalog...
-                        </div>
-                      )}
-                      {!searchLoading && searchResults.length === 0 && searchQuery.trim().length >= 2 && (
-                        <div style={{ padding: "12px 16px", fontSize: 13, color: "#6c757d" }}>
-                          No filters matching &ldquo;{searchQuery}&rdquo;.
-                        </div>
-                      )}
-                      {searchResults.length > 0 && (
-                        <div className="suggestions__group">
-                          <div
-                            style={{
-                              padding: "8px 16px",
-                              fontSize: 11,
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              color: "#888",
-                              background: "#f8f9fa",
-                              borderBottom: "1px solid #ebebeb",
-                            }}
-                          >
-                            Matching Products
-                          </div>
-                          {searchResults.slice(0, 5).map((p) => (
-                            <Link
-                              key={p.id}
-                              href={`/shop/${p.slug}`}
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 12,
-                                padding: "10px 16px",
-                                borderBottom: "1px solid #f0f0f0",
-                                textDecoration: "none",
-                                background: "#ffffff",
-                              }}
-                              onClick={() => setSearchFocused(false)}
-                            >
-                              <div style={{ width: 40, height: 40, position: "relative", flexShrink: 0 }}>
-                                <Image
-                                  src={p.image?.url || "/images/products/product-1-245x245.jpg"}
-                                  alt={p.name}
-                                  fill
-                                  sizes="40px"
-                                  style={{ objectFit: "contain" }}
-                                />
-                              </div>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div
-                                  style={{
-                                    fontSize: 13,
-                                    fontWeight: 600,
-                                    color: "#333",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                  }}
-                                >
-                                  {p.name}
-                                </div>
-                                <div style={{ fontSize: 11, color: "#ffc107" }}>
-                                  {"★★★★★"} <span style={{ color: "#28a745", fontWeight: 600, marginLeft: 4 }}>In Stock</span>
-                                </div>
-                              </div>
-                              <div style={{ fontSize: 13, fontWeight: 700, color: "#0081c9", whiteSpace: "nowrap" }}>
-                                {formatPrice(p.price, p.currency)}
-                              </div>
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-
               <div className="mobile-header__indicators">
                 <div className="mobile-indicator">
                   <button type="button" className="mobile-indicator__button" onClick={openCart} aria-label="Cart">
@@ -277,6 +166,184 @@ export function Header() {
                     </span>
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* Dedicated Mobile Search Bar */}
+            <div className="mobile-header__search-row" ref={mobileSearchRef}>
+              <div className="cf-mobile-search-wrapper">
+                <form className="cf-mobile-search" onSubmit={handleSearchSubmit}>
+                  {/* Vehicle Selector Trigger Button */}
+                  <button
+                    type="button"
+                    className={`cf-mobile-search__vehicle-btn ${
+                      currentVehicle && isAllowedMake(currentVehicle.make)
+                        ? "cf-mobile-search__vehicle-btn--selected"
+                        : ""
+                    }`}
+                    onClick={openPicker}
+                    aria-label="Select Vehicle"
+                    title={
+                      currentVehicle && isAllowedMake(currentVehicle.make)
+                        ? `${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}`
+                        : "Select Vehicle"
+                    }
+                  >
+                    <svg width="17" height="17" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z M4,10c-0.4-0.3-1.5-0.5-2,0c-0.4,0.4-0.4,1.6,0,2c0.5,0.5,4,0.4,4,0C6,11.2,4.5,10.3,4,10z M14,12c0,0.4,3.5,0.5,4,0c0.4-0.4,0.4-1.6,0-2c-0.5-0.5-1.3-0.3-2,0C15.5,10.2,14,11.3,14,12z" />
+                    </svg>
+                    <span className="cf-mobile-search__vehicle-text">
+                      {currentVehicle && isAllowedMake(currentVehicle.make)
+                        ? currentVehicle.make
+                        : "Vehicle"}
+                    </span>
+                    <svg width="8" height="5" viewBox="0 0 8 5" fill="none" stroke="currentColor" strokeWidth="1.5">
+                      <path d="M1 1l3 3 3-3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+
+                  {/* Search Input */}
+                  <input
+                    type="text"
+                    className="cf-mobile-search__input"
+                    placeholder="Enter Keyword or Part Number..."
+                    value={searchQuery}
+                    onChange={(e) => handleSearchChange(e.target.value)}
+                    onFocus={() => setMobileSearchFocused(true)}
+                    aria-label="Search filters by keyword or part number"
+                  />
+
+                  {/* Clear Query Button */}
+                  {searchQuery.trim().length > 0 && (
+                    <button
+                      type="button"
+                      className="cf-mobile-search__clear-btn"
+                      onClick={() => {
+                        setSearchQuery("");
+                        setSearchResults([]);
+                      }}
+                      aria-label="Clear search query"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  )}
+
+                  {/* Search Submit Button */}
+                  <button
+                    type="submit"
+                    className="cf-mobile-search__submit-btn"
+                    aria-label="Search"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M19.2,17.8c0,0-0.2,0.5-0.5,0.8c-0.4,0.4-0.9,0.6-0.9,0.6s-0.9,0.7-2.8-1.6c-1.1-1.4-2.2-2.8-3.1-3.9C10.9,14.5,9.5,15,8,15c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7c0,1.5-0.5,2.9-1.3,4c1.1,0.8,2.5,2,4,3.1C20,16.8,19.2,17.8,19.2,17.8z M8,3C5.2,3,3,5.2,3,8c0,2.8,2.2,5,5,5c2.8,0,5-2.2,5-5C13,5.2,10.8,3,8,3z" />
+                    </svg>
+                  </button>
+                </form>
+
+                {/* Mobile Search Auto-Suggest Dropdown */}
+                {mobileSearchFocused && (searchQuery.trim().length >= 2 || searchResults.length > 0) && (
+                  <div className="cf-mobile-search-dropdown">
+                    <div className="suggestions">
+                      {searchLoading && (
+                        <div style={{ padding: "12px 16px", fontSize: 13, color: "#6c757d", display: "flex", alignItems: "center", gap: 8 }}>
+                          <span className="cf-search-spinner" /> Searching CORALFLY catalog...
+                        </div>
+                      )}
+                      {!searchLoading && searchResults.length === 0 && searchQuery.trim().length >= 2 && (
+                        <div style={{ padding: "14px 16px", fontSize: 13, color: "#6c757d", textAlign: "center" }}>
+                          No filters matching &ldquo;{searchQuery}&rdquo;. Try OEM part numbers like OF-220 or AF-410.
+                        </div>
+                      )}
+                      {searchResults.length > 0 && (
+                        <div className="suggestions__group">
+                          <div
+                            style={{
+                              padding: "8px 16px",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              textTransform: "uppercase",
+                              color: "#64748b",
+                              background: "#f8fafc",
+                              borderBottom: "1px solid #e2e8f0",
+                              letterSpacing: "0.5px",
+                            }}
+                          >
+                            Matching Filters ({searchResults.length})
+                          </div>
+                          {searchResults.slice(0, 5).map((p) => (
+                            <Link
+                              key={p.id}
+                              href={`/shop/${p.slug}`}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 12,
+                                padding: "10px 16px",
+                                borderBottom: "1px solid #f1f5f9",
+                                textDecoration: "none",
+                                background: "#ffffff",
+                              }}
+                              onClick={() => setMobileSearchFocused(false)}
+                            >
+                              <div style={{ width: 42, height: 42, position: "relative", flexShrink: 0, background: "#f8fafc", borderRadius: 4, overflow: "hidden" }}>
+                                <Image
+                                  src={p.image?.url || "/images/products/product-1-245x245.jpg"}
+                                  alt={p.name}
+                                  fill
+                                  sizes="42px"
+                                  style={{ objectFit: "contain" }}
+                                />
+                              </div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div
+                                  style={{
+                                    fontSize: 13,
+                                    fontWeight: 600,
+                                    color: "#1e293b",
+                                    whiteSpace: "nowrap",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                  }}
+                                >
+                                  {p.name}
+                                </div>
+                                <div style={{ fontSize: 11, color: "#16a34a", fontWeight: 600, marginTop: 2 }}>
+                                  In Stock • OEM Fit
+                                </div>
+                              </div>
+                              <div style={{ fontSize: 14, fontWeight: 700, color: "#0081c9", whiteSpace: "nowrap" }}>
+                                {formatPrice(p.price, p.currency)}
+                              </div>
+                            </Link>
+                          ))}
+                          <div style={{ padding: "8px 16px", background: "#f8fafc", textAlign: "center" }}>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                setMobileSearchFocused(false);
+                                handleSearchSubmit(e);
+                              }}
+                              style={{
+                                background: "none",
+                                border: "none",
+                                color: "#0081c9",
+                                fontSize: 13,
+                                fontWeight: 600,
+                                cursor: "pointer",
+                                padding: "4px 8px",
+                              }}
+                            >
+                              See all matching filters &rarr;
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -340,7 +407,7 @@ export function Header() {
           </div>
 
           {/* Slanted Search Bar with Vehicle Trigger */}
-          <div className="header__search">
+          <div className="header__search" ref={desktopSearchRef}>
             <div className="search">
               <form className="search__body" onSubmit={handleSearchSubmit}>
                 <div className="search__shadow" />
@@ -350,7 +417,7 @@ export function Header() {
                   placeholder="Enter Keyword or Part Number"
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => setSearchFocused(true)}
+                  onFocus={() => setDesktopSearchFocused(true)}
                 />
 
                 {/* Vehicle Selector Trigger Button */}
@@ -394,12 +461,12 @@ export function Header() {
                 </div>
 
                 {/* Live Auto-Suggest Dropdown */}
-                {searchFocused && (searchQuery.trim().length >= 2 || searchResults.length > 0) && (
+                {desktopSearchFocused && (searchQuery.trim().length >= 2 || searchResults.length > 0) && (
                   <div className="search__dropdown" style={{ display: "block" }}>
                     <div className="suggestions search__suggestions">
                       {searchLoading && (
-                        <div style={{ padding: "12px 20px", fontSize: 13, color: "#6c757d" }}>
-                          Searching CORALFLY catalog...
+                        <div style={{ padding: "12px 20px", fontSize: 13, color: "#6c757d", display: "flex", alignItems: "center", gap: 8 }}>
+                          <span className="cf-search-spinner" /> Searching CORALFLY catalog...
                         </div>
                       )}
                       {!searchLoading && searchResults.length === 0 && searchQuery.trim().length >= 2 && (
@@ -415,7 +482,7 @@ export function Header() {
                               key={p.id}
                               href={`/shop/${p.slug}`}
                               className="suggestions__product"
-                              onClick={() => setSearchFocused(false)}
+                              onClick={() => setDesktopSearchFocused(false)}
                             >
                               <div className="suggestions__product-image" style={{ position: "relative", width: 40, height: 40 }}>
                                 <Image
@@ -428,12 +495,7 @@ export function Header() {
                               </div>
                               <div className="suggestions__product-info">
                                 <div className="suggestions__product-name">{p.name}</div>
-                                <div className="suggestions__product-rating">
-                                  <div className="suggestions__product-rating-stars" style={{ color: "#ffc107", fontSize: 11 }}>
-                                    {"★★★★★"}
-                                  </div>
-                                  <div className="suggestions__product-rating-label">In Stock</div>
-                                </div>
+                                <div style={{ fontSize: 11, color: "#28a745", fontWeight: 600 }}>In Stock</div>
                               </div>
                               <div className="suggestions__product-price">
                                 {formatPrice(p.price, p.currency)}

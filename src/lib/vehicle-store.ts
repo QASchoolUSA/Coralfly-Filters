@@ -40,16 +40,8 @@ type VehicleState = {
 export const useVehicleStore = create<VehicleState>()(
   persist(
     (set) => ({
-      currentVehicle: DEFAULT_VEHICLE,
-      garage: [
-        DEFAULT_VEHICLE,
-        {
-          year: "2021",
-          make: "Freightliner",
-          model: "Cascadia 126",
-          engine: "Detroit DD15 505 HP",
-        },
-      ],
+      currentVehicle: null,
+      garage: [],
       isPickerOpen: false,
       openPicker: () => set({ isPickerOpen: true }),
       closePicker: () => set({ isPickerOpen: false }),
@@ -103,7 +95,7 @@ export const useVehicleStore = create<VehicleState>()(
       clearCurrentVehicle: () => set({ currentVehicle: null }),
     }),
     {
-      name: "coralfly_vehicle_storage_v3",
+      name: "coralfly_vehicle_storage_v4",
       storage: safeLocalStorage,
       onRehydrateStorage: () => (state) => {
         if (!state) return;
@@ -112,20 +104,18 @@ export const useVehicleStore = create<VehicleState>()(
           (!isAllowedMake(state.currentVehicle.make) ||
             state.currentVehicle.make.toLowerCase() === "international")
         ) {
-          state.currentVehicle = DEFAULT_VEHICLE;
+          state.currentVehicle = null;
         }
         if (Array.isArray(state.garage)) {
           state.garage = state.garage.filter(
             (v) => isAllowedMake(v?.make) && v?.make?.toLowerCase() !== "international"
           );
-          if (state.garage.length === 0) {
-            state.garage = [DEFAULT_VEHICLE];
-          }
         }
         if (typeof window !== "undefined") {
           try {
             window.localStorage.removeItem("coralfly_vehicle_storage");
             window.localStorage.removeItem("coralfly_vehicle_storage_v2");
+            window.localStorage.removeItem("coralfly_vehicle_storage_v3");
           } catch {}
         }
       },

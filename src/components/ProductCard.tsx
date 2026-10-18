@@ -75,7 +75,7 @@ export function ProductCard({
       {/* Product Image & Vehicle Fit Badge */}
       <div className="product-card__image">
         <div className="image image--type--product">
-          <Link href={`/shop/${product.slug}`} className="image__body" style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", display: "block" }}>
+          <Link href={`/shop/${product.slug}`} scroll={true} className="image__body" style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", display: "block" }}>
             <Image
               className="image__tag"
               src={imageUrl}
@@ -117,21 +117,8 @@ export function ProductCard({
                 <div className="tag-badge tag-badge--hot">{badge}</div>
               </div>
             )}
-            <Link href={`/shop/${product.slug}`}>{product.name}</Link>
+            <Link href={`/shop/${product.slug}`} scroll={true}>{product.name}</Link>
           </div>
-        </div>
-
-        <div className="product-card__rating">
-          <div className="rating product-card__rating-stars">
-            <div className="rating__body">
-              <div className="rating__star rating__star--active" />
-              <div className="rating__star rating__star--active" />
-              <div className="rating__star rating__star--active" />
-              <div className="rating__star rating__star--active" />
-              <div className="rating__star rating__star--active" />
-            </div>
-          </div>
-          <div className="product-card__rating-label">5.0 on 8 reviews</div>
         </div>
 
         {layout === "list" && (
