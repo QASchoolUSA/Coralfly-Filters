@@ -9,6 +9,7 @@ import { useVehicleStore } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
 
 import { ProductDescription } from "@/components/ProductDescription";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function QuickviewModal() {
   const { activeProduct, isOpen, closeQuickview } = useQuickviewStore();
@@ -29,7 +30,7 @@ export function QuickviewModal() {
   }, [isOpen, closeQuickview]);
 
   if (!isOpen || !activeProduct) return null;
-  const mainImage = activeProduct.images[0]?.url || "/images/products/product-1-245x245.jpg";
+  const mainImage = activeProduct.images[0]?.url || PRODUCT_PLACEHOLDER_IMAGE;
 
   const handleAddToCart = () => {
     addItem(activeProduct, quantity);

@@ -257,50 +257,56 @@ export function ProductDetailClient({
                         }
                       }}
                     >
-                      {/* Top Right Photo Counter Badge */}
-                      <div className="cf-gallery-badge-counter">
-                        <span>
-                          {activeImageIndex + 1} / {galleryImages.length}
-                        </span>
-                      </div>
+                      {/* Top Right Photo Counter Badge (only when multiple images) */}
+                      {galleryImages.length > 1 && (
+                        <div className="cf-gallery-badge-counter">
+                          <span>
+                            {activeImageIndex + 1} / {galleryImages.length}
+                          </span>
+                        </div>
+                      )}
 
-                      {/* Left Navigation Chevron Button */}
-                      <button
-                        type="button"
-                        className="cf-gallery-nav-btn cf-gallery-nav-btn--prev"
-                        aria-label="Previous product image"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goToPrev();
-                        }}
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="15 18 9 12 15 6" />
-                        </svg>
-                      </button>
+                      {/* Left Navigation Chevron Button (only when multiple images) */}
+                      {galleryImages.length > 1 && (
+                        <button
+                          type="button"
+                          className="cf-gallery-nav-btn cf-gallery-nav-btn--prev"
+                          aria-label="Previous product image"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goToPrev();
+                          }}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="15 18 9 12 15 6" />
+                          </svg>
+                        </button>
+                      )}
 
-                      {/* Right Navigation Chevron Button */}
-                      <button
-                        type="button"
-                        className="cf-gallery-nav-btn cf-gallery-nav-btn--next"
-                        aria-label="Next product image"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          goToNext();
-                        }}
-                      >
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                      </button>
+                      {/* Right Navigation Chevron Button (only when multiple images) */}
+                      {galleryImages.length > 1 && (
+                        <button
+                          type="button"
+                          className="cf-gallery-nav-btn cf-gallery-nav-btn--next"
+                          aria-label="Next product image"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            goToNext();
+                          }}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                        </button>
+                      )}
 
                       {/* Continuous Smooth Horizontal Slider Viewport */}
                       <div
                         className="cf-slider-viewport"
-                        onTouchStart={handleTouchStart}
-                        onTouchMove={handleTouchMove}
-                        onTouchEnd={handleTouchEnd}
-                        onTouchCancel={handleTouchEnd}
+                        onTouchStart={galleryImages.length > 1 ? handleTouchStart : undefined}
+                        onTouchMove={galleryImages.length > 1 ? handleTouchMove : undefined}
+                        onTouchEnd={galleryImages.length > 1 ? handleTouchEnd : undefined}
+                        onTouchCancel={galleryImages.length > 1 ? handleTouchEnd : undefined}
                       >
                         <div
                           className="cf-slider-track"
@@ -354,45 +360,49 @@ export function ProductDetailClient({
                       </button>
                     </div>
 
-                    {/* Mobile Pagination Indicator Dots */}
-                    <div className="cf-gallery-dots" role="tablist" aria-label="Product image slides">
-                      {galleryImages.map((_, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          role="tab"
-                          className={`cf-gallery-dot ${activeImageIndex === idx ? "cf-gallery-dot--active" : ""}`}
-                          aria-label={`Go to slide ${idx + 1}`}
-                          aria-selected={activeImageIndex === idx}
-                          onClick={() => setActiveImageIndex(idx)}
-                        />
-                      ))}
-                    </div>
-
-                    {/* Horizontal Thumbnails Row - Clean without angle descriptions */}
-                    <div className="cf-gallery-thumbs-row" role="tablist" aria-label="Product thumbnails">
-                      {galleryImages.map((img, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          role="tab"
-                          className={`cf-gallery-thumb-item ${
-                            activeImageIndex === idx ? "cf-gallery-thumb-item--active" : ""
-                          }`}
-                          onClick={() => setActiveImageIndex(idx)}
-                          aria-label={`Product thumbnail ${idx + 1}`}
-                          aria-selected={activeImageIndex === idx}
-                        >
-                          <Image
-                            src={img.url}
-                            alt=""
-                            fill
-                            sizes="74px"
-                            style={{ objectFit: "contain" }}
+                    {/* Mobile Pagination Indicator Dots (only when multiple images) */}
+                    {galleryImages.length > 1 && (
+                      <div className="cf-gallery-dots" role="tablist" aria-label="Product image slides">
+                        {galleryImages.map((_, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            role="tab"
+                            className={`cf-gallery-dot ${activeImageIndex === idx ? "cf-gallery-dot--active" : ""}`}
+                            aria-label={`Go to slide ${idx + 1}`}
+                            aria-selected={activeImageIndex === idx}
+                            onClick={() => setActiveImageIndex(idx)}
                           />
-                        </button>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Horizontal Thumbnails Row (only when multiple images) */}
+                    {galleryImages.length > 1 && (
+                      <div className="cf-gallery-thumbs-row" role="tablist" aria-label="Product thumbnails">
+                        {galleryImages.map((img, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            role="tab"
+                            className={`cf-gallery-thumb-item ${
+                              activeImageIndex === idx ? "cf-gallery-thumb-item--active" : ""
+                            }`}
+                            onClick={() => setActiveImageIndex(idx)}
+                            aria-label={`Product thumbnail ${idx + 1}`}
+                            aria-selected={activeImageIndex === idx}
+                          >
+                            <Image
+                              src={img.url}
+                              alt=""
+                              fill
+                              sizes="74px"
+                              style={{ objectFit: "contain" }}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   {/* 2.2 Product Header */}
@@ -935,35 +945,39 @@ export function ProductDetailClient({
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            {/* Prev Chevron */}
-            <button
-              type="button"
-              className="cf-lightbox-nav-btn cf-lightbox-nav-btn--prev"
-              aria-label="Previous image"
-              onClick={(e) => {
-                e.stopPropagation();
-                goToPrev();
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
+            {/* Prev Chevron (only when multiple images) */}
+            {galleryImages.length > 1 && (
+              <button
+                type="button"
+                className="cf-lightbox-nav-btn cf-lightbox-nav-btn--prev"
+                aria-label="Previous image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToPrev();
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="15 18 9 12 15 6" />
+                </svg>
+              </button>
+            )}
 
-            {/* Next Chevron */}
-            <button
-              type="button"
-              className="cf-lightbox-nav-btn cf-lightbox-nav-btn--next"
-              aria-label="Next image"
-              onClick={(e) => {
-                e.stopPropagation();
-                goToNext();
-              }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
-            </button>
+            {/* Next Chevron (only when multiple images) */}
+            {galleryImages.length > 1 && (
+              <button
+                type="button"
+                className="cf-lightbox-nav-btn cf-lightbox-nav-btn--next"
+                aria-label="Next image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  goToNext();
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="9 18 15 12 9 6" />
+                </svg>
+              </button>
+            )}
 
             {/* Stage Center Image */}
             <div
@@ -986,29 +1000,31 @@ export function ProductDetailClient({
             </div>
           </div>
 
-          {/* Lightbox Bottom Thumbnails Row */}
-          <div
-            className="cf-lightbox-footer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {galleryImages.map((img, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className={`cf-lightbox-thumb ${activeImageIndex === idx ? "cf-lightbox-thumb--active" : ""}`}
-                onClick={() => setActiveImageIndex(idx)}
-                aria-label={`Switch to ${img.tag}`}
-              >
-                <Image
-                  src={img.url}
-                  alt={img.alt}
-                  fill
-                  sizes="60px"
-                  style={{ objectFit: "contain" }}
-                />
-              </button>
-            ))}
-          </div>
+          {/* Lightbox Bottom Thumbnails Row (only when multiple images) */}
+          {galleryImages.length > 1 && (
+            <div
+              className="cf-lightbox-footer"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {galleryImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  className={`cf-lightbox-thumb ${activeImageIndex === idx ? "cf-lightbox-thumb--active" : ""}`}
+                  onClick={() => setActiveImageIndex(idx)}
+                  aria-label={`Switch to ${img.tag}`}
+                >
+                  <Image
+                    src={img.url}
+                    alt={img.alt}
+                    fill
+                    sizes="60px"
+                    style={{ objectFit: "contain" }}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

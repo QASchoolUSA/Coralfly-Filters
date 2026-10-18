@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function CartView() {
   const { items, setQuantity, removeItem } = useCartStore();
@@ -153,7 +154,7 @@ export function CartView() {
                         <Link href={`/shop/${item.slug}`} className="image__body" style={{ position: "relative", width: 80, height: 80, display: "block" }}>
                           <Image
                             className="image__tag"
-                            src={item.image || "/images/products/product-1-245x245.jpg"}
+                            src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
                             alt={item.name}
                             fill
                             sizes="80px"

@@ -9,6 +9,7 @@ import { useVehicleStore, isAllowedMake } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { MobileCategoriesSheet } from "@/components/MobileCategoriesSheet";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 type SearchResult = {
   id: string;
@@ -792,7 +793,7 @@ export function Header() {
                             >
                               <div style={{ width: 42, height: 42, position: "relative", flexShrink: 0, background: "#f8fafc", borderRadius: 4, overflow: "hidden" }}>
                                 <Image
-                                  src={p.image?.url || "/images/products/product-1-245x245.jpg"}
+                                  src={p.image?.url || PRODUCT_PLACEHOLDER_IMAGE}
                                   alt={p.name}
                                   fill
                                   sizes="42px"
@@ -988,7 +989,7 @@ export function Header() {
                             >
                               <div className="suggestions__product-image" style={{ position: "relative", width: 40, height: 40 }}>
                                 <Image
-                                  src={p.image?.url || "/images/products/product-1-245x245.jpg"}
+                                  src={p.image?.url || PRODUCT_PLACEHOLDER_IMAGE}
                                   alt={p.name}
                                   fill
                                   sizes="40px"
@@ -1046,7 +1047,7 @@ export function Header() {
                               <Link className="image__body" href={`/shop/${item.slug}`} style={{ position: "relative", width: "100%", height: "100%", display: "block" }}>
                                 <Image
                                   className="image__tag"
-                                  src={item.image || "/images/products/product-1-245x245.jpg"}
+                                  src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
                                   alt={item.name}
                                   fill
                                   sizes="70px"

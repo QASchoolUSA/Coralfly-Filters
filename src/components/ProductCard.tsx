@@ -7,6 +7,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useQuickviewStore } from "@/lib/quickview-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 import type { Product } from "@/sanity/types";
 
 export function ProductCard({
@@ -45,7 +46,7 @@ export function ProductCard({
   };
 
   const imageUrl =
-    product.images[0]?.url || "/images/products/product-1-245x245.jpg";
+    product.images[0]?.url || PRODUCT_PLACEHOLDER_IMAGE;
 
   const oldPrice =
     product.compareAtPrice && product.compareAtPrice > product.price

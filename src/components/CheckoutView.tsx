@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function CheckoutView() {
   const { items } = useCartStore();
@@ -246,7 +247,7 @@ export function CheckoutView() {
                   >
                     <div style={{ width: 50, height: 50, position: "relative", flexShrink: 0 }}>
                       <Image
-                        src={item.image || "/images/products/product-1-245x245.jpg"}
+                        src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
                         alt={item.name}
                         fill
                         sizes="50px"
