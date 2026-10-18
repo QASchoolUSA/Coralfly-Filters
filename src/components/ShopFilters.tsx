@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import type { Product } from "@/sanity/types";
@@ -33,6 +33,25 @@ export function ShopFilters({ products, categories }: Props) {
   const [inStockOnly, setInStockOnly] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "name">("default");
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Mobile Drawer State
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState<boolean>(false);
+  const [mobileDrawerTab, setMobileDrawerTab] = useState<"filters" | "sort">("filters");
+
+  // Lock body scroll when mobile filter drawer is open
+  useEffect(() => {
+    if (!isMobileDrawerOpen) return;
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMobileDrawerOpen(false);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMobileDrawerOpen]);
 
   const itemsPerPage = 12;
 
@@ -138,6 +157,19 @@ export function ShopFilters({ products, categories }: Props) {
     (priceMax < 150 ? 1 : 0) +
     (inStockOnly ? 1 : 0) +
     (currentVehicle ? 1 : 0);
+
+  const getSortLabel = () => {
+    switch (sortBy) {
+      case "price-asc":
+        return "Price: Low to High";
+      case "price-desc":
+        return "Price: High to Low";
+      case "name":
+        return "Name: A to Z";
+      default:
+        return "Featured";
+    }
+  };
 
   return (
     <div className="block">
@@ -388,8 +420,131 @@ export function ShopFilters({ products, categories }: Props) {
             {/* Right Main Content */}
             <div className="block-split__item-content col-12 col-lg-9">
               <div className="block">
-                {/* View Options Control Bar */}
-                <div className="view-options" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, marginBottom: 24 }}>
+                {/* Mobile Filter & Sort Control Bar (Visible on mobile/tablet < 992px) */}
+                <div className="cf-shop-mobile-bar d-lg-none">
+                  <div className="cf-shop-mobile-actions">
+                    <button
+                      type="button"
+                      className={`cf-shop-mobile-btn ${activeFilterCount > 0 ? "cf-shop-mobile-btn--active" : ""}`}
+                      onClick={() => {
+                        setMobileDrawerTab("filters");
+                        setIsMobileDrawerOpen(true);
+                      }}
+                      aria-label="Open filter options"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="4" y1="21" x2="4" y2="14" />
+                        <line x1="4" y1="10" x2="4" y2="3" />
+                        <line x1="12" y1="21" x2="12" y2="12" />
+                        <line x1="12" y1="8" x2="12" y2="3" />
+                        <line x1="20" y1="21" x2="20" y2="16" />
+                        <line x1="20" y1="12" x2="20" y2="3" />
+                        <line x1="1" y1="14" x2="7" y2="14" />
+                        <line x1="9" y1="8" x2="15" y2="8" />
+                        <line x1="17" y1="16" x2="23" y2="16" />
+                      </svg>
+                      <span>Filters</span>
+                      {activeFilterCount > 0 && (
+                        <span className="cf-shop-mobile-badge">{activeFilterCount}</span>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      className="cf-shop-mobile-btn"
+                      onClick={() => {
+                        setMobileDrawerTab("sort");
+                        setIsMobileDrawerOpen(true);
+                      }}
+                      aria-label="Open sorting options"
+                    >
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="7 15 12 20 17 15" />
+                        <polyline points="17 9 12 4 7 9" />
+                      </svg>
+                      <span className="cf-shop-mobile-btn-text">
+                        Sort: <strong>{getSortLabel()}</strong>
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Active Filter Chips (Instant 1-Tap Dismissal) */}
+                  {activeFilterCount > 0 && (
+                    <div className="cf-shop-active-chips">
+                      {selectedCategory !== "all" && (
+                        <button
+                          type="button"
+                          className="cf-shop-chip"
+                          onClick={() => handleCategorySelect("all")}
+                          title="Remove category filter"
+                        >
+                          <span>{selectedCategory}</span>
+                          <span className="cf-shop-chip__remove">✕</span>
+                        </button>
+                      )}
+                      {selectedMake !== "all" && (
+                        <button
+                          type="button"
+                          className="cf-shop-chip"
+                          onClick={() => handleMakeSelect("all")}
+                          title="Remove truck make filter"
+                        >
+                          <span>Make: {selectedMake}</span>
+                          <span className="cf-shop-chip__remove">✕</span>
+                        </button>
+                      )}
+                      {currentVehicle && (
+                        <button
+                          type="button"
+                          className="cf-shop-chip cf-shop-chip--rig"
+                          onClick={clearCurrentVehicle}
+                          title="Remove active truck filter"
+                        >
+                          <span>Rig: {currentVehicle.make} {currentVehicle.model}</span>
+                          <span className="cf-shop-chip__remove">✕</span>
+                        </button>
+                      )}
+                      {priceMax < 150 && (
+                        <button
+                          type="button"
+                          className="cf-shop-chip"
+                          onClick={() => setPriceMax(150)}
+                          title="Remove price limit"
+                        >
+                          <span>Under ${priceMax}</span>
+                          <span className="cf-shop-chip__remove">✕</span>
+                        </button>
+                      )}
+                      {inStockOnly && (
+                        <button
+                          type="button"
+                          className="cf-shop-chip"
+                          onClick={() => setInStockOnly(false)}
+                          title="Remove in-stock filter"
+                        >
+                          <span>In Stock</span>
+                          <span className="cf-shop-chip__remove">✕</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        className="cf-shop-chip cf-shop-chip--clear-all"
+                        onClick={handleResetFilters}
+                      >
+                        Reset All
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Mobile Counter */}
+                  <div className="cf-shop-mobile-count">
+                    Showing {sortedProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}–
+                    {Math.min(currentPage * itemsPerPage, sortedProducts.length)} of {sortedProducts.length} filters
+                  </div>
+                </div>
+
+                {/* Desktop View Options Control Bar (Visible on desktop >= 992px) */}
+                <div className="view-options d-none d-lg-flex" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, marginBottom: 24 }}>
                   {/* Legend / Counters */}
                   <div className="view-options__legend" style={{ fontSize: 13, color: "#6c757d" }}>
                     Showing {sortedProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}–
@@ -480,6 +635,280 @@ export function ShopFilters({ products, categories }: Props) {
           </div>
         </div>
       </div>
+      {/* Mobile Slide-Up Filter & Sort Drawer */}
+      {isMobileDrawerOpen && (
+        <div
+          className="cf-shop-drawer-overlay"
+          onClick={() => setIsMobileDrawerOpen(false)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="cf-shop-drawer-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Grab Handle */}
+            <div
+              className="cf-sheet-grab-bar"
+              onClick={() => setIsMobileDrawerOpen(false)}
+            >
+              <div className="cf-sheet-grab-handle" />
+            </div>
+
+            {/* Drawer Header */}
+            <div className="cf-shop-drawer-header">
+              <div className="cf-shop-drawer-title-wrap">
+                <div className="cf-shop-drawer-title">Filter &amp; Sort</div>
+                {activeFilterCount > 0 && (
+                  <span className="cf-shop-drawer-badge">{activeFilterCount} active</span>
+                )}
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                {activeFilterCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleResetFilters}
+                    className="cf-shop-drawer-reset-btn"
+                  >
+                    Reset
+                  </button>
+                )}
+                <button
+                  type="button"
+                  className="cf-sheet-close-btn"
+                  onClick={() => setIsMobileDrawerOpen(false)}
+                  aria-label="Close"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Mode Switcher Tabs */}
+            <div className="cf-shop-drawer-tabs">
+              <button
+                type="button"
+                className={`cf-shop-drawer-tab ${mobileDrawerTab === "filters" ? "cf-shop-drawer-tab--active" : ""}`}
+                onClick={() => setMobileDrawerTab("filters")}
+              >
+                <span>Filter Products</span>
+                {activeFilterCount > 0 && (
+                  <span className="cf-shop-drawer-tab-pill">{activeFilterCount}</span>
+                )}
+              </button>
+              <button
+                type="button"
+                className={`cf-shop-drawer-tab ${mobileDrawerTab === "sort" ? "cf-shop-drawer-tab--active" : ""}`}
+                onClick={() => setMobileDrawerTab("sort")}
+              >
+                <span>Sort Options</span>
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="cf-shop-drawer-body">
+              {mobileDrawerTab === "sort" ? (
+                /* Sort Options Tab */
+                <div className="cf-shop-sort-list">
+                  {[
+                    { id: "default", label: "Featured / Default" },
+                    { id: "price-asc", label: "Price: Low to High" },
+                    { id: "price-desc", label: "Price: High to Low" },
+                    { id: "name", label: "Product Name (A–Z)" },
+                  ].map((opt) => {
+                    const isSelected = sortBy === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        className={`cf-shop-sort-card ${isSelected ? "cf-shop-sort-card--active" : ""}`}
+                        onClick={() => {
+                          setSortBy(opt.id as "default" | "price-asc" | "price-desc" | "name");
+                          setCurrentPage(1);
+                        }}
+                      >
+                        <span className="cf-shop-sort-card-label">{opt.label}</span>
+                        <span className="cf-shop-sort-card-check">
+                          {isSelected ? (
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0081c9" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            <span style={{ display: "inline-block", width: 16, height: 16, borderRadius: "50%", border: "2px solid #cbd5e1" }} />
+                          )}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                /* Filters Tab */
+                <div className="cf-shop-filter-sections">
+                  {/* Vehicle Fitment */}
+                  <div className="cf-shop-drawer-section">
+                    <div className="cf-sheet-section-title">Vehicle Fitment</div>
+                    {currentVehicle ? (
+                      <div className="cf-sheet-vehicle-card" style={{ marginBottom: 0 }}>
+                        <div className="cf-sheet-vehicle-info">
+                          <div className="cf-sheet-vehicle-label">Active Rig</div>
+                          <div className="cf-sheet-vehicle-val">
+                            {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
+                          </div>
+                        </div>
+                        <div className="cf-sheet-vehicle-actions">
+                          <button
+                            type="button"
+                            className="cf-sheet-vehicle-btn cf-sheet-vehicle-btn--primary"
+                            onClick={() => {
+                              setIsMobileDrawerOpen(false);
+                              openPicker();
+                            }}
+                          >
+                            Change
+                          </button>
+                          <button
+                            type="button"
+                            className="cf-sheet-vehicle-btn cf-sheet-vehicle-btn--clear"
+                            onClick={clearCurrentVehicle}
+                          >
+                            Clear
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => {
+                          setIsMobileDrawerOpen(false);
+                          openPicker();
+                        }}
+                        style={{ width: "100%", borderColor: "#0081c9", color: "#0081c9", padding: "10px", borderRadius: 8, fontWeight: 600 }}
+                      >
+                        + Select Vehicle Rig
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Categories */}
+                  <div className="cf-shop-drawer-section">
+                    <div className="cf-sheet-section-title">Categories</div>
+                    <div className="cf-shop-cat-list">
+                      <button
+                        type="button"
+                        className={`cf-shop-cat-row ${selectedCategory === "all" ? "cf-shop-cat-row--active" : ""}`}
+                        onClick={() => handleCategorySelect("all")}
+                      >
+                        <span>All Categories</span>
+                        <span className="cf-shop-cat-count">{products.length}</span>
+                      </button>
+                      {categories.map((cat) => {
+                        const count = products.filter((p) => normalizeCategory(p.category) === normalizeCategory(cat)).length;
+                        const isSelected = normalizeCategory(selectedCategory) === normalizeCategory(cat);
+                        return (
+                          <button
+                            key={cat}
+                            type="button"
+                            className={`cf-shop-cat-row ${isSelected ? "cf-shop-cat-row--active" : ""}`}
+                            onClick={() => handleCategorySelect(cat)}
+                          >
+                            <span>{cat}</span>
+                            <span className="cf-shop-cat-count">{count}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Truck Makes */}
+                  {availableMakes.length > 0 && (
+                    <div className="cf-shop-drawer-section">
+                      <div className="cf-sheet-section-title">Filter by Truck Make</div>
+                      <div className="cf-shop-makes-grid">
+                        <button
+                          type="button"
+                          className={`cf-shop-make-pill ${selectedMake === "all" ? "cf-shop-make-pill--active" : ""}`}
+                          onClick={() => handleMakeSelect("all")}
+                        >
+                          All Makes
+                        </button>
+                        {availableMakes.map((m) => {
+                          const isChecked = selectedMake.toLowerCase() === m.toLowerCase();
+                          const count = products.filter((p) => p.compatibleMakes?.some((cm) => cm.toLowerCase() === m.toLowerCase())).length;
+                          return (
+                            <button
+                              key={m}
+                              type="button"
+                              className={`cf-shop-make-pill ${isChecked ? "cf-shop-make-pill--active" : ""}`}
+                              onClick={() => handleMakeSelect(isChecked ? "all" : m)}
+                            >
+                              <span>{m}</span>
+                              <span style={{ fontSize: 11, opacity: 0.7 }}>({count})</span>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Price Range Slider */}
+                  <div className="cf-shop-drawer-section">
+                    <div className="cf-sheet-section-title" style={{ display: "flex", justifyContent: "space-between" }}>
+                      <span>Price Range</span>
+                      <strong style={{ color: "#0081c9", textTransform: "none" }}>Up to ${priceMax}</strong>
+                    </div>
+                    <input
+                      type="range"
+                      min={10}
+                      max={150}
+                      step={5}
+                      value={priceMax}
+                      onChange={(e) => setPriceMax(Number(e.target.value))}
+                      style={{ width: "100%", accentColor: "#0081c9", marginTop: 8 }}
+                    />
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: "#64748b", marginTop: 4 }}>
+                      <span>$10</span>
+                      <span>$150</span>
+                    </div>
+                  </div>
+
+                  {/* Availability */}
+                  <div className="cf-shop-drawer-section">
+                    <label style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 14, cursor: "pointer", color: "#1e293b", margin: 0 }}>
+                      <input
+                        type="checkbox"
+                        checked={inStockOnly}
+                        onChange={(e) => setInStockOnly(e.target.checked)}
+                        style={{ width: 18, height: 18, accentColor: "#0081c9" }}
+                      />
+                      <span style={{ fontWeight: 600 }}>In Stock Only</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Sticky Bottom Action Bar */}
+            <div className="cf-shop-drawer-footer">
+              <button
+                type="button"
+                className="cf-shop-drawer-btn cf-shop-drawer-btn--reset"
+                onClick={handleResetFilters}
+              >
+                Reset All
+              </button>
+              <button
+                type="button"
+                className="cf-shop-drawer-btn cf-shop-drawer-btn--apply"
+                onClick={() => setIsMobileDrawerOpen(false)}
+              >
+                Show {sortedProducts.length} Results
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="block-space block-space--layout--before-footer" />
     </div>
   );
