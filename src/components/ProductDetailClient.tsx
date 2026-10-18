@@ -165,7 +165,7 @@ export function ProductDetailClient({
     },
     offers: {
       "@type": "Offer",
-      url: `https://www.coralflyfilters.com/shop/${product.slug}`,
+      url: `https://coralflyfilters.com/shop/${product.slug}`,
       priceCurrency: (product.currency || "USD").toUpperCase(),
       price: product.price,
       itemCondition: "https://schema.org/NewCondition",

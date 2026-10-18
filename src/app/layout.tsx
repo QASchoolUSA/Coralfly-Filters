@@ -10,7 +10,7 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.coralflyfilters.com"),
+  metadataBase: new URL("https://coralflyfilters.com"),
   title: {
     default: "CORALFLY | Heavy Duty Filters for Semi Trucks",
     template: "%s | CORALFLY",
@@ -21,13 +21,13 @@ export const metadata: Metadata = {
     title: "CORALFLY | Heavy Duty Filters for Semi Trucks",
     description:
       "Heavy duty commercial semi truck filters — Oil, Air, Fuel, and Cabin filters for Volvo, Freightliner, Kenworth, and Peterbilt.",
-    url: "https://www.coralflyfilters.com",
+    url: "https://coralflyfilters.com",
     siteName: "CORALFLY Filters",
     locale: "en_US",
     type: "website",
     images: [
       {
-        url: "/images/og-business-card.png",
+        url: "https://coralflyfilters.com/images/og-business-card.png",
         width: 1200,
         height: 630,
         alt: "CORALFLY - Heavy Duty Filters for Semi Trucks",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "CORALFLY | Heavy Duty Filters for Semi Trucks",
     description:
       "Heavy duty commercial semi truck filters — Oil, Air, Fuel, and Cabin filters for Volvo, Freightliner, Kenworth, and Peterbilt.",
-    images: ["/images/og-business-card.png"],
+    images: ["https://coralflyfilters.com/images/og-business-card.png"],
   },
   icons: {
     icon: [
@@ -57,11 +57,11 @@ const storeJsonLd = {
   "@graph": [
     {
       "@type": "AutoPartsStore",
-      "@id": "https://www.coralflyfilters.com/#store",
+      "@id": "https://coralflyfilters.com/#store",
       name: "CORALFLY Filters",
-      url: "https://www.coralflyfilters.com",
-      logo: "https://www.coralflyfilters.com/brand/logo.png",
-      image: "https://www.coralflyfilters.com/images/banners/banner1.jpg",
+      url: "https://coralflyfilters.com",
+      logo: "https://coralflyfilters.com/brand/logo.png",
+      image: "https://coralflyfilters.com/images/banners/banner1.jpg",
       telephone: "+1-407-768-1488",
       email: "support@coralflyfilters.com",
       address: {
@@ -92,15 +92,15 @@ const storeJsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://www.coralflyfilters.com/#website",
-      url: "https://www.coralflyfilters.com",
+      "@id": "https://coralflyfilters.com/#website",
+      url: "https://coralflyfilters.com",
       name: "CORALFLY Filters",
       publisher: {
-        "@id": "https://www.coralflyfilters.com/#store",
+        "@id": "https://coralflyfilters.com/#store",
       },
       potentialAction: {
         "@type": "SearchAction",
-        target: "https://www.coralflyfilters.com/shop?q={search_term_string}",
+        target: "https://coralflyfilters.com/shop?q={search_term_string}",
         "query-input": "required name=search_term_string",
       },
     },

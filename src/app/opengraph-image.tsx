@@ -267,7 +267,7 @@ export default async function OpenGraphImage() {
                 letterSpacing: "0.02em",
               }}
             >
-              www.coralflyfilters.com
+              coralflyfilters.com
             </span>
             <span
               style={{

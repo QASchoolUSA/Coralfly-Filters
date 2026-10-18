@@ -4,7 +4,7 @@ import { guides } from "@/lib/guides";
 import { getCatalogCategories, getCatalogMakes, isFilterCategory } from "@/lib/catalog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.coralflyfilters.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://coralflyfilters.com";
   const now = new Date();
 
   // Static core routes
