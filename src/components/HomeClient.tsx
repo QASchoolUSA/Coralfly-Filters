@@ -50,7 +50,6 @@ const FILTER_TYPE_DIRECTORIES = [
   {
     id: "oil-filters",
     title: "Oil Filters",
-    badge: "Lube & Bypass",
     subtitle: "Heavy-duty full-flow spin-on and bypass lube cartridges",
     iconType: "oil" as const,
     categoryParam: "Oil Filters",
@@ -65,7 +64,6 @@ const FILTER_TYPE_DIRECTORIES = [
   {
     id: "air-filters",
     title: "Air Filters",
-    badge: "RadialSeal",
     subtitle: "High-airflow engine intake and secondary safety elements",
     iconType: "air" as const,
     categoryParam: "Air Filters",
@@ -80,7 +78,6 @@ const FILTER_TYPE_DIRECTORIES = [
   {
     id: "fuel-filters",
     title: "Fuel & Separators",
-    badge: "Water Separation",
     subtitle: "Primary and secondary diesel fuel spin-ons with water bowls",
     iconType: "fuel" as const,
     categoryParam: "Fuel Filters",
@@ -95,7 +92,6 @@ const FILTER_TYPE_DIRECTORIES = [
   {
     id: "cabin-filters",
     title: "Cabin Air Filters",
-    badge: "HVAC Clean Air",
     subtitle: "Multi-stage activated carbon sleeper-cab ventilation",
     iconType: "cabin" as const,
     categoryParam: "Cabin Filters",
@@ -113,66 +109,61 @@ const TRUCK_MAKE_DIRECTORIES = [
   {
     id: "volvo",
     title: "Volvo Trucks",
-    tag: "VNL 760 · 860 · VNR",
     engine: "D13, D13TC, D11 Engines",
     makeParam: "Volvo",
     options: [
-      { label: "Volvo Oil Filters", category: "Oil Filters" },
-      { label: "Volvo Air Filters", category: "Air Filters" },
-      { label: "Volvo Fuel Separators", category: "Fuel Filters" },
-      { label: "Volvo Cabin Air Filters", category: "Cabin Filters" },
+      { label: "Oil Filters", category: "Oil Filters" },
+      { label: "Air Filters", category: "Air Filters" },
+      { label: "Fuel Filters", category: "Fuel Filters" },
+      { label: "Cabin Filters", category: "Cabin Filters" },
     ],
   },
   {
     id: "freightliner",
     title: "Freightliner",
-    tag: "Cascadia · 114SD · 122SD",
     engine: "Detroit DD15, DD13, DD16",
     makeParam: "Freightliner",
     options: [
-      { label: "Freightliner Oil Filters", category: "Oil Filters" },
-      { label: "Freightliner Air Filters", category: "Air Filters" },
-      { label: "Freightliner Fuel Separators", category: "Fuel Filters" },
-      { label: "Freightliner Cabin Air Filters", category: "Cabin Filters" },
+      { label: "Oil Filters", category: "Oil Filters" },
+      { label: "Air Filters", category: "Air Filters" },
+      { label: "Fuel Filters", category: "Fuel Filters" },
+      { label: "Cabin Filters", category: "Cabin Filters" },
     ],
   },
   {
     id: "kenworth",
     title: "Kenworth",
-    tag: "T680 · W900 · T880",
     engine: "PACCAR MX-13, Cummins X15",
     makeParam: "Kenworth",
     options: [
-      { label: "Kenworth Oil Filters", category: "Oil Filters" },
-      { label: "Kenworth Air Filters", category: "Air Filters" },
-      { label: "Kenworth Fuel Separators", category: "Fuel Filters" },
-      { label: "Kenworth Cabin Air Filters", category: "Cabin Filters" },
+      { label: "Oil Filters", category: "Oil Filters" },
+      { label: "Air Filters", category: "Air Filters" },
+      { label: "Fuel Filters", category: "Fuel Filters" },
+      { label: "Cabin Filters", category: "Cabin Filters" },
     ],
   },
   {
     id: "peterbilt",
     title: "Peterbilt",
-    tag: "Model 579 · 389 · 567",
     engine: "PACCAR MX-13, Cummins X15",
     makeParam: "Peterbilt",
     options: [
-      { label: "Peterbilt Oil Filters", category: "Oil Filters" },
-      { label: "Peterbilt Air Filters", category: "Air Filters" },
-      { label: "Peterbilt Fuel Separators", category: "Fuel Filters" },
-      { label: "Peterbilt Cabin Air Filters", category: "Cabin Filters" },
+      { label: "Oil Filters", category: "Oil Filters" },
+      { label: "Air Filters", category: "Air Filters" },
+      { label: "Fuel Filters", category: "Fuel Filters" },
+      { label: "Cabin Filters", category: "Cabin Filters" },
     ],
   },
   {
     id: "mack",
     title: "Mack Trucks",
-    tag: "Anthem · Pinnacle · Granite",
     engine: "Mack MP8, MP7 Engines",
     makeParam: "Mack",
     options: [
-      { label: "Mack Oil Filters", category: "Oil Filters" },
-      { label: "Mack Air Filters", category: "Air Filters" },
-      { label: "Mack Fuel Separators", category: "Fuel Filters" },
-      { label: "Mack Cabin Air Filters", category: "Cabin Filters" },
+      { label: "Oil Filters", category: "Oil Filters" },
+      { label: "Air Filters", category: "Air Filters" },
+      { label: "Fuel Filters", category: "Fuel Filters" },
+      { label: "Cabin Filters", category: "Cabin Filters" },
     ],
   },
 ];
@@ -390,7 +381,6 @@ export function HomeClient({
                   <div className="home-directory-card__header-content">
                     <div className="home-directory-card__title-row">
                       <h3 className="home-directory-card__title">{cat.title}</h3>
-                      <span className="home-directory-card__badge">{cat.badge}</span>
                     </div>
                     <p className="home-directory-card__subtitle">{cat.subtitle}</p>
                   </div>
@@ -457,9 +447,6 @@ export function HomeClient({
                     <div className="home-directory-card__title-row">
                       <h3 className="home-directory-card__title">{maker.title}</h3>
                     </div>
-                    <span className="home-directory-card__badge" style={{ display: "inline-block", marginTop: 2 }}>
-                      {maker.tag}
-                    </span>
                     <p className="home-directory-card__subtitle" style={{ marginTop: 4 }}>
                       {maker.engine}
                     </p>
