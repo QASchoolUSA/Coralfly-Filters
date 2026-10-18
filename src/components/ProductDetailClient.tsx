@@ -901,57 +901,26 @@ export function ProductDetailClient({
             setIsZoomed(false);
           }}
         >
-          {/* Lightbox Top Navigation Bar */}
+          {/* Lightbox Top Navigation Bar - Clean, Minimal Header */}
           <div
             className="cf-lightbox-header"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="cf-lightbox-title-area">
-              <span className="cf-lightbox-title">{product.name}</span>
-              <span style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.7)", fontFamily: "monospace" }}>
-                ({activeImageIndex + 1} of {galleryImages.length})
-              </span>
-            </div>
-
-            <div className="cf-lightbox-controls">
-              {/* Zoom Toggle Button */}
-              <button
-                type="button"
-                className="cf-lightbox-action-btn"
-                onClick={() => setIsZoomed((prev) => !prev)}
-                aria-label={isZoomed ? "Zoom out to 100%" : "Zoom in to 160%"}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="11" cy="11" r="8" />
-                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  {isZoomed ? (
-                    <line x1="8" y1="11" x2="14" y2="11" />
-                  ) : (
-                    <>
-                      <line x1="11" y1="8" x2="11" y2="14" />
-                      <line x1="8" y1="11" x2="14" y2="11" />
-                    </>
-                  )}
-                </svg>
-                <span>{isZoomed ? "100%" : "Zoom"}</span>
-              </button>
-
-              {/* Close Fullscreen Button */}
-              <button
-                type="button"
-                className="cf-lightbox-close-btn"
-                onClick={() => {
-                  setIsLightboxOpen(false);
-                  setIsZoomed(false);
-                }}
-                aria-label="Close fullscreen gallery"
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
-            </div>
+            <div className="cf-lightbox-header-spacer" />
+            <button
+              type="button"
+              className="cf-lightbox-close-btn"
+              onClick={() => {
+                setIsLightboxOpen(false);
+                setIsZoomed(false);
+              }}
+              aria-label="Close fullscreen gallery"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
           </div>
 
           {/* Lightbox Center Stage */}
