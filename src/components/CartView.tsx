@@ -8,7 +8,7 @@ import { formatPrice } from "@/lib/format";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function CartView() {
-  const { items, setQuantity, removeItem } = useCartStore();
+  const { items, setQuantity, removeItem, clear } = useCartStore();
   const [coupon, setCoupon] = useState("");
   const [discountPercent, setDiscountPercent] = useState(0);
   const [couponError, setCouponError] = useState("");
@@ -44,48 +44,47 @@ export function CartView() {
   const discountAmount = (subtotal * discountPercent) / 100;
   const shippingAmount = subtotal >= 75 || subtotal === 0 ? 0 : 12;
   const grandTotal = Math.max(0, subtotal - discountAmount + shippingAmount);
+  const progressPercent = Math.min(100, Math.round((subtotal / 75) * 100));
+  const amountToFreeShipping = Math.max(0, 75 - subtotal);
+  const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
-    if (coupon.trim().toUpperCase() === "FLEET10" || coupon.trim().toUpperCase() === "CORALFLY") {
+    const cleanCoupon = coupon.trim().toUpperCase();
+    if (cleanCoupon === "FLEET10" || cleanCoupon === "CORALFLY") {
       setDiscountPercent(10);
       setCouponError("");
+      setCoupon("");
     } else {
-      setCouponError("Invalid coupon code. Try FLEET10 for 10% off.");
+      setCouponError("Invalid coupon code. Try FLEET10 for 10% fleet discount.");
     }
+  };
+
+  const handleRemoveCoupon = () => {
+    setDiscountPercent(0);
+    setCouponError("");
   };
 
   if (items.length === 0) {
     return (
-      <div className="block" style={{ padding: "80px 0" }}>
-        <div className="container">
-          <div
-            className="card"
-            style={{
-              padding: "48px 32px",
-              textAlign: "center",
-              maxWidth: 580,
-              margin: "0 auto",
-              boxShadow: "0 1px 3px rgba(0,0,0,.09)",
-            }}
-          >
-            <div style={{ fontSize: 54, marginBottom: 16 }}>🛒</div>
-            <h2 style={{ fontSize: 24, fontWeight: 700, marginBottom: 12, color: "#212529" }}>
-              Your Shopping Cart is Empty
-            </h2>
-            <p style={{ color: "#6c757d", fontSize: 15, marginBottom: 24, lineHeight: 1.6 }}>
-              Your heavy duty filtration cart is currently empty. Explore our complete catalog of oil,
-              fuel, air, and cabin filters for commercial fleets.
-            </p>
-            <div>
-              <Link
-                href="/shop"
-                className="btn btn-primary btn-lg"
-                style={{ backgroundColor: "#0081c9", borderColor: "#0081c9", padding: "12px 36px" }}
-              >
-                Browse All Products
-              </Link>
-            </div>
+      <div className="cf-cart-container">
+        <div className="cf-cart-empty">
+          <div className="cf-cart-empty__icon">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="8" cy="21" r="1" />
+              <circle cx="19" cy="21" r="1" />
+              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+            </svg>
+          </div>
+          <h2 className="cf-cart-empty__title">Your Shopping Cart is Empty</h2>
+          <p className="cf-cart-empty__desc">
+            Your heavy duty filtration cart has no items. Explore our complete OEM-grade catalog of oil,
+            fuel, air, and cabin filters for commercial fleets.
+          </p>
+          <div className="cf-cart-empty__actions">
+            <Link href="/shop" className="cf-cart-empty__primary-btn">
+              Browse All Products
+            </Link>
           </div>
         </div>
       </div>
@@ -93,248 +92,371 @@ export function CartView() {
   }
 
   return (
-    <div className="block">
-      <div className="container">
-        <div className="cart">
-          {/* Free Shipping Progress Meter */}
-          <div
-            style={{
-              background: subtotal >= 75 ? "#e8f8ec" : "#e8f4fb",
-              border: `1px solid ${subtotal >= 75 ? "#c3e6cb" : "#b8daff"}`,
-              borderRadius: 6,
-              padding: "16px 20px",
-              marginBottom: 24,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-              <div style={{ fontSize: 14, fontWeight: 700, color: subtotal >= 75 ? "#155724" : "#004085" }}>
-                {subtotal >= 75 ? (
-                  <span>🎉 Congratulations! You have unlocked <strong>FREE Standard Shipping</strong>!</span>
-                ) : (
-                  <span>
-                    Add <strong>${(75 - subtotal).toFixed(2)}</strong> more to your order to unlock <strong>FREE Standard Shipping</strong>!
-                  </span>
-                )}
-              </div>
-              <span style={{ fontSize: 13, fontWeight: 700, color: subtotal >= 75 ? "#28a745" : "#0081c9" }}>
-                {Math.min(100, Math.round((subtotal / 75) * 100))}%
+    <div className="cf-cart-container">
+      {/* Free Shipping Progress Meter */}
+      <div className={`cf-shipping-meter ${subtotal >= 75 ? "cf-shipping-meter--unlocked" : ""}`}>
+        <div className="cf-shipping-meter__header">
+          <div className="cf-shipping-meter__title">
+            <span className="cf-shipping-meter__icon">
+              {subtotal >= 75 ? "🎉" : "🚚"}
+            </span>
+            {subtotal >= 75 ? (
+              <span>
+                Congratulations! You unlocked <strong>FREE Standard Shipping</strong>!
               </span>
-            </div>
-            <div style={{ height: 8, background: "rgba(0,0,0,0.08)", borderRadius: 4, overflow: "hidden" }}>
-              <div
-                style={{
-                  height: "100%",
-                  width: `${Math.min(100, Math.round((subtotal / 75) * 100))}%`,
-                  backgroundColor: subtotal >= 75 ? "#28a745" : "#0081c9",
-                  transition: "width 0.4s ease",
-                  borderRadius: 4,
-                }}
-              />
-            </div>
+            ) : (
+              <span>
+                Add <strong>${amountToFreeShipping.toFixed(2)}</strong> more to your order to unlock <strong>FREE Standard Shipping</strong>!
+              </span>
+            )}
+          </div>
+          <span className="cf-shipping-meter__badge">
+            {subtotal >= 75 ? "FREE SHIPPING UNLOCKED" : `${progressPercent}% COMPLETED`}
+          </span>
+        </div>
+        <div className="cf-shipping-meter__track">
+          <div
+            className="cf-shipping-meter__bar"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Main Grid: Items Card + Summary Sidebar */}
+      <div className="cf-cart-grid">
+        {/* Left Side: Cart Items */}
+        <div className="cf-cart-card">
+          <div className="cf-cart-card__header">
+            <h2 className="cf-cart-card__title">
+              Shopping Cart
+              <span className="cf-cart-card__count">
+                {totalItemCount} {totalItemCount === 1 ? "item" : "items"}
+              </span>
+            </h2>
+            <button
+              type="button"
+              className="cf-cart-card__clear-btn"
+              onClick={() => {
+                if (window.confirm("Are you sure you want to clear your cart?")) {
+                  clear();
+                }
+              }}
+            >
+              Clear Cart
+            </button>
           </div>
 
-          {/* Main Cart Table */}
-          <div className="cart__table cart-table">
-            <table className="cart-table__table">
-              <thead className="cart-table__head">
-                <tr className="cart-table__row">
-                  <th className="cart-table__column cart-table__column--image">Image</th>
-                  <th className="cart-table__column cart-table__column--product">Product</th>
-                  <th className="cart-table__column cart-table__column--price">Price</th>
-                  <th className="cart-table__column cart-table__column--quantity">Quantity</th>
-                  <th className="cart-table__column cart-table__column--total">Total</th>
-                  <th className="cart-table__column cart-table__column--remove"></th>
+          {/* Mobile View: Sleek Horizontal Cards */}
+          <div className="cf-cart-mobile-list">
+            {items.map((item) => (
+              <div key={item.id} className="cf-cart-m-item">
+                <Link href={`/shop/${item.slug}`} className="cf-cart-m-thumb">
+                  <Image
+                    src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
+                    alt={item.name}
+                    fill
+                    sizes="86px"
+                    style={{ objectFit: "contain" }}
+                  />
+                </Link>
+
+                <div className="cf-cart-m-info">
+                  <div className="cf-cart-m-header">
+                    <Link href={`/shop/${item.slug}`} className="cf-cart-m-title">
+                      {item.name}
+                    </Link>
+                    <button
+                      type="button"
+                      className="cf-cart-m-remove-btn"
+                      onClick={() => removeItem(item.id)}
+                      aria-label={`Remove ${item.name}`}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div className="cf-cart-m-meta">
+                    <span className="cf-cart-m-sku">SKU: {item.sku || "CF-PART"}</span>
+                    <span className="cf-cart-m-stock">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="#16a34a">
+                        <circle cx="4" cy="4" r="4" />
+                      </svg>
+                      In Stock
+                    </span>
+                  </div>
+
+                  <div className="cf-cart-m-unit-price">
+                    {formatPrice(item.price, item.currency)} each
+                  </div>
+
+                  <div className="cf-cart-m-actions">
+                    <div className="cf-stepper">
+                      <button
+                        type="button"
+                        className="cf-stepper__btn"
+                        onClick={() => setQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        disabled={item.quantity <= 1}
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+                      <span className="cf-stepper__val">{item.quantity}</span>
+                      <button
+                        type="button"
+                        className="cf-stepper__btn"
+                        onClick={() => setQuantity(item.id, item.quantity + 1)}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+
+                    <div className="cf-cart-m-total">
+                      {formatPrice(item.price * item.quantity, item.currency)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop View: Modern Table */}
+          <div className="cf-cart-desktop-view">
+            <table className="cf-cart-d-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th className="cf-text-center">Quantity</th>
+                  <th className="cf-text-right">Total</th>
+                  <th></th>
                 </tr>
               </thead>
-              <tbody className="cart-table__body">
+              <tbody>
                 {items.map((item) => (
-                  <tr key={item.id} className="cart-table__row">
-                    <td className="cart-table__column cart-table__column--image">
-                      <div className="image image--type--product">
-                        <Link href={`/shop/${item.slug}`} className="image__body" style={{ position: "relative", width: 80, height: 80, display: "block" }}>
+                  <tr key={item.id}>
+                    <td>
+                      <div className="cf-cart-d-product">
+                        <Link href={`/shop/${item.slug}`} className="cf-cart-d-thumb">
                           <Image
-                            className="image__tag"
                             src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
                             alt={item.name}
                             fill
-                            sizes="80px"
+                            sizes="76px"
                             style={{ objectFit: "contain" }}
                           />
                         </Link>
+                        <div className="cf-cart-d-details">
+                          <Link href={`/shop/${item.slug}`} className="cf-cart-d-title">
+                            {item.name}
+                          </Link>
+                          <div className="cf-cart-d-sku">
+                            SKU: {item.sku || "CF-PART"}
+                          </div>
+                        </div>
                       </div>
                     </td>
-                    <td className="cart-table__column cart-table__column--product">
-                      <Link href={`/shop/${item.slug}`} className="cart-table__product-name">
-                        {item.name}
-                      </Link>
-                      <ul className="cart-table__options">
-                        <li>SKU: {item.sku || "CF-PART"}</li>
-                      </ul>
-                    </td>
-                    <td className="cart-table__column cart-table__column--price" data-title="Price">
+                    <td className="cf-cart-d-price">
                       {formatPrice(item.price, item.currency)}
                     </td>
-                    <td className="cart-table__column cart-table__column--quantity" data-title="Quantity">
-                      <div className="cart-table__quantity input-number">
-                        <input
-                          className="form-control input-number__input"
-                          type="number"
-                          min={1}
-                          value={item.quantity}
-                          readOnly
-                        />
-                        <div
-                          className="input-number__add"
-                          onClick={() => setQuantity(item.id, item.quantity + 1)}
-                          role="button"
-                          aria-label="Increase quantity"
-                        />
-                        <div
-                          className="input-number__sub"
+                    <td className="cf-text-center">
+                      <div className="cf-stepper">
+                        <button
+                          type="button"
+                          className="cf-stepper__btn"
                           onClick={() => setQuantity(item.id, Math.max(1, item.quantity - 1))}
-                          role="button"
+                          disabled={item.quantity <= 1}
                           aria-label="Decrease quantity"
-                        />
+                        >
+                          −
+                        </button>
+                        <span className="cf-stepper__val">{item.quantity}</span>
+                        <button
+                          type="button"
+                          className="cf-stepper__btn"
+                          onClick={() => setQuantity(item.id, item.quantity + 1)}
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
                       </div>
                     </td>
-                    <td className="cart-table__column cart-table__column--total" data-title="Total">
+                    <td className="cf-cart-d-total cf-text-right">
                       {formatPrice(item.price * item.quantity, item.currency)}
                     </td>
-                    <td className="cart-table__column cart-table__column--remove">
+                    <td className="cf-text-right">
                       <button
                         type="button"
-                        className="cart-table__remove btn btn-sm btn-icon btn-muted"
+                        className="cf-cart-d-remove-btn"
                         onClick={() => removeItem(item.id)}
-                        aria-label="Remove item"
+                        aria-label={`Remove ${item.name}`}
                       >
-                        <svg width="12" height="12">
-                          <path d="M10.8,10.8L10.8,10.8c-0.4,0.4-1,0.4-1.4,0L6,7.4l-3.4,3.4c-0.4,0.4-1,0.4-1.4,0l0,0c-0.4-0.4-0.4-1,0-1.4L4.6,6L1.2,2.6c-0.4-0.4-0.4-1,0-1.4l0,0c0.4-0.4,1-0.4,1.4,0L6,4.6l3.4-3.4c0.4-0.4,1-0.4,1.4,0l0,0c0.4,0.4,0.4,1,0,1.4L7.4,6l3.4,3.4C11.2,9.8,11.2,10.4,10.8,10.8z" />
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
                         </svg>
                       </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
-              <tfoot className="cart-table__foot">
-                <tr>
-                  <td colSpan={6}>
-                    <div className="cart-table__actions">
-                      <form className="cart-table__coupon-form form-row" onSubmit={handleApplyCoupon}>
-                        <div className="form-group mb-0 col flex-grow-1">
-                          <input
-                            type="text"
-                            className="form-control form-control-sm"
-                            placeholder="Coupon Code"
-                            value={coupon}
-                            onChange={(e) => setCoupon(e.target.value)}
-                          />
-                        </div>
-                        <div className="form-group mb-0 col-auto">
-                          <button
-                            type="submit"
-                            className="btn btn-sm btn-primary"
-                            style={{ backgroundColor: "#0081c9", borderColor: "#0081c9" }}
-                          >
-                            Apply Coupon
-                          </button>
-                        </div>
-                        {discountPercent > 0 && (
-                          <div className="col-12 mt-2" style={{ color: "#28a745", fontSize: 13, fontWeight: 500 }}>
-                            ✓ 10% Fleet Coupon Applied!
-                          </div>
-                        )}
-                        {couponError && (
-                          <div className="col-12 mt-2" style={{ color: "#dc3545", fontSize: 13 }}>
-                            {couponError}
-                          </div>
-                        )}
-                      </form>
-                      <div className="cart-table__update-button">
-                        <Link
-                          href="/shop"
-                          className="btn btn-sm btn-primary"
-                          style={{ backgroundColor: "#0081c9", borderColor: "#0081c9" }}
-                        >
-                          Continue Shopping
-                        </Link>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              </tfoot>
             </table>
           </div>
 
-          {/* Cart Totals Box */}
-          <div className="cart__totals">
-            <div className="card">
-              <div className="card-body card-body--padding--2">
-                <h3 className="card-title">Cart Totals</h3>
-                <table className="cart__totals-table">
-                  <thead>
-                    <tr>
-                      <th>Subtotal</th>
-                      <td>{formatPrice(subtotal, "usd")}</td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th>Shipping</th>
-                      <td>
-                        {shippingAmount === 0 ? "FREE" : formatPrice(shippingAmount, "usd")}
-                        <div>
-                          <span style={{ fontSize: 13, color: "#6c757d" }}>
-                            {shippingAmount === 0
-                              ? "Free shipping on orders $75+"
-                              : "Standard Freight Shipping"}
-                          </span>
-                        </div>
-                      </td>
-                    </tr>
-                    {discountPercent > 0 && (
-                      <tr>
-                        <th>Discount ({discountPercent}%)</th>
-                        <td style={{ color: "#28a745" }}>
-                          -{formatPrice(discountAmount, "usd")}
-                        </td>
-                      </tr>
-                    )}
-                    <tr>
-                      <th>Tax</th>
-                      <td>$0.00</td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <th>Total</th>
-                      <td>{formatPrice(grandTotal, "usd")}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-                <button
-                  type="button"
-                  className="btn btn-primary btn-xl btn-block"
-                  disabled={checkoutLoading || items.length === 0}
-                  onClick={handleProceedToCheckout}
-                  style={{
-                    backgroundColor: "#0081c9",
-                    borderColor: "#0081c9",
-                    cursor: checkoutLoading ? "wait" : "pointer",
-                  }}
-                >
-                  {checkoutLoading ? "Redirecting to Stripe…" : "Proceed to checkout"}
-                </button>
-                {checkoutError && (
-                  <div className="mt-2 text-danger small text-center">
-                    {checkoutError}
-                  </div>
+          {/* Bottom Card Navigation */}
+          <div className="cf-cart-card__footer">
+            <Link href="/shop" className="cf-cart-back-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              Continue Shopping
+            </Link>
+          </div>
+        </div>
+
+        {/* Right Side: Sticky Order Summary */}
+        <div className="cf-summary-card">
+          <div className="cf-summary-card__header">
+            <h3 className="cf-summary-card__title">Order Summary</h3>
+          </div>
+
+          <div className="cf-summary-card__body">
+            {/* Promo Code Input */}
+            <div className="cf-promo-container">
+              {discountPercent > 0 ? (
+                <div className="cf-promo-applied">
+                  <span>✓ 10% Fleet Discount Applied</span>
+                  <button
+                    type="button"
+                    className="cf-promo-remove"
+                    onClick={handleRemoveCoupon}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <form className="cf-promo-form" onSubmit={handleApplyCoupon}>
+                  <input
+                    type="text"
+                    className="cf-promo-input"
+                    placeholder="Promo code (e.g. FLEET10)"
+                    value={coupon}
+                    onChange={(e) => {
+                      setCoupon(e.target.value);
+                      if (couponError) setCouponError("");
+                    }}
+                  />
+                  <button type="submit" className="cf-promo-btn">
+                    Apply
+                  </button>
+                </form>
+              )}
+              {couponError && <div className="cf-promo-error">{couponError}</div>}
+              {discountPercent === 0 && (
+                <div className="cf-promo-hint">Use code FLEET10 for 10% fleet savings</div>
+              )}
+            </div>
+
+            {/* Price Breakdown */}
+            <div className="cf-summary-row">
+              <span>Subtotal</span>
+              <span>{formatPrice(subtotal, "usd")}</span>
+            </div>
+
+            <div className="cf-summary-row">
+              <span>Shipping</span>
+              <span>
+                {shippingAmount === 0 ? (
+                  <span className="cf-summary-row__free-badge">FREE</span>
+                ) : (
+                  formatPrice(shippingAmount, "usd")
                 )}
+              </span>
+            </div>
+
+            {discountPercent > 0 && (
+              <div className="cf-summary-row cf-summary-row--highlight">
+                <span>Fleet Discount ({discountPercent}%)</span>
+                <span>-{formatPrice(discountAmount, "usd")}</span>
               </div>
+            )}
+
+            <div className="cf-summary-row">
+              <span>Estimated Tax</span>
+              <span>Calculated at checkout</span>
+            </div>
+
+            <div className="cf-summary-divider" />
+
+            <div className="cf-summary-total">
+              <span className="cf-summary-total__label">Estimated Total</span>
+              <span className="cf-summary-total__val">
+                {formatPrice(grandTotal, "usd")}
+              </span>
+            </div>
+
+            {/* Checkout CTA */}
+            <button
+              type="button"
+              className="cf-checkout-btn"
+              disabled={checkoutLoading || items.length === 0}
+              onClick={handleProceedToCheckout}
+            >
+              {checkoutLoading ? (
+                <>
+                  <svg className="animate-spin" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                    <path d="M12 2a10 10 0 0 1 10 10" />
+                  </svg>
+                  Redirecting to Stripe…
+                </>
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                  Proceed to Checkout
+                </>
+              )}
+            </button>
+
+            {checkoutError && (
+              <div className="cf-checkout-error">{checkoutError}</div>
+            )}
+
+            {/* Trust Assurances Strip */}
+            <div className="cf-trust-strip">
+              <div className="cf-trust-item">
+                <span className="cf-trust-item__icon">🔒</span>
+                <span>256-Bit SSL Encrypted Checkout via Stripe</span>
+              </div>
+              <div className="cf-trust-item">
+                <span className="cf-trust-item__icon">⚡</span>
+                <span>Fast Same-Day Commercial Fleet Dispatch</span>
+              </div>
+              <div className="cf-trust-item">
+                <span className="cf-trust-item__icon">🛡️</span>
+                <span>100% Fitment Guarantee & 30-Day Returns</span>
+              </div>
+            </div>
+
+            <div className="cf-payment-icons">
+              <span>Visa</span>
+              <span>•</span>
+              <span>Mastercard</span>
+              <span>•</span>
+              <span>Amex</span>
+              <span>•</span>
+              <span>Apple Pay</span>
             </div>
           </div>
         </div>
       </div>
-      <div className="block-space block-space--layout--before-footer" />
     </div>
   );
 }
