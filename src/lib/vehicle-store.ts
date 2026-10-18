@@ -2,12 +2,27 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "@/lib/safe-storage";
 
 export type Vehicle = {
   year: string;
   make: string;
   model: string;
   engine: string;
+};
+
+export const ALLOWED_MAKES = ["Volvo", "Freightliner", "Kenworth", "Peterbilt", "Mack"] as const;
+
+export function isAllowedMake(make?: string | null): boolean {
+  if (!make) return false;
+  return ALLOWED_MAKES.some((m) => m.toLowerCase() === make.trim().toLowerCase());
+}
+
+export const DEFAULT_VEHICLE: Vehicle = {
+  year: "2023",
+  make: "Volvo",
+  model: "VNL 760",
+  engine: "D13TC 455 HP",
 };
 
 type VehicleState = {
@@ -25,19 +40,9 @@ type VehicleState = {
 export const useVehicleStore = create<VehicleState>()(
   persist(
     (set) => ({
-      currentVehicle: {
-        year: "2023",
-        make: "Volvo",
-        model: "VNL 760",
-        engine: "D13TC 455 HP",
-      },
+      currentVehicle: DEFAULT_VEHICLE,
       garage: [
-        {
-          year: "2023",
-          make: "Volvo",
-          model: "VNL 760",
-          engine: "D13TC 455 HP",
-        },
+        DEFAULT_VEHICLE,
         {
           year: "2021",
           make: "Freightliner",
@@ -48,7 +53,10 @@ export const useVehicleStore = create<VehicleState>()(
       isPickerOpen: false,
       openPicker: () => set({ isPickerOpen: true }),
       closePicker: () => set({ isPickerOpen: false }),
-      selectVehicle: (vehicle) =>
+      selectVehicle: (vehicle) => {
+        if (!isAllowedMake(vehicle.make) || vehicle.make.toLowerCase() === "international") {
+          return;
+        }
         set((state) => {
           const exists = state.garage.some(
             (v) =>
@@ -62,8 +70,12 @@ export const useVehicleStore = create<VehicleState>()(
             garage: exists ? state.garage : [vehicle, ...state.garage],
             isPickerOpen: false,
           };
-        }),
-      addToGarage: (vehicle) =>
+        });
+      },
+      addToGarage: (vehicle) => {
+        if (!isAllowedMake(vehicle.make) || vehicle.make.toLowerCase() === "international") {
+          return;
+        }
         set((state) => {
           const exists = state.garage.some(
             (v) =>
@@ -74,7 +86,8 @@ export const useVehicleStore = create<VehicleState>()(
           );
           if (exists) return state;
           return { garage: [vehicle, ...state.garage] };
-        }),
+        });
+      },
       removeFromGarage: (index) =>
         set((state) => {
           const next = state.garage.filter((_, i) => i !== index);
@@ -90,7 +103,32 @@ export const useVehicleStore = create<VehicleState>()(
       clearCurrentVehicle: () => set({ currentVehicle: null }),
     }),
     {
-      name: "coralfly_vehicle_storage",
+      name: "coralfly_vehicle_storage_v3",
+      storage: safeLocalStorage,
+      onRehydrateStorage: () => (state) => {
+        if (!state) return;
+        if (
+          state.currentVehicle &&
+          (!isAllowedMake(state.currentVehicle.make) ||
+            state.currentVehicle.make.toLowerCase() === "international")
+        ) {
+          state.currentVehicle = DEFAULT_VEHICLE;
+        }
+        if (Array.isArray(state.garage)) {
+          state.garage = state.garage.filter(
+            (v) => isAllowedMake(v?.make) && v?.make?.toLowerCase() !== "international"
+          );
+          if (state.garage.length === 0) {
+            state.garage = [DEFAULT_VEHICLE];
+          }
+        }
+        if (typeof window !== "undefined") {
+          try {
+            window.localStorage.removeItem("coralfly_vehicle_storage");
+            window.localStorage.removeItem("coralfly_vehicle_storage_v2");
+          } catch {}
+        }
+      },
     }
   )
 );

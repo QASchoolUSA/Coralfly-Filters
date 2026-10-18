@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { safeLocalStorage } from "@/lib/safe-storage";
 import type { CartItem, Product } from "@/sanity/types";
 
 type CartState = {
@@ -71,6 +72,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "coralfly-cart",
+      storage: safeLocalStorage,
       partialize: (state) => ({ items: state.items }) as CartState,
     },
   ),

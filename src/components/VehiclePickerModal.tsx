@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useVehicleStore } from "@/lib/vehicle-store";
+import { useVehicleStore, isAllowedMake, DEFAULT_VEHICLE, type Vehicle } from "@/lib/vehicle-store";
 
 const VEHICLE_DATA = [
   {
@@ -46,19 +46,44 @@ const VEHICLE_DATA = [
       { name: "Granite", engines: ["Mack MP8 505 HP", "Mack MP7 425 HP"] },
     ],
   },
+
 ];
 
 const YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"];
 
 export function VehiclePickerModal() {
-  const { isPickerOpen, closePicker, selectVehicle } = useVehicleStore();
-
-  const [selectedYear, setSelectedYear] = useState<string>("2023");
-  const [selectedMake, setSelectedMake] = useState<string>("Volvo");
-  const [selectedModel, setSelectedModel] = useState<string>("VNL 760");
-  const [selectedEngine, setSelectedEngine] = useState<string>("D13TC 455 HP");
+  const { isPickerOpen, closePicker, selectVehicle, currentVehicle } = useVehicleStore();
 
   if (!isPickerOpen) return null;
+
+  return (
+    <VehiclePickerModalContent
+      key={`${currentVehicle?.year}-${currentVehicle?.make}-${currentVehicle?.model}-${currentVehicle?.engine}`}
+      currentVehicle={currentVehicle}
+      closePicker={closePicker}
+      selectVehicle={selectVehicle}
+    />
+  );
+}
+
+function VehiclePickerModalContent({
+  currentVehicle,
+  closePicker,
+  selectVehicle,
+}: {
+  currentVehicle: Vehicle | null;
+  closePicker: () => void;
+  selectVehicle: (v: Vehicle) => void;
+}) {
+  const initial =
+    currentVehicle && isAllowedMake(currentVehicle.make)
+      ? currentVehicle
+      : DEFAULT_VEHICLE;
+
+  const [selectedYear, setSelectedYear] = useState<string>(initial.year);
+  const [selectedMake, setSelectedMake] = useState<string>(initial.make);
+  const [selectedModel, setSelectedModel] = useState<string>(initial.model);
+  const [selectedEngine, setSelectedEngine] = useState<string>(initial.engine);
 
   const makeObj = VEHICLE_DATA.find((m) => m.make.toLowerCase() === selectedMake.toLowerCase()) || VEHICLE_DATA[0];
   const modelObj = makeObj.models.find((m) => m.name.toLowerCase() === selectedModel.toLowerCase()) || makeObj.models[0];
@@ -115,96 +140,96 @@ export function VehiclePickerModal() {
                 Filters will be automatically filtered and verified for compatibility with your selected rig.
               </p>
 
-                <div className="form-group mb-3">
-                  <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                    Select Year
-                  </label>
-                  <select
-                    className="form-control"
-                    value={selectedYear}
-                    onChange={(e) => setSelectedYear(e.target.value)}
-                    style={{ height: 42, fontSize: 14, borderRadius: 2 }}
-                  >
-                    {YEARS.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group mb-3">
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  Select Year
+                </label>
+                <select
+                  className="form-control"
+                  value={selectedYear}
+                  onChange={(e) => setSelectedYear(e.target.value)}
+                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                >
+                  {YEARS.map((y) => (
+                    <option key={y} value={y}>
+                      {y}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="form-group mb-3">
-                  <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                    Select Make
-                  </label>
-                  <select
-                    className="form-control"
-                    value={selectedMake}
-                    onChange={(e) => handleMakeChange(e.target.value)}
-                    style={{ height: 42, fontSize: 14, borderRadius: 2 }}
-                  >
-                    {VEHICLE_DATA.map((v) => (
-                      <option key={v.make} value={v.make}>
-                        {v.make}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group mb-3">
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  Select Make
+                </label>
+                <select
+                  className="form-control"
+                  value={selectedMake}
+                  onChange={(e) => handleMakeChange(e.target.value)}
+                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                >
+                  {VEHICLE_DATA.map((v) => (
+                    <option key={v.make} value={v.make}>
+                      {v.make}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="form-group mb-3">
-                  <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                    Select Model
-                  </label>
-                  <select
-                    className="form-control"
-                    value={selectedModel}
-                    onChange={(e) => handleModelChange(e.target.value)}
-                    style={{ height: 42, fontSize: 14, borderRadius: 2 }}
-                  >
-                    {makeObj.models.map((m) => (
-                      <option key={m.name} value={m.name}>
-                        {m.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group mb-3">
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  Select Model
+                </label>
+                <select
+                  className="form-control"
+                  value={selectedModel}
+                  onChange={(e) => handleModelChange(e.target.value)}
+                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                >
+                  {makeObj.models.map((m) => (
+                    <option key={m.name} value={m.name}>
+                      {m.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="form-group mb-4">
-                  <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
-                    Select Engine
-                  </label>
-                  <select
-                    className="form-control"
-                    value={selectedEngine}
-                    onChange={(e) => setSelectedEngine(e.target.value)}
-                    style={{ height: 42, fontSize: 14, borderRadius: 2 }}
-                  >
-                    {modelObj.engines.map((eng) => (
-                      <option key={eng} value={eng}>
-                        {eng}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="form-group mb-4">
+                <label style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                  Select Engine
+                </label>
+                <select
+                  className="form-control"
+                  value={selectedEngine}
+                  onChange={(e) => setSelectedEngine(e.target.value)}
+                  style={{ height: 42, fontSize: 14, borderRadius: 2 }}
+                >
+                  {modelObj.engines.map((eng) => (
+                    <option key={eng} value={eng}>
+                      {eng}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-                <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={closePicker}
-                    style={{ height: 42, padding: "0 20px", fontSize: 14 }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    style={{ height: 42, padding: "0 24px", fontSize: 14, backgroundColor: "#0081c9", borderColor: "#0081c9" }}
-                  >
-                    Select Vehicle
-                  </button>
-                </div>
-              </form>
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={closePicker}
+                  style={{ height: 42, padding: "0 20px", fontSize: 14 }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ height: 42, padding: "0 24px", fontSize: 14, backgroundColor: "#0081c9", borderColor: "#0081c9" }}
+                >
+                  Select Vehicle
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

@@ -50,7 +50,7 @@ export default function PrivacyPage() {
             or sensitive banking credentials on our local servers.
           </p>
 
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Local Storage &amp; Cookies</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Local Storage & Cookies</h2>
           <p style={{ marginBottom: 20 }}>
             We utilize browser local storage to preserve your selected active vehicle, garage fleet list, and shopping cart
             items across sessions. You may clear this data anytime via your browser settings.
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
 
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>5. Contact Our Privacy Team</h2>
           <p style={{ margin: 0 }}>
-            For questions or data access requests, please contact us at <a href="mailto:privacy@coralfly.com" style={{ color: "#0081c9" }}>privacy@coralfly.com</a>.
+            For questions or data access requests, please contact us at <a href="mailto:support@coralflyfilters.com" style={{ color: "#0081c9" }}>support@coralflyfilters.com</a>.
           </p>
         </div>
       </div>

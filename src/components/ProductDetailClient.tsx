@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import Image from "next/image";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { useCartStore } from "@/lib/cart-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
+import { getEnhancedGalleryImages } from "@/lib/product-gallery";
 import type { Product } from "@/sanity/types";
 
 export function ProductDetailClient({
@@ -25,17 +27,75 @@ export function ProductDetailClient({
   const [activeTab, setActiveTab] = useState<"desc" | "specs" | "fitment" | "reviews">("desc");
   const [added, setAdded] = useState(false);
 
+  // Gallery multi-angle dataset & Lightbox modal state
+  const galleryImages = useMemo(() => getEnhancedGalleryImages(product), [product]);
+  const activeItem = galleryImages[activeImageIndex] || galleryImages[0];
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  // Touch swipe refs
+  const touchStartX = useRef<number>(0);
+  const touchStartY = useRef<number>(0);
+  const touchStartTime = useRef<number>(0);
+
+  const goToNext = useCallback(() => {
+    setActiveImageIndex((prev) => (prev + 1) % galleryImages.length);
+  }, [galleryImages.length]);
+
+  const goToPrev = useCallback(() => {
+    setActiveImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+  }, [galleryImages.length]);
+
+  // Touch gesture handlers for mobile swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    touchStartTime.current = Date.now();
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    const dt = Date.now() - touchStartTime.current;
+    // Valid horizontal swipe: > 40px delta, predominantly horizontal, within 600ms
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2 && dt < 600) {
+      if (dx < 0) {
+        goToNext();
+      } else {
+        goToPrev();
+      }
+    }
+  };
+
+  // Fullscreen keyboard navigation & scroll locking
+  useEffect(() => {
+    if (!isLightboxOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsLightboxOpen(false);
+        setIsZoomed(false);
+      } else if (e.key === "ArrowLeft") {
+        goToPrev();
+      } else if (e.key === "ArrowRight") {
+        goToNext();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isLightboxOpen, goToPrev, goToNext]);
+
   // Review form state
   const [reviewName, setReviewName] = useState("");
   const [reviewEmail, setReviewEmail] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
-  const images =
-    product.images && product.images.length > 0
-      ? product.images
-      : [{ url: "/images/products/product-1-245x245.jpg" }];
-  const activeImage = images[activeImageIndex] || images[0];
+  const images = galleryImages;
 
   const oldPrice =
     product.compareAtPrice && product.compareAtPrice > product.price
@@ -57,6 +117,18 @@ export function ProductDetailClient({
     openCart();
   };
 
+  const [copiedSku, setCopiedSku] = useState(false);
+
+  const productSku = product.sku || "CF-" + product.slug.toUpperCase();
+
+  const handleCopySku = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(productSku);
+      setCopiedSku(true);
+      setTimeout(() => setCopiedSku(false), 2000);
+    }
+  };
+
   const handleReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (reviewName && reviewText) {
@@ -65,8 +137,42 @@ export function ProductDetailClient({
     }
   };
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: images.map((img) => img.url),
+    description: product.description || `Heavy duty ${product.name} engineered for commercial fleet reliability.`,
+    sku: productSku,
+    brand: {
+      "@type": "Brand",
+      name: "CORALFLY",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://www.coralflyfilters.com/shop/${product.slug}`,
+      priceCurrency: (product.currency || "USD").toUpperCase(),
+      price: product.price,
+      itemCondition: "https://schema.org/NewCondition",
+      availability: product.inStock !== false ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      seller: {
+        "@type": "Organization",
+        name: "CORALFLY Filters",
+      },
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.rating || "4.9",
+      reviewCount: product.reviewsCount || "18",
+    },
+  };
+
   return (
     <div className="block">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       {/* 1. Breadcrumb Header */}
       <div className="block-header block-header--has-breadcrumb">
         <div className="container">
@@ -119,51 +225,148 @@ export function ProductDetailClient({
 
                   {/* 2.1 Product Gallery */}
                   <div
-                    className="product-gallery product-gallery--layout--product-full product__gallery"
+                    className="product-gallery product-gallery--layout--product-full product__gallery cf-gallery-container"
                     data-layout="product-full"
                   >
-                    <div className="product-gallery__featured">
+                    {/* Main Interactive Stage */}
+                    <div
+                      className="cf-gallery-stage"
+                      onClick={() => setIsLightboxOpen(true)}
+                      onTouchStart={handleTouchStart}
+                      onTouchEnd={handleTouchEnd}
+                      role="region"
+                      aria-label="Product Image Viewer"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          setIsLightboxOpen(true);
+                        } else if (e.key === "ArrowLeft") {
+                          e.preventDefault();
+                          goToPrev();
+                        } else if (e.key === "ArrowRight") {
+                          e.preventDefault();
+                          goToNext();
+                        }
+                      }}
+                    >
+                      {/* Top Left Perspective Angle Badge */}
+                      <div className="cf-gallery-badge-angle">
+                        <span className="cf-gallery-pulse-dot" />
+                        <span>{activeItem.tag}</span>
+                      </div>
+
+                      {/* Top Right Photo Counter Badge */}
+                      <div className="cf-gallery-badge-counter">
+                        <span>
+                          {activeImageIndex + 1} / {galleryImages.length}
+                        </span>
+                      </div>
+
+                      {/* Left Navigation Chevron Button */}
                       <button
                         type="button"
-                        className="product-gallery__zoom"
-                        aria-label="Zoom image"
-                        onClick={() => window.open(activeImage.url, "_blank")}
+                        className="cf-gallery-nav-btn cf-gallery-nav-btn--prev"
+                        aria-label="Previous product image"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          goToPrev();
+                        }}
                       >
-                        <svg width="24" height="24">
-                          <path d="M15,18c-2,0-3.8-0.6-5.2-1.7c-1,1.3-2.1,2.8-3.5,4.6c-2.2,2.8-3.4,1.9-3.4,1.9s-0.6-0.3-1.1-0.7 c-0.4-0.4-0.7-1-0.7-1s-0.9-1.2,1.9-3.3c1.8-1.4,3.3-2.5,4.6-3.5C6.6,12.8,6,11,6,9c0-5,4-9,9-9s9,4,9,9S20,18,15,18z M15,2 c-3.9,0-7,3.1-7,7s3.1,7,7,7s7-3.1,7-7S18.9,2,15,2z M16,13h-2v-3h-3V8h3V5h2v3h3v2h-3V13z" />
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="15 18 9 12 15 6" />
                         </svg>
                       </button>
-                      <div className="image image--type--product">
-                        <div className="image__body">
-                          <img
-                            className="image__tag"
-                            src={activeImage.url}
-                            alt={product.name}
-                          />
-                        </div>
+
+                      {/* Right Navigation Chevron Button */}
+                      <button
+                        type="button"
+                        className="cf-gallery-nav-btn cf-gallery-nav-btn--next"
+                        aria-label="Next product image"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          goToNext();
+                        }}
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
+                      </button>
+
+                      {/* Featured Main Image */}
+                      <div className="cf-gallery-image-wrapper">
+                        <Image
+                          className="image__tag"
+                          src={activeItem.url}
+                          alt={activeItem.alt || product.name}
+                          fill
+                          priority
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 450px"
+                          style={{ objectFit: "contain" }}
+                        />
                       </div>
+
+                      {/* Bottom Right Zoom / Lightbox Trigger */}
+                      <button
+                        type="button"
+                        className="cf-gallery-zoom-btn"
+                        aria-label="Enlarge image in fullscreen view"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsLightboxOpen(true);
+                        }}
+                      >
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <circle cx="11" cy="11" r="8" />
+                          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                          <line x1="11" y1="8" x2="11" y2="14" />
+                          <line x1="8" y1="11" x2="14" y2="11" />
+                        </svg>
+                        <span>Enlarge</span>
+                      </button>
                     </div>
 
-                    {images.length > 1 && (
-                      <div className="product-gallery__thumbnails" style={{ marginTop: 20 }}>
-                        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-                          {images.map((img, idx) => (
-                            <div
-                              key={idx}
-                              className={`product-gallery__thumbnails-item image image--type--product ${
-                                activeImageIndex === idx ? "product-gallery__thumbnails-item--active" : ""
-                              }`}
-                              onClick={() => setActiveImageIndex(idx)}
-                              style={{ width: 72, height: 72, cursor: "pointer" }}
-                            >
-                              <div className="image__body">
-                                <img className="image__tag" src={img.url} alt="" />
-                              </div>
-                            </div>
-                          ))}
+                    {/* Mobile Pagination Indicator Dots */}
+                    <div className="cf-gallery-dots" role="tablist" aria-label="Product image slides">
+                      {galleryImages.map((img, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          role="tab"
+                          className={`cf-gallery-dot ${activeImageIndex === idx ? "cf-gallery-dot--active" : ""}`}
+                          aria-label={`Go to slide ${idx + 1}: ${img.tag}`}
+                          aria-selected={activeImageIndex === idx}
+                          onClick={() => setActiveImageIndex(idx)}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Horizontal Thumbnails Carousel */}
+                    <div className="cf-gallery-thumbs-row" role="tablist" aria-label="Product angle thumbnails">
+                      {galleryImages.map((img, idx) => (
+                        <div key={idx} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                          <button
+                            type="button"
+                            role="tab"
+                            className={`cf-gallery-thumb-item ${
+                              activeImageIndex === idx ? "cf-gallery-thumb-item--active" : ""
+                            }`}
+                            onClick={() => setActiveImageIndex(idx)}
+                            aria-label={`Inspect ${img.tag}`}
+                            aria-selected={activeImageIndex === idx}
+                          >
+                            <Image
+                              src={img.url}
+                              alt={img.alt}
+                              fill
+                              sizes="74px"
+                              style={{ objectFit: "contain" }}
+                            />
+                          </button>
+                          <span className="cf-gallery-thumb-label">{img.tag}</span>
                         </div>
-                      </div>
-                    )}
+                      ))}
+                    </div>
                   </div>
 
                   {/* 2.2 Product Header */}
@@ -316,7 +519,28 @@ export function ProductDetailClient({
                             <tbody>
                               <tr>
                                 <th>SKU</th>
-                                <td>{product.sku || "CF-" + product.slug.toUpperCase()}</td>
+                                <td>
+                                  <span style={{ fontWeight: 600 }}>{productSku}</span>
+                                  <button
+                                    type="button"
+                                    onClick={handleCopySku}
+                                    style={{
+                                      background: "none",
+                                      border: "none",
+                                      marginLeft: 10,
+                                      cursor: "pointer",
+                                      color: copiedSku ? "#28a745" : "#0081c9",
+                                      fontSize: 12,
+                                      fontWeight: 600,
+                                      padding: "2px 6px",
+                                      borderRadius: 3,
+                                      backgroundColor: copiedSku ? "#e8f8ec" : "#e8f4fb",
+                                    }}
+                                    title="Copy SKU Part Number"
+                                  >
+                                    {copiedSku ? "✓ Copied" : "📋 Copy"}
+                                  </button>
+                                </td>
                               </tr>
                               <tr>
                                 <th>Brand</th>
@@ -488,7 +712,7 @@ export function ProductDetailClient({
                         id="tab-desc"
                       >
                         <div className="typography">
-                          <h3>Engineered for Heavy Duty Performance &amp; Uptime</h3>
+                          <h3>Engineered for Heavy Duty Performance & Uptime</h3>
                           <p>
                             CORALFLY filtration elements are manufactured using advanced multi-layer synthetic media
                             designed to trap sub-micron contaminants without restricting critical fluid or air flow.
@@ -860,7 +1084,7 @@ export function ProductDetailClient({
             <div className="container">
               <div className="section-header">
                 <div className="section-header__body">
-                  <h2 className="section-header__title">Related Filters &amp; Service Kits</h2>
+                  <h2 className="section-header__title">Related Filters & Service Kits</h2>
                   <div className="section-header__spring" />
                   <div className="section-header__divider" />
                 </div>
@@ -877,6 +1101,161 @@ export function ProductDetailClient({
             </div>
           </div>
         </>
+      )}
+
+      {/* 4. Fullscreen In-Place Lightbox Modal */}
+      {isLightboxOpen && (
+        <div
+          className="cf-lightbox-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Product gallery fullscreen view"
+          onClick={() => {
+            setIsLightboxOpen(false);
+            setIsZoomed(false);
+          }}
+        >
+          {/* Lightbox Top Navigation Bar */}
+          <div
+            className="cf-lightbox-header"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="cf-lightbox-title-area">
+              <span className="cf-lightbox-title">{product.name}</span>
+              <span className="cf-lightbox-tag">{activeItem.tag}</span>
+              <span style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.7)", fontFamily: "monospace" }}>
+                ({activeImageIndex + 1} of {galleryImages.length})
+              </span>
+            </div>
+
+            <div className="cf-lightbox-controls">
+              {/* Zoom Toggle Button */}
+              <button
+                type="button"
+                className="cf-lightbox-action-btn"
+                onClick={() => setIsZoomed((prev) => !prev)}
+                aria-label={isZoomed ? "Zoom out to 100%" : "Zoom in to 160%"}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  {isZoomed ? (
+                    <line x1="8" y1="11" x2="14" y2="11" />
+                  ) : (
+                    <>
+                      <line x1="11" y1="8" x2="11" y2="14" />
+                      <line x1="8" y1="11" x2="14" y2="11" />
+                    </>
+                  )}
+                </svg>
+                <span>{isZoomed ? "100%" : "Zoom"}</span>
+              </button>
+
+              {/* Close Fullscreen Button */}
+              <button
+                type="button"
+                className="cf-lightbox-close-btn"
+                onClick={() => {
+                  setIsLightboxOpen(false);
+                  setIsZoomed(false);
+                }}
+                aria-label="Close fullscreen gallery"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Lightbox Center Stage */}
+          <div
+            className="cf-lightbox-stage"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                setIsLightboxOpen(false);
+                setIsZoomed(false);
+              }
+            }}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {/* Prev Chevron */}
+            <button
+              type="button"
+              className="cf-lightbox-nav-btn cf-lightbox-nav-btn--prev"
+              aria-label="Previous image"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToPrev();
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+
+            {/* Next Chevron */}
+            <button
+              type="button"
+              className="cf-lightbox-nav-btn cf-lightbox-nav-btn--next"
+              aria-label="Next image"
+              onClick={(e) => {
+                e.stopPropagation();
+                goToNext();
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+
+            {/* Stage Center Image */}
+            <div
+              className={`cf-lightbox-image-container ${isZoomed ? "cf-lightbox-image-container--zoomed" : ""}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsZoomed((prev) => !prev);
+              }}
+              title="Click to toggle zoom"
+            >
+              <Image
+                src={activeItem.url}
+                alt={activeItem.title}
+                fill
+                priority
+                quality={95}
+                sizes="100vw"
+                style={{ objectFit: "contain" }}
+              />
+            </div>
+          </div>
+
+          {/* Lightbox Bottom Thumbnails Row */}
+          <div
+            className="cf-lightbox-footer"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {galleryImages.map((img, idx) => (
+              <button
+                key={idx}
+                type="button"
+                className={`cf-lightbox-thumb ${activeImageIndex === idx ? "cf-lightbox-thumb--active" : ""}`}
+                onClick={() => setActiveImageIndex(idx)}
+                aria-label={`Switch to ${img.tag}`}
+              >
+                <Image
+                  src={img.url}
+                  alt={img.alt}
+                  fill
+                  sizes="60px"
+                  style={{ objectFit: "contain" }}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
       )}
 
       <div className="block-space block-space--layout--before-footer" />

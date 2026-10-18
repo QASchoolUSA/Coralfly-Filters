@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import type { Product } from "@/sanity/types";
@@ -66,26 +67,6 @@ export function HomeClient({
       ? products.slice(0, 4)
       : [...products].reverse().slice(0, 4);
 
-  // Countdown timer state
-  const [timeLeft, setTimeLeft] = useState({
-    days: 3,
-    hours: 14,
-    minutes: 42,
-    seconds: 18,
-  });
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        return prev;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const makeObj = VEHICLE_DATA.find((m) => m.make === make) || VEHICLE_DATA[0];
 
@@ -388,65 +369,6 @@ export function HomeClient({
 
       <div className="block-space block-space--layout--divider-nl" />
 
-      {/* 4. Block Sale with Live Countdown Timer */}
-      <div className="block block-sale">
-        <div className="block-sale__content">
-          <div className="block-sale__header">
-            <div className="block-sale__title">Special Fleet Offers</div>
-            <div className="block-sale__subtitle">
-              Limited time commercial discount on genuine CORALFLY high-capacity filters
-            </div>
-
-            {/* Live Countdown Timer */}
-            <div className="block-sale__timer">
-              <div className="timer block-sale__timer-clock">
-                <div className="timer__part">
-                  <div className="timer__part-value timer__part-value--days">{timeLeft.days}</div>
-                  <div className="timer__part-title">Days</div>
-                </div>
-                <div className="timer__dots">:</div>
-                <div className="timer__part">
-                  <div className="timer__part-value timer__part-value--hours">{timeLeft.hours}</div>
-                  <div className="timer__part-title">Hours</div>
-                </div>
-                <div className="timer__dots">:</div>
-                <div className="timer__part">
-                  <div className="timer__part-value timer__part-value--minutes">{timeLeft.minutes}</div>
-                  <div className="timer__part-title">Mins</div>
-                </div>
-                <div className="timer__dots">:</div>
-                <div className="timer__part">
-                  <div className="timer__part-value timer__part-value--seconds">{timeLeft.seconds}</div>
-                  <div className="timer__part-title">Secs</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="block-sale__controls">
-              <Link href="/shop" className="block-sale__link" style={{ color: "#0081c9" }}>
-                Touch To View All Deals →
-              </Link>
-            </div>
-          </div>
-
-          <div className="block-sale__body">
-            <div
-              className="block-sale__image"
-              style={{ backgroundImage: "url('/images/banners/banner1.jpg')" }}
-            />
-            <div className="row" style={{ width: "100%", margin: 0 }}>
-              {products.slice(0, 4).map((product) => (
-                <div key={product._id} className="col-12 col-sm-6 col-lg-3 p-2">
-                  <ProductCard product={product} layout="grid" badge="SALE -20%" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="block-space block-space--layout--divider-lg" />
-
       {/* 5. Block Zone (Featured Category Card + Product Showcase) */}
       <div className="block block-zone">
         <div className="container">
@@ -454,16 +376,28 @@ export function HomeClient({
             {/* Left Category Card with Red-Parts Overlay Design */}
             <div className="block-zone__card category-card category-card--layout--overlay">
               <div className="category-card__body">
-                <div className="category-card__overlay-image">
-                  <img src="/images/categories/category-overlay-1.jpg" alt="Engine & Cabin Filtration" />
+                <div className="category-card__overlay-image" style={{ position: "relative", width: "100%", height: "100%" }}>
+                  <Image
+                    src="/images/categories/category-overlay-1.jpg"
+                    alt="Engine & Cabin Filtration"
+                    fill
+                    sizes="(max-width: 992px) 100vw, 360px"
+                    style={{ objectFit: "cover" }}
+                  />
                 </div>
-                <div className="category-card__overlay-image category-card__overlay-image--blur">
-                  <img src="/images/categories/category-overlay-1.jpg" alt="" />
+                <div className="category-card__overlay-image category-card__overlay-image--blur" style={{ position: "relative", width: "100%", height: "100%" }}>
+                  <Image
+                    src="/images/categories/category-overlay-1.jpg"
+                    alt=""
+                    fill
+                    sizes="(max-width: 992px) 100vw, 360px"
+                    style={{ objectFit: "cover" }}
+                  />
                 </div>
                 <div className="category-card__content">
                   <div className="category-card__info">
                     <div className="category-card__name">
-                      <Link href="/shop?category=Air%20Filters">Engine &amp; Cabin Filtration</Link>
+                      <Link href="/shop?category=Air%20Filters">Engine & Cabin Filtration</Link>
                     </div>
                     <ul className="category-card__children">
                       <li>
@@ -479,7 +413,7 @@ export function HomeClient({
                         <Link href="/shop?category=Air%20Filters">Heavy-Duty Pre-Cleaners</Link>
                       </li>
                       <li>
-                        <Link href="/shop?category=Air%20Filters">Industrial Gaskets &amp; Seals</Link>
+                        <Link href="/shop?category=Air%20Filters">Industrial Gaskets & Seals</Link>
                       </li>
                     </ul>
                     <div className="category-card__actions">
@@ -609,7 +543,7 @@ export function HomeClient({
         <div className="container">
           <div className="section-header">
             <div className="section-header__body">
-              <h2 className="section-header__title">Latest Technical Guides &amp; News</h2>
+              <h2 className="section-header__title">Latest Technical Guides & News</h2>
               <div className="section-header__spring" />
               <div className="section-header__divider" />
             </div>
@@ -619,12 +553,14 @@ export function HomeClient({
             {posts.map((post) => (
               <div key={post.id} className="col-12 col-md-4 mb-4">
                 <div className="post-card post-card--layout--grid" style={{ background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, overflow: "hidden" }}>
-                  <div className="post-card__image">
-                    <Link href={`/guides/${post.slug}`}>
-                      <img
+                  <div className="post-card__image" style={{ position: "relative", width: "100%", height: 210 }}>
+                    <Link href={`/guides/${post.slug}`} style={{ display: "block", position: "relative", width: "100%", height: "100%" }}>
+                      <Image
                         src={post.image}
                         alt={post.title}
-                        style={{ width: "100%", height: 210, objectFit: "cover" }}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        style={{ objectFit: "cover" }}
                       />
                     </Link>
                   </div>
@@ -650,31 +586,6 @@ export function HomeClient({
 
       <div className="block-space block-space--layout--divider-nl" />
 
-      {/* 9. Brand Logos Strip */}
-      <div className="block block-brands block-brands--layout--columns-8-full">
-        <div className="container">
-          <div className="section-header mb-3">
-            <div className="section-header__body">
-              <h2 className="section-header__title" style={{ fontSize: 18 }}>Compatible Heavy Duty Brands</h2>
-              <div className="section-header__spring" />
-              <div className="section-header__divider" />
-            </div>
-          </div>
-
-          <ul className="block-brands__list">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((i) => (
-              <li key={i} className="block-brands__item">
-                <Link href="/trucks" className="block-brands__item-link">
-                  <img src={`/images/brands/brand-${i}.png`} alt={`Brand ${i}`} />
-                </Link>
-                <div className="block-brands__divider" role="presentation" />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      <div className="block-space block-space--layout--divider-nl" />
 
       {/* 10. Multi-Column Product Lists (4 Columns) */}
       <div className="block block-products-columns">

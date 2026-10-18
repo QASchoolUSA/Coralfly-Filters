@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Order Confirmed",
+  description: "Thank you for your commercial filtration order with CORALFLY.",
+};
 
 export default function OrderSuccessPage() {
   return (

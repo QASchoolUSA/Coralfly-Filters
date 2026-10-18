@@ -14,7 +14,7 @@ export function ContactForm() {
     const message = String(form.get("message") || "");
     const subject = encodeURIComponent(`CORALFLY ${subjectLabel}: ${name}`);
     const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nPhone: ${phone || "Not provided"}\nSubject: ${subjectLabel}\n\n${message}`);
-    window.location.href = `mailto:sales@coralfly.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:support@coralflyfilters.com?subject=${subject}&body=${body}`;
     setStatus(true);
   }
 
@@ -29,6 +29,6 @@ export function ContactForm() {
     </div>
     <div className="form-group"><label htmlFor="contact-message">Message *</label><textarea id="contact-message" name="message" required placeholder="Tell us the filter number, truck make, model, and year, or describe your question..." /></div>
     <button type="submit" className="btn btn-primary btn-lg">Send Message</button>
-    {status ? <p className="contact-form-status" role="status">Opening your email app. If it does not open, email sales@coralfly.com.</p> : null}
+    {status ? <p className="contact-form-status" role="status">Opening your email app. If it does not open, email support@coralflyfilters.com.</p> : null}
   </form>;
 }

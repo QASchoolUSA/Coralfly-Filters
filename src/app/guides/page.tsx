@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { guides } from "@/lib/guides";
 
 export const metadata: Metadata = {
@@ -30,7 +31,7 @@ export default function GuidesIndexPage() {
                   <Link href="/" className="breadcrumb__item-link">Home</Link>
                 </li>
                 <li className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last" aria-current="page">
-                  <span className="breadcrumb__item-link">Guides &amp; Tech</span>
+                  <span className="breadcrumb__item-link">Guides & Tech</span>
                 </li>
                 <li className="breadcrumb__title-safe-area" role="presentation" />
               </ol>
@@ -53,10 +54,12 @@ export default function GuidesIndexPage() {
                       <div className="row no-gutters">
                         <div className="col-12 col-md-5">
                           <Link href={`/guides/${guide.slug}`} style={{ display: "block", height: "100%", minHeight: 220, position: "relative" }}>
-                            <img
+                            <Image
                               src={img}
                               alt={guide.title}
-                              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                              fill
+                              sizes="(max-width: 768px) 100vw, 320px"
+                              style={{ objectFit: "cover" }}
                             />
                           </Link>
                         </div>
@@ -102,12 +105,12 @@ export default function GuidesIndexPage() {
               <ul style={{ listStyle: "none", padding: 0, margin: 0, fontSize: 14 }}>
                 <li style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
                   <Link href="/shop?category=Air%20Filters" style={{ color: "#495057", textDecoration: "none" }}>
-                    Engine Air &amp; RadialSeal Filters
+                    Engine Air & RadialSeal Filters
                   </Link>
                 </li>
                 <li style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
                   <Link href="/shop?category=Oil%20Filters" style={{ color: "#495057", textDecoration: "none" }}>
-                    Lube &amp; Synthetic Media Oil Filters
+                    Lube & Synthetic Media Oil Filters
                   </Link>
                 </li>
                 <li style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>

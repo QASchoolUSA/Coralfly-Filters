@@ -38,25 +38,25 @@ export default function TermsPage() {
             Our catalog is designed to provide commercial fleets, owner-operators, and repair facilities with high-quality filtration hardware.
           </p>
 
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>2. Product Information &amp; Fitment</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>2. Product Information & Fitment</h2>
           <p style={{ marginBottom: 20 }}>
             While we take rigorous measures to ensure fitment data, thread sizes, and micron ratings are completely accurate,
             purchasers are responsible for confirming equipment model numbers and existing part numbers before ordering.
           </p>
 
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>3. Orders &amp; Payments</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>3. Orders & Payments</h2>
           <p style={{ marginBottom: 20 }}>
             We accept credit cards, debit cards, and Apple Pay processed through secure, PCI-compliant Stripe gateways.
             Corporate fleet accounts approved for Net 30 terms must settle invoices within 30 calendar days from delivery receipt.
           </p>
 
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Shipping &amp; Delivery</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Shipping & Delivery</h2>
           <p style={{ marginBottom: 20 }}>
             Orders placed prior to 2:00 PM EST on standard business days are processed for same-day dispatch.
             Orders of $75 or more qualify for free standard ground shipping across the contiguous United States.
           </p>
 
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>5. Returns &amp; Warranty</h2>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>5. Returns & Warranty</h2>
           <p style={{ marginBottom: 20 }}>
             Unused filters in original, unblemished cartons may be returned within 30 days of receipt.
             All CORALFLY products carry a 12-month manufacturer defect warranty under standard operating hours and maintenance intervals.

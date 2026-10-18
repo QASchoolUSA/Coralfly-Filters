@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { useQuickviewStore } from "@/lib/quickview-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
@@ -15,6 +15,17 @@ export function QuickviewModal() {
   const { currentVehicle } = useVehicleStore();
   const [quantity, setQuantity] = useState(1);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeQuickview();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, closeQuickview]);
+
   if (!isOpen || !activeProduct) return null;
   const mainImage = activeProduct.images[0]?.url || "/images/products/product-1-245x245.jpg";
 
@@ -25,7 +36,17 @@ export function QuickviewModal() {
   };
 
   return (
-    <div className="modal fade show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.65)", zIndex: 1060 }}>
+    <div
+      className="modal fade show"
+      role="dialog"
+      aria-modal="true"
+      style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.65)", zIndex: 1060 }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          closeQuickview();
+        }
+      }}
+    >
       <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 780 }}>
         <div className="modal-content" style={{ borderRadius: 4, overflow: "hidden", position: "relative" }}>
           <button
@@ -183,7 +204,7 @@ export function QuickviewModal() {
                     onClick={closeQuickview}
                     style={{ color: "#0081c9", fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}
                   >
-                    View Full Product Details &amp; Specifications →
+                    View Full Product Details & Specifications →
                   </Link>
                 </div>
               </div>

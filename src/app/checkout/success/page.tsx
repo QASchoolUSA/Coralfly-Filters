@@ -41,7 +41,7 @@ export default function CheckoutSuccessPage() {
             ✓
           </div>
 
-          <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>Payment &amp; Order Confirmed!</h1>
+          <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>Payment & Order Confirmed!</h1>
           <p style={{ color: "#6c757d", fontSize: 16, marginBottom: 32 }}>
             Thank you for ordering with CORALFLY. Stripe has securely processed your payment.
             Your filters are being packed for immediate dispatch.

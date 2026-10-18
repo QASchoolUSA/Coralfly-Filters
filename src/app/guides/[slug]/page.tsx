@@ -35,7 +35,7 @@ export default async function GuidePage({ params }: Props) {
                   <Link href="/" className="breadcrumb__item-link">Home</Link>
                 </li>
                 <li className="breadcrumb__item breadcrumb__item--parent">
-                  <Link href="/guides" className="breadcrumb__item-link">Guides &amp; Tech</Link>
+                  <Link href="/guides" className="breadcrumb__item-link">Guides & Tech</Link>
                 </li>
                 <li className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last" aria-current="page">
                   <span className="breadcrumb__item-link">{guide.title}</span>

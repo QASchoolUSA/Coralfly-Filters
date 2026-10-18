@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { useQuickviewStore } from "@/lib/quickview-store";
@@ -74,8 +75,15 @@ export function ProductCard({
       {/* Product Image & Vehicle Fit Badge */}
       <div className="product-card__image">
         <div className="image image--type--product">
-          <Link href={`/shop/${product.slug}`} className="image__body">
-            <img className="image__tag" src={imageUrl} alt={product.name} />
+          <Link href={`/shop/${product.slug}`} className="image__body" style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", display: "block" }}>
+            <Image
+              className="image__tag"
+              src={imageUrl}
+              alt={product.name}
+              fill
+              sizes="(max-width: 576px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+              style={{ objectFit: "contain" }}
+            />
           </Link>
         </div>
 

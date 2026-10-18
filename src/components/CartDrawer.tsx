@@ -53,6 +53,43 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
+            {/* Free Shipping Progress Meter for Drawer */}
+            <div
+              style={{
+                padding: "12px 16px",
+                background: subtotal >= 75 ? "#e8f8ec" : "#e8f4fb",
+                borderBottom: `1px solid ${subtotal >= 75 ? "#c3e6cb" : "#b8daff"}`,
+                fontSize: 12,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: 6,
+                  fontWeight: 600,
+                  color: subtotal >= 75 ? "#155724" : "#004085",
+                }}
+              >
+                <span>
+                  {subtotal >= 75
+                    ? "🎉 FREE Standard Shipping Unlocked!"
+                    : `Add $${(75 - subtotal).toFixed(2)} for Free Shipping`}
+                </span>
+                <span>{Math.min(100, Math.round((subtotal / 75) * 100))}%</span>
+              </div>
+              <div style={{ height: 6, background: "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${Math.min(100, Math.round((subtotal / 75) * 100))}%`,
+                    backgroundColor: subtotal >= 75 ? "#28a745" : "#0081c9",
+                    transition: "width 0.3s ease",
+                  }}
+                />
+              </div>
+            </div>
+
             <div className="cart-panel__items">
               {items.map((item) => (
                 <article className="cart-item-card" key={item.id}>
@@ -84,7 +121,12 @@ export function CartDrawer() {
             <footer className="cart-panel__footer">
               <div className="cart-panel__summary">
                 <div className="cart-panel__row"><span>Subtotal</span><span>{formatPrice(subtotal, items[0]?.currency)}</span></div>
-                <div className="cart-panel__row"><span>Shipping</span><span>Calculated at checkout</span></div>
+                <div className="cart-panel__row">
+                  <span>Shipping</span>
+                  <span style={{ color: subtotal >= 75 ? "#28a745" : "inherit", fontWeight: subtotal >= 75 ? 700 : 400 }}>
+                    {subtotal >= 75 ? "FREE" : "$12.00 (or free over $75)"}
+                  </span>
+                </div>
                 <div className="cart-panel__row cart-panel__row--total"><span>Total</span><span>{formatPrice(subtotal, items[0]?.currency)}</span></div>
               </div>
               <CheckoutButton />

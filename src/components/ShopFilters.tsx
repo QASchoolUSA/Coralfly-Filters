@@ -9,23 +9,31 @@ import type { Product } from "@/sanity/types";
 
 type Props = { products: Product[]; categories: string[] };
 
+function normalizeCategory(cat?: string | null): string {
+  if (!cat) return "";
+  return cat.toLowerCase().replace(/[-_&]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function normalizeMake(make?: string | null): string {
+  if (!make) return "";
+  return make.toLowerCase().replace(/[-_]/g, " ").trim();
+}
+
 export function ShopFilters({ products, categories }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryParam = searchParams.get("q") || "";
-  const categoryParam = searchParams.get("category") || "all";
-  const makeParam = searchParams.get("make") || "all";
+  const selectedCategory = searchParams.get("category") || "all";
+  const selectedMake = searchParams.get("make") || "all";
 
   const { currentVehicle, openPicker } = useVehicleStore();
 
   // Filters State
-  const [selectedCategory, setSelectedCategory] = useState<string>(categoryParam);
-  const [selectedMake, setSelectedMake] = useState<string>(makeParam);
   const [priceMax, setPriceMax] = useState<number>(150);
   const [inStockOnly, setInStockOnly] = useState<boolean>(false);
-  const [viewMode, setViewMode] = useState<"grid-4" | "grid-3" | "list">("grid-4");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "name">("default");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState<boolean>(false);
   const itemsPerPage = 12;
 
   // Extract all truck makes available in catalog
@@ -37,8 +45,11 @@ export function ShopFilters({ products, categories }: Props) {
     return Array.from(set).sort();
   }, [products]);
 
-  // Filter products
+  // Filter products: exact matching
   const filteredProducts = useMemo(() => {
+    const targetCat = normalizeCategory(selectedCategory);
+    const targetMake = normalizeMake(selectedMake);
+
     return products.filter((p) => {
       // Query filter
       if (queryParam) {
@@ -49,17 +60,18 @@ export function ShopFilters({ products, categories }: Props) {
         if (!matchesName && !matchesSku && !matchesDesc) return false;
       }
 
-      // Category filter
-      if (selectedCategory !== "all") {
-        if (!p.category || p.category.toLowerCase() !== selectedCategory.toLowerCase()) {
+      // Category filter: exact match on normalized category
+      if (targetCat && targetCat !== "all") {
+        const productCat = normalizeCategory(p.category);
+        if (productCat !== targetCat) {
           return false;
         }
       }
 
-      // Make filter
-      if (selectedMake !== "all") {
+      // Make filter: check if product supports this truck make
+      if (targetMake && targetMake !== "all") {
         const matches = p.compatibleMakes?.some(
-          (m) => m.toLowerCase() === selectedMake.toLowerCase()
+          (m) => normalizeMake(m) === targetMake
         );
         if (!matches) return false;
       }
@@ -90,15 +102,42 @@ export function ShopFilters({ products, categories }: Props) {
     currentPage * itemsPerPage
   );
 
+  const handleCategorySelect = (cat: string) => {
+    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+    if (cat === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", cat);
+    }
+    router.push(`/shop?${params.toString()}`, { scroll: false });
+  };
+
+  const handleMakeSelect = (make: string) => {
+    setCurrentPage(1);
+    const params = new URLSearchParams(searchParams.toString());
+    if (make === "all") {
+      params.delete("make");
+    } else {
+      params.set("make", make);
+    }
+    router.push(`/shop?${params.toString()}`, { scroll: false });
+  };
+
   const handleResetFilters = () => {
-    setSelectedCategory("all");
-    setSelectedMake("all");
     setPriceMax(150);
     setInStockOnly(false);
     setSortBy("default");
     setCurrentPage(1);
-    router.push("/shop");
+    router.push("/shop", { scroll: false });
   };
+
+  const activeFilterCount =
+    (selectedCategory !== "all" ? 1 : 0) +
+    (selectedMake !== "all" ? 1 : 0) +
+    (priceMax < 150 ? 1 : 0) +
+    (inStockOnly ? 1 : 0) +
+    (currentVehicle ? 1 : 0);
 
   return (
     <div className="block">
@@ -128,27 +167,81 @@ export function ShopFilters({ products, categories }: Props) {
               </ol>
             </nav>
             <h1 className="block-header__title">
-              {selectedCategory !== "all" ? selectedCategory : "All Truck &amp; Equipment Filters"}
+              {selectedCategory !== "all" ? selectedCategory : "All Truck & Equipment Filters"}
             </h1>
           </div>
         </div>
       </div>
 
       <div className="container">
+        {/* Mobile Filter Toggle Button for < 992px */}
+        <div className="d-lg-none mb-3">
+          <button
+            type="button"
+            className="btn btn-outline-secondary w-100 d-flex justify-content-between align-items-center py-2 px-3"
+            style={{
+              borderColor: "#d5d5d5",
+              background: "#ffffff",
+              color: "#333",
+              fontWeight: 600,
+              fontSize: 14,
+              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+            }}
+            onClick={() => setMobileFiltersOpen((prev) => !prev)}
+            aria-expanded={mobileFiltersOpen}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+              <span>Filter Catalog</span>
+              {activeFilterCount > 0 && (
+                <span
+                  style={{
+                    backgroundColor: "#0081c9",
+                    color: "#fff",
+                    borderRadius: 12,
+                    padding: "2px 8px",
+                    fontSize: 12,
+                    fontWeight: 700,
+                  }}
+                >
+                  {activeFilterCount}
+                </span>
+              )}
+            </span>
+            <span style={{ fontSize: 13, color: "#0081c9", fontWeight: 600 }}>
+              {mobileFiltersOpen ? "Hide Filters ▲" : "Show Filters ▼"}
+            </span>
+          </button>
+        </div>
+
         <div className="block-split block-split--has-sidebar">
           <div className="block-split__row row">
             {/* Left Sidebar: Red-Parts Exact Filter Widgets */}
-            <div className="block-split__item-sidebar col-12 col-lg-3">
+            <div className={`block-split__item-sidebar col-12 col-lg-3 ${mobileFiltersOpen ? "d-block mb-4" : "d-none d-lg-block"}`}>
               <div className="card widget widget-filters">
                 <div className="widget-filters__header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #ebebeb" }}>
                   <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Filters</h4>
-                  <button
-                    type="button"
-                    onClick={handleResetFilters}
-                    style={{ background: "none", border: "none", color: "#0081c9", fontSize: 13, cursor: "pointer", fontWeight: 600 }}
-                  >
-                    Reset
-                  </button>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <button
+                      type="button"
+                      onClick={handleResetFilters}
+                      style={{ background: "none", border: "none", color: "#0081c9", fontSize: 13, cursor: "pointer", fontWeight: 600 }}
+                    >
+                      Reset
+                    </button>
+                    {mobileFiltersOpen && (
+                      <button
+                        type="button"
+                        className="d-lg-none"
+                        onClick={() => setMobileFiltersOpen(false)}
+                        style={{ background: "#f0f2f5", border: "none", borderRadius: 4, padding: "2px 8px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}
+                      >
+                        ✕ Close
+                      </button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="widget-filters__list" style={{ padding: 20 }}>
@@ -194,7 +287,7 @@ export function ShopFilters({ products, categories }: Props) {
                       <li style={{ marginBottom: 8 }}>
                         <button
                           type="button"
-                          onClick={() => setSelectedCategory("all")}
+                          onClick={() => handleCategorySelect("all")}
                           style={{
                             background: "none",
                             border: "none",
@@ -213,13 +306,13 @@ export function ShopFilters({ products, categories }: Props) {
                         </button>
                       </li>
                       {categories.map((cat) => {
-                        const count = products.filter((p) => p.category?.toLowerCase() === cat.toLowerCase()).length;
-                        const isSelected = selectedCategory.toLowerCase() === cat.toLowerCase();
+                        const count = products.filter((p) => normalizeCategory(p.category) === normalizeCategory(cat)).length;
+                        const isSelected = normalizeCategory(selectedCategory) === normalizeCategory(cat);
                         return (
                           <li key={cat} style={{ marginBottom: 8 }}>
                             <button
                               type="button"
-                              onClick={() => setSelectedCategory(cat)}
+                              onClick={() => handleCategorySelect(cat)}
                               style={{
                                 background: "none",
                                 border: "none",
@@ -290,7 +383,7 @@ export function ShopFilters({ products, categories }: Props) {
                                   type="radio"
                                   name="truckMake"
                                   checked={isChecked}
-                                  onChange={() => setSelectedMake(isChecked ? "all" : m)}
+                                  onChange={() => handleMakeSelect(isChecked ? "all" : m)}
                                   style={{ accentColor: "#0081c9" }}
                                 />
                                 <span>{m}</span>
@@ -324,37 +417,6 @@ export function ShopFilters({ products, categories }: Props) {
               <div className="block">
                 {/* View Options Control Bar */}
                 <div className="view-options" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, marginBottom: 24 }}>
-                  {/* View Switchers */}
-                  <div className="view-options__layout" style={{ display: "flex", gap: 6 }}>
-                    <button
-                      type="button"
-                      className={`btn btn-sm ${viewMode === "grid-4" ? "btn-primary" : "btn-light"}`}
-                      onClick={() => setViewMode("grid-4")}
-                      title="4 Columns Grid"
-                      style={{ backgroundColor: viewMode === "grid-4" ? "#0081c9" : undefined }}
-                    >
-                      ⊞ 4
-                    </button>
-                    <button
-                      type="button"
-                      className={`btn btn-sm ${viewMode === "grid-3" ? "btn-primary" : "btn-light"}`}
-                      onClick={() => setViewMode("grid-3")}
-                      title="3 Columns Grid"
-                      style={{ backgroundColor: viewMode === "grid-3" ? "#0081c9" : undefined }}
-                    >
-                      ⊞ 3
-                    </button>
-                    <button
-                      type="button"
-                      className={`btn btn-sm ${viewMode === "list" ? "btn-primary" : "btn-light"}`}
-                      onClick={() => setViewMode("list")}
-                      title="List View"
-                      style={{ backgroundColor: viewMode === "list" ? "#0081c9" : undefined }}
-                    >
-                      ☰ List
-                    </button>
-                  </div>
-
                   {/* Legend / Counters */}
                   <div className="view-options__legend" style={{ fontSize: 13, color: "#6c757d" }}>
                     Showing {sortedProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}–
@@ -378,7 +440,7 @@ export function ShopFilters({ products, categories }: Props) {
                   </div>
                 </div>
 
-                {/* Product Results */}
+                {/* Product Results: 4 per row */}
                 {paginatedProducts.length === 0 ? (
                   <div style={{ padding: "48px 24px", textAlign: "center", background: "#fff", border: "1px solid #ebebeb", borderRadius: 4 }}>
                     <h3 style={{ fontSize: 18, color: "#333", marginBottom: 8 }}>No filters matched your search criteria</h3>
@@ -394,27 +456,13 @@ export function ShopFilters({ products, categories }: Props) {
                       Reset All Filters
                     </button>
                   </div>
-                ) : viewMode === "list" ? (
-                  <div className="products-list products-list--grid--1">
-                    {paginatedProducts.map((product) => (
-                      <div key={product._id} className="mb-3">
-                        <ProductCard product={product} layout="list" />
-                      </div>
-                    ))}
-                  </div>
                 ) : (
                   <div className="row">
-                    {paginatedProducts.map((product) => {
-                      const colClass =
-                        viewMode === "grid-3"
-                          ? "col-12 col-sm-6 col-md-4 mb-4"
-                          : "col-12 col-sm-6 col-md-4 col-xl-3 mb-4";
-                      return (
-                        <div key={product._id} className={colClass}>
-                          <ProductCard product={product} layout="grid" />
-                        </div>
-                      );
-                    })}
+                    {paginatedProducts.map((product) => (
+                      <div key={product._id} className="col-12 col-sm-6 col-md-4 col-xl-3 mb-4">
+                        <ProductCard product={product} layout="grid" />
+                      </div>
+                    ))}
                   </div>
                 )}
 

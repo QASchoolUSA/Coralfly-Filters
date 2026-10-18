@@ -43,7 +43,7 @@ const FAQ_SECTIONS = [
     items: [
       {
         q: "Do you offer Net 30 corporate purchase order terms?",
-        a: "Yes. Fleets operating 5 or more commercial power units can establish credit terms with Net 30 billing. Contact sales@coralfly.com or select 'Fleet Purchase Order' at checkout.",
+        a: "Yes. Fleets operating 5 or more commercial power units can establish credit terms with Net 30 billing. Contact support@coralflyfilters.com or select 'Fleet Purchase Order' at checkout.",
       },
       {
         q: "Can I receive wholesale pricing on full carton quantities?",

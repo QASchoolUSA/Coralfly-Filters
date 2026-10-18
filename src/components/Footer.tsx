@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 
 export function Footer() {
@@ -39,19 +40,31 @@ export function Footer() {
                   <address className="footer-contacts__contacts">
                     <dl>
                       <dt>Phone Number</dt>
-                      <dd>(800) 060-0730</dd>
+                      <dd>
+                        <a href="tel:+14077681488" style={{ color: "inherit", textDecoration: "none" }}>
+                          (407) 768-1488
+                        </a>
+                      </dd>
                     </dl>
                     <dl>
                       <dt>Email Address</dt>
-                      <dd>sales@coralfly.com</dd>
+                      <dd>
+                        <a href="mailto:support@coralflyfilters.com" style={{ color: "inherit", textDecoration: "none" }}>
+                          support@coralflyfilters.com
+                        </a>
+                      </dd>
                     </dl>
                     <dl>
                       <dt>Warehouse Location</dt>
-                      <dd>715 Industrial Pkwy, Logistics Hub, USA</dd>
+                      <dd>
+                        <Link href="/contact" style={{ color: "inherit", textDecoration: "none" }}>
+                          1660 Retreat View Cir, Sanford, FL 32771
+                        </Link>
+                      </dd>
                     </dl>
                     <dl>
                       <dt>Working Hours</dt>
-                      <dd>Mon-Fri 08:00am - 05:00pm EST</dd>
+                      <dd>24/7 Hours Everyday</dd>
                     </dl>
                   </address>
                 </div>
@@ -66,13 +79,13 @@ export function Footer() {
                       <Link href="/about" className="footer-links__link">About Us</Link>
                     </li>
                     <li className="footer-links__item">
-                      <Link href="/shop" className="footer-links__link">Delivery Information</Link>
+                      <Link href="/delivery" className="footer-links__link">Delivery Information</Link>
                     </li>
                     <li className="footer-links__item">
                       <Link href="/privacy" className="footer-links__link">Privacy Policy</Link>
                     </li>
                     <li className="footer-links__item">
-                      <Link href="/terms" className="footer-links__link">Terms &amp; Conditions</Link>
+                      <Link href="/terms" className="footer-links__link">Terms & Conditions</Link>
                     </li>
                     <li className="footer-links__item">
                       <Link href="/trucks" className="footer-links__link">Truck Brands</Link>
@@ -93,16 +106,19 @@ export function Footer() {
                       <Link href="/faq" className="footer-links__link">Filtration FAQ</Link>
                     </li>
                     <li className="footer-links__item">
-                      <Link href="/trucks" className="footer-links__link">Truck Directory</Link>
+                      <Link href="/returns" className="footer-links__link">Returns & Warranty</Link>
                     </li>
                     <li className="footer-links__item">
                       <Link href="/guides" className="footer-links__link">Maintenance Guides</Link>
                     </li>
                     <li className="footer-links__item">
+                      <Link href="/guides/oem-filter-cross-reference-guide" className="footer-links__link">OEM Cross-Reference</Link>
+                    </li>
+                    <li className="footer-links__item">
                       <Link href="/contact" className="footer-links__link">Technical Support</Link>
                     </li>
                     <li className="footer-links__item">
-                      <Link href="/terms" className="footer-links__link">Warranty &amp; Terms</Link>
+                      <Link href="/cart" className="footer-links__link">Shopping Cart</Link>
                     </li>
                   </ul>
                 </div>
@@ -157,7 +173,13 @@ export function Footer() {
                 © 2026 CORALFLY Filters — Reliable Filter Reliable Service. All Rights Reserved.
               </div>
               <div className="site-footer__payments">
-                <img src="/images/payments.png" alt="Stripe, Visa, MasterCard, PayPal, Amex" />
+                <Image
+                  src="/images/payments.png"
+                  alt="Stripe, Visa, MasterCard, PayPal, Amex"
+                  width={280}
+                  height={24}
+                  style={{ height: "auto", maxWidth: "100%" }}
+                />
               </div>
             </div>
           </div>

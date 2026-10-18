@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "About Us",
@@ -37,17 +38,19 @@ export default function AboutPage() {
           <div className="row no-gutters align-items-center">
             <div className="col-12 col-lg-6">
               <div style={{ height: 380, position: "relative", overflow: "hidden" }}>
-                <img
+                <Image
                   src="/images/banners/banner1.jpg"
                   alt="CORALFLY Warehouse"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  fill
+                  sizes="(max-width: 992px) 100vw, 50vw"
+                  style={{ objectFit: "cover" }}
                 />
               </div>
             </div>
             <div className="col-12 col-lg-6">
               <div style={{ padding: 48 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: "#0081c9", textTransform: "uppercase", marginBottom: 8 }}>
-                  Our Mission &amp; Standards
+                  Our Mission & Standards
                 </div>
                 <h2 style={{ fontSize: 26, fontWeight: 700, lineHeight: 1.3, marginBottom: 16 }}>
                   Heavy Duty Filtration Engineered for Long Haul Reliability
