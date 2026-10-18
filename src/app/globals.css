@@ -918,7 +918,7 @@ html {
 
 /* Centered Mobile Header Bar */
 .mobile-header__body {
-  height: 52px;
+  height: 56px;
   display: grid !important;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -926,6 +926,7 @@ html {
 
 .mobile-header__menu-button {
   justify-self: start;
+  height: 56px;
 }
 
 .mobile-header__logo {
@@ -933,8 +934,15 @@ html {
   display: flex !important;
   align-items: center;
   justify-content: center;
-  padding: 0 6px !important;
+  padding: 0 4px !important;
   margin: 0 auto;
+}
+
+.mobile-header__logo img {
+  height: 38px !important;
+  width: auto !important;
+  max-width: 170px !important;
+  object-fit: contain;
 }
 
 .mobile-header__indicators {
@@ -942,6 +950,10 @@ html {
   display: flex;
   justify-content: flex-end;
   margin-left: 0 !important;
+}
+
+.mobile-header__indicators .mobile-indicator__button {
+  height: 56px;
 }
 
 /* ==========================================================================

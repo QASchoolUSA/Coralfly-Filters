@@ -648,9 +648,9 @@ export function Header() {
                 <Image
                   src="/brand/logo.png"
                   alt="CORALFLY"
-                  width={130}
-                  height={32}
-                  style={{ objectFit: "contain", width: "auto", height: "auto", maxHeight: 32 }}
+                  width={165}
+                  height={50}
+                  style={{ objectFit: "contain", width: "auto", height: "auto" }}
                   priority
                 />
               </Link>
