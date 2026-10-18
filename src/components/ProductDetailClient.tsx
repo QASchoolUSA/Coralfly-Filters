@@ -8,6 +8,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
 import { getEnhancedGalleryImages } from "@/lib/product-gallery";
+import { ProductDescription } from "@/components/ProductDescription";
 import type { Product } from "@/sanity/types";
 
 export function ProductDetailClient({
@@ -473,8 +474,15 @@ export function ProductDetailClient({
                   {/* 2.3 Product Main (Excerpt & Key Specs) */}
                   <div className="product__main">
                     <div className="product__excerpt">
-                      {product.description ||
-                        "Heavy-duty commercial grade filtration engineered with high-dirt-holding synthetic media. Guaranteed fitment, maximum service life, and optimal fluid flow under rigorous hauling conditions."}
+                      <ProductDescription
+                        product={product}
+                        mode="excerpt"
+                        onSeeFull={() => {
+                          setActiveTab("desc");
+                          const el = document.getElementById("tab-desc");
+                          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }}
+                      />
                     </div>
                     <div className="product__features">
                       <div className="product__features-title">Key Specifications:</div>
@@ -717,23 +725,7 @@ export function ProductDetailClient({
                         id="tab-desc"
                       >
                         <div className="typography">
-                          <h3>Engineered for Heavy Duty Performance & Uptime</h3>
-                          <p>
-                            CORALFLY filtration elements are manufactured using advanced multi-layer synthetic media
-                            designed to trap sub-micron contaminants without restricting critical fluid or air flow.
-                            Each unit undergoes 100% burst and pressure testing to ensure durability under harsh highway and off-road cycles.
-                          </p>
-                          <p>
-                            Designed to safeguard high-pressure common rail (HPCR) injection systems and precision engine tolerances,
-                            CORALFLY elements deliver unmatched filtration efficiency, preventing abrasive wear, ring damage, and costly road breakdowns.
-                          </p>
-                          <h4>Key Fleet Advantages:</h4>
-                          <ul>
-                            <li>High-efficiency retention rate surpassing OEM factory standards.</li>
-                            <li>Heat-resistant fluoroelastomer sealing gaskets prevent bypass leakage in extreme operating temperatures.</li>
-                            <li>Heavy-gauge steel canister resists pressure spikes and vibration fatigue.</li>
-                            <li>Certified for extended drain intervals in commercial fleets.</li>
-                          </ul>
+                          <ProductDescription product={product} mode="full" />
                         </div>
                       </div>
 

@@ -8,6 +8,8 @@ import { useQuickviewStore } from "@/lib/quickview-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
 
+import { ProductDescription } from "@/components/ProductDescription";
+
 export function QuickviewModal() {
   const { activeProduct, isOpen, closeQuickview } = useQuickviewStore();
   const addItem = useCartStore((state) => state.addItem);
@@ -144,9 +146,9 @@ export function QuickviewModal() {
                   </span>
                 </div>
 
-                <p style={{ fontSize: 14, color: "#5c6570", lineHeight: 1.5, marginBottom: 20 }}>
-                  {activeProduct.description || "Premium high-grade commercial filtration media designed for maximum dirt-holding capacity and reliable service intervals."}
-                </p>
+                <div style={{ marginBottom: 20 }}>
+                  <ProductDescription product={activeProduct} mode="excerpt" />
+                </div>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
                   <div

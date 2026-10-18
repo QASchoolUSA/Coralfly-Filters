@@ -247,6 +247,11 @@ export function normalizeProduct(raw: RawProduct): Product | null {
       asPlainText(raw.blurb) ||
       asPlainText(raw.description) ||
       asPlainText(raw.shortDescription),
+    descriptionRaw: Array.isArray(raw.description)
+      ? (raw.description as unknown[])
+      : Array.isArray(raw.body)
+      ? (raw.body as unknown[])
+      : undefined,
     price: normalizePrice(raw),
     compareAtPrice: normalizeCompareAtPrice(raw),
     currency: (asString(raw.currency) || "usd").toLowerCase(),

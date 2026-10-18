@@ -20,6 +20,7 @@ export type Product = {
   name: string;
   slug: string;
   description?: string;
+  descriptionRaw?: unknown[];
   /** Price in major currency units (e.g. dollars) */
   price: number;
   currency: string;
