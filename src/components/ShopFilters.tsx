@@ -26,14 +26,14 @@ export function ShopFilters({ products, categories }: Props) {
   const selectedCategory = searchParams.get("category") || "all";
   const selectedMake = searchParams.get("make") || "all";
 
-  const { currentVehicle, openPicker } = useVehicleStore();
+  const { currentVehicle, openPicker, clearCurrentVehicle } = useVehicleStore();
 
   // Filters State
   const [priceMax, setPriceMax] = useState<number>(150);
   const [inStockOnly, setInStockOnly] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc" | "name">("default");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState<boolean>(false);
+
   const itemsPerPage = 12;
 
   // Extract all truck makes available in catalog
@@ -174,55 +174,29 @@ export function ShopFilters({ products, categories }: Props) {
       </div>
 
       <div className="container">
-        {/* Mobile Filter Toggle Button for < 992px */}
-        <div className="d-lg-none mb-3">
-          <button
-            type="button"
-            className="btn btn-outline-secondary w-100 d-flex justify-content-between align-items-center py-2 px-3"
-            style={{
-              borderColor: "#d5d5d5",
-              background: "#ffffff",
-              color: "#333",
-              fontWeight: 600,
-              fontSize: 14,
-              boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-            }}
-            onClick={() => setMobileFiltersOpen((prev) => !prev)}
-            aria-expanded={mobileFiltersOpen}
-          >
-            <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
-              </svg>
-              <span>Filter Catalog</span>
-              {activeFilterCount > 0 && (
-                <span
-                  style={{
-                    backgroundColor: "#0081c9",
-                    color: "#fff",
-                    borderRadius: 12,
-                    padding: "2px 8px",
-                    fontSize: 12,
-                    fontWeight: 700,
-                  }}
-                >
-                  {activeFilterCount}
-                </span>
-              )}
-            </span>
-            <span style={{ fontSize: 13, color: "#0081c9", fontWeight: 600 }}>
-              {mobileFiltersOpen ? "Hide Filters ▲" : "Show Filters ▼"}
-            </span>
-          </button>
-        </div>
-
         <div className="block-split block-split--has-sidebar">
           <div className="block-split__row row">
-            {/* Left Sidebar: Red-Parts Exact Filter Widgets */}
-            <div className={`block-split__item-sidebar col-12 col-lg-3 ${mobileFiltersOpen ? "d-block mb-4" : "d-none d-lg-block"}`}>
+            {/* Left Sidebar: Red-Parts Exact Filter Widgets (Desktop only) */}
+            <div className="block-split__item-sidebar col-12 col-lg-3 d-none d-lg-block">
               <div className="card widget widget-filters">
                 <div className="widget-filters__header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderBottom: "1px solid #ebebeb" }}>
-                  <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Filters</h4>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <h4 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Filters</h4>
+                    {activeFilterCount > 0 && (
+                      <span
+                        style={{
+                          backgroundColor: "#0081c9",
+                          color: "#fff",
+                          borderRadius: 12,
+                          padding: "2px 8px",
+                          fontSize: 11,
+                          fontWeight: 700,
+                        }}
+                      >
+                        {activeFilterCount}
+                      </span>
+                    )}
+                  </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                     <button
                       type="button"
@@ -231,16 +205,6 @@ export function ShopFilters({ products, categories }: Props) {
                     >
                       Reset
                     </button>
-                    {mobileFiltersOpen && (
-                      <button
-                        type="button"
-                        className="d-lg-none"
-                        onClick={() => setMobileFiltersOpen(false)}
-                        style={{ background: "#f0f2f5", border: "none", borderRadius: 4, padding: "2px 8px", fontSize: 12, cursor: "pointer", fontWeight: 600 }}
-                      >
-                        ✕ Close
-                      </button>
-                    )}
                   </div>
                 </div>
 
@@ -258,13 +222,22 @@ export function ShopFilters({ products, categories }: Props) {
                         <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1d21", marginTop: 2 }}>
                           {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
                         </div>
-                        <button
-                          type="button"
-                          onClick={openPicker}
-                          style={{ background: "none", border: "none", color: "#0081c9", fontSize: 12, textDecoration: "underline", padding: 0, marginTop: 4, cursor: "pointer" }}
-                        >
-                          Change Vehicle
-                        </button>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
+                          <button
+                            type="button"
+                            onClick={openPicker}
+                            style={{ background: "none", border: "none", color: "#0081c9", fontSize: 12, textDecoration: "underline", padding: 0, cursor: "pointer", fontWeight: 600 }}
+                          >
+                            Change Vehicle
+                          </button>
+                          <button
+                            type="button"
+                            onClick={clearCurrentVehicle}
+                            style={{ background: "none", border: "none", color: "#6c757d", fontSize: 12, textDecoration: "underline", padding: 0, cursor: "pointer" }}
+                          >
+                            Clear
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <button

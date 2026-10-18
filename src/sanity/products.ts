@@ -1,6 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { sanityClient, isSanityConfigured } from "./client";
-import { fixtureProducts } from "./fixtures";
 import { resolveSanityImageUrl } from "./image";
 import {
   categoriesQuery,
@@ -230,6 +229,15 @@ export function normalizeProduct(raw: RawProduct): Product | null {
     ...(Array.isArray(raw.vehicleFit) ? raw.vehicleFit : []),
     ...(fitmentDetails ?? []).map((fitment) => fitment.brand),
   ]);
+  let category = asString(raw.categoryTitle) || asString(raw.category);
+  if (!category) {
+    const lower = name.toLowerCase();
+    if (lower.includes("cabin")) category = "Cabin Filters";
+    else if (lower.includes("oil")) category = "Oil Filters";
+    else if (lower.includes("air")) category = "Air Filters";
+    else if (lower.includes("fuel")) category = "Fuel Filters";
+    else if (lower.includes("coolant")) category = "Accessories & Kits";
+  }
 
   return {
     _id: id,
@@ -243,11 +251,11 @@ export function normalizeProduct(raw: RawProduct): Product | null {
     compareAtPrice: normalizeCompareAtPrice(raw),
     currency: (asString(raw.currency) || "usd").toLowerCase(),
     sku: asString(raw.skuValue) || asString(raw.sku) || asString(raw.partNumber),
-    category: asString(raw.categoryTitle) || asString(raw.category),
+    category,
     inStock: typeof raw.inStock === "boolean" ? raw.inStock : undefined,
     details: asPlainText(raw.details),
     crossReferences: normalizeStringList(raw.crossReferences),
-    brand: asString(raw.brand),
+    brand: asString(raw.brand) || "CORALFLY",
     productType: asString(raw.productType),
     compatibleMakes,
     fitmentDetails,
@@ -265,7 +273,7 @@ async function fetchFromSanity<T>(
   try {
     return await sanityClient.fetch<T>(query, params);
   } catch (error) {
-    console.error("Sanity fetch failed, falling back to fixtures:", error);
+    console.error("Sanity fetch failed:", error);
     return null;
   }
 }
@@ -275,13 +283,13 @@ export async function getProducts(): Promise<Product[]> {
   cacheTag("products");
   cacheLife("hours");
 
-  if (!isSanityConfigured) return fixtureProducts;
+  if (!isSanityConfigured) return [];
 
   const raw = await fetchFromSanity<RawProduct[]>(productsQuery);
-  if (!raw?.length) return fixtureProducts;
+  if (!raw?.length) return [];
 
   const products = raw.map(normalizeProduct).filter(Boolean) as Product[];
-  return products.length ? products : fixtureProducts;
+  return products;
 }
 
 export async function getFeaturedProducts(limit = 4): Promise<Product[]> {
@@ -299,9 +307,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
   cacheTag("products", `product-${slug}`);
   cacheLife("hours");
 
-  if (!isSanityConfigured) {
-    return fixtureProducts.find((p) => p.slug === slug) ?? null;
-  }
+  if (!isSanityConfigured) return null;
 
   const raw = await fetchFromSanity<RawProduct | null>(productBySlugQuery, {
     slug,
@@ -311,7 +317,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
     if (product) return product;
   }
 
-  return fixtureProducts.find((p) => p.slug === slug) ?? null;
+  return null;
 }
 
 export async function getCategories(): Promise<string[]> {
@@ -319,11 +325,7 @@ export async function getCategories(): Promise<string[]> {
   cacheTag("products", "categories");
   cacheLife("hours");
 
-  if (!isSanityConfigured) {
-    return [
-      ...new Set(fixtureProducts.map((p) => p.category).filter(Boolean)),
-    ] as string[];
-  }
+  if (!isSanityConfigured) return [];
 
   const raw = await fetchFromSanity<(string | null | undefined)[]>(
     categoriesQuery,

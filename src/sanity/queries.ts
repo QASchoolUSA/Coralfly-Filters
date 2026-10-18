@@ -57,10 +57,10 @@ const productFields = /* groq */ `
   partNumber,
   category,
   "categoryTitle": coalesce(
-    category->title,
     category->name,
-    categories[0]->title,
+    category->title,
     categories[0]->name,
+    categories[0]->title,
     category
   ),
   compatibleMakes,
@@ -110,10 +110,10 @@ export const categoriesQuery = `*[
   && !(_id in path("drafts.**"))
 ]{
   "categoryTitle": coalesce(
-    category->title,
     category->name,
-    categories[0]->title,
+    category->title,
     categories[0]->name,
+    categories[0]->title,
     category
   )
 }.categoryTitle`;

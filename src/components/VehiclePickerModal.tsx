@@ -52,7 +52,7 @@ const VEHICLE_DATA = [
 const YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015"];
 
 export function VehiclePickerModal() {
-  const { isPickerOpen, closePicker, selectVehicle, currentVehicle } = useVehicleStore();
+  const { isPickerOpen, closePicker, selectVehicle, clearCurrentVehicle, currentVehicle } = useVehicleStore();
 
   if (!isPickerOpen) return null;
 
@@ -62,6 +62,7 @@ export function VehiclePickerModal() {
       currentVehicle={currentVehicle}
       closePicker={closePicker}
       selectVehicle={selectVehicle}
+      clearCurrentVehicle={clearCurrentVehicle}
     />
   );
 }
@@ -70,10 +71,12 @@ function VehiclePickerModalContent({
   currentVehicle,
   closePicker,
   selectVehicle,
+  clearCurrentVehicle,
 }: {
   currentVehicle: Vehicle | null;
   closePicker: () => void;
   selectVehicle: (v: Vehicle) => void;
+  clearCurrentVehicle: () => void;
 }) {
   const [selectedYear, setSelectedYear] = useState<string>(currentVehicle?.year || "");
   const [selectedMake, setSelectedMake] = useState<string>(currentVehicle?.make || "");
@@ -219,31 +222,48 @@ function VehiclePickerModalContent({
                 </select>
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: 12 }}>
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={closePicker}
-                  style={{ height: 42, padding: "0 20px", fontSize: 14 }}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!isComplete}
-                  className="btn btn-primary"
-                  style={{
-                    height: 42,
-                    padding: "0 24px",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    backgroundColor: isComplete ? "#0081c9" : "#cbd5e1",
-                    borderColor: isComplete ? "#0081c9" : "#cbd5e1",
-                    cursor: isComplete ? "pointer" : "not-allowed",
-                  }}
-                >
-                  Save & Confirm Fitment
-                </button>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                <div>
+                  {currentVehicle && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => {
+                        clearCurrentVehicle();
+                        closePicker();
+                      }}
+                      style={{ height: 40, padding: "0 16px", fontSize: 13, color: "#dc3545", borderColor: "#dc3545", backgroundColor: "transparent" }}
+                    >
+                      Clear Selected Rig
+                    </button>
+                  )}
+                </div>
+                <div style={{ display: "flex", gap: 12, marginLeft: "auto" }}>
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={closePicker}
+                    style={{ height: 42, padding: "0 20px", fontSize: 14 }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={!isComplete}
+                    className="btn btn-primary"
+                    style={{
+                      height: 42,
+                      padding: "0 24px",
+                      fontSize: 14,
+                      fontWeight: 600,
+                      backgroundColor: isComplete ? "#0081c9" : "#cbd5e1",
+                      borderColor: isComplete ? "#0081c9" : "#cbd5e1",
+                      cursor: isComplete ? "pointer" : "not-allowed",
+                    }}
+                  >
+                    Save & Confirm Fitment
+                  </button>
+                </div>
               </div>
             </form>
           </div>

@@ -20,7 +20,7 @@ export function ProductDetailClient({
   const addItem = useCartStore((state) => state.addItem);
   const openCart = useCartStore((state) => state.openCart);
 
-  const { currentVehicle, openPicker } = useVehicleStore();
+  const { currentVehicle, openPicker, clearCurrentVehicle } = useVehicleStore();
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -401,12 +401,16 @@ export function ProductDetailClient({
                       {/* Vehicle Fit Status Badge */}
                       <div
                         className={`status-badge status-badge--style--${
-                          isCompatible ? "success" : "warning"
+                          !currentVehicle ? "neutral" : isCompatible ? "success" : "warning"
                         } product__fit status-badge--has-icon status-badge--has-text`}
                       >
                         <div className="status-badge__body">
                           <div className="status-badge__icon">
-                            {isCompatible ? (
+                            {!currentVehicle ? (
+                              <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z" />
+                              </svg>
+                            ) : isCompatible ? (
                               <svg width="13" height="13" viewBox="0 0 13 13">
                                 <path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z" />
                               </svg>
@@ -430,20 +434,39 @@ export function ProductDetailClient({
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={openPicker}
-                        className="btn btn-sm btn-link"
-                        style={{
-                          padding: "0 0 0 8px",
-                          fontSize: 12,
-                          color: "#0081c9",
-                          fontWeight: 600,
-                          textDecoration: "none",
-                        }}
-                      >
-                        {currentVehicle ? "Change Rig" : "Select Rig"}
-                      </button>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        <button
+                          type="button"
+                          onClick={openPicker}
+                          className="btn btn-sm btn-link"
+                          style={{
+                            padding: "0 0 0 8px",
+                            fontSize: 12,
+                            color: "#0081c9",
+                            fontWeight: 600,
+                            textDecoration: "none",
+                          }}
+                        >
+                          {currentVehicle ? "Change Rig" : "Select Rig"}
+                        </button>
+                        {currentVehicle && (
+                          <button
+                            type="button"
+                            onClick={clearCurrentVehicle}
+                            className="btn btn-sm btn-link"
+                            title="Clear selected rig"
+                            style={{
+                              padding: "0 4px",
+                              fontSize: 12,
+                              color: "#6c757d",
+                              fontWeight: 500,
+                              textDecoration: "none",
+                            }}
+                          >
+                            · Clear
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
 

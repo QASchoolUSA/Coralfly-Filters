@@ -18,12 +18,6 @@ export function isAllowedMake(make?: string | null): boolean {
   return ALLOWED_MAKES.some((m) => m.toLowerCase() === make.trim().toLowerCase());
 }
 
-export const DEFAULT_VEHICLE: Vehicle = {
-  year: "2023",
-  make: "Volvo",
-  model: "VNL 760",
-  engine: "D13TC 455 HP",
-};
 
 type VehicleState = {
   currentVehicle: Vehicle | null;
@@ -95,7 +89,7 @@ export const useVehicleStore = create<VehicleState>()(
       clearCurrentVehicle: () => set({ currentVehicle: null }),
     }),
     {
-      name: "coralfly_vehicle_storage_v4",
+      name: "coralfly_vehicle_storage_v5",
       storage: safeLocalStorage,
       onRehydrateStorage: () => (state) => {
         if (!state) return;
@@ -116,9 +110,20 @@ export const useVehicleStore = create<VehicleState>()(
             window.localStorage.removeItem("coralfly_vehicle_storage");
             window.localStorage.removeItem("coralfly_vehicle_storage_v2");
             window.localStorage.removeItem("coralfly_vehicle_storage_v3");
+            window.localStorage.removeItem("coralfly_vehicle_storage_v4");
           } catch {}
         }
       },
     }
   )
 );
+
+// Client-side immediate wipe of previous versions
+if (typeof window !== "undefined") {
+  try {
+    window.localStorage.removeItem("coralfly_vehicle_storage");
+    window.localStorage.removeItem("coralfly_vehicle_storage_v2");
+    window.localStorage.removeItem("coralfly_vehicle_storage_v3");
+    window.localStorage.removeItem("coralfly_vehicle_storage_v4");
+  } catch {}
+}

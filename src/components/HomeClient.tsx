@@ -38,22 +38,157 @@ const VEHICLE_DATA = [
 
 const YEARS = ["2026", "2025", "2024", "2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016"];
 
-const TYPE_TABS = [
-  "All",
-  "Air Filters",
-  "Oil Filters",
-  "Fuel Filters",
-  "Cabin Filters",
+import {
+  OilFilterIcon,
+  AirFilterIcon,
+  FuelFilterIcon,
+  CabinFilterIcon,
+  TruckIcon,
+} from "@/components/CategoryIcons";
+
+const FILTER_TYPE_DIRECTORIES = [
+  {
+    id: "oil-filters",
+    title: "Oil Filters",
+    badge: "Lube & Bypass",
+    subtitle: "Heavy-duty full-flow spin-on and bypass lube cartridges",
+    iconType: "oil" as const,
+    categoryParam: "Oil Filters",
+    options: [
+      { label: "Oil Filter for Volvo", make: "Volvo" },
+      { label: "Oil Filter for Freightliner", make: "Freightliner" },
+      { label: "Oil Filter for Kenworth", make: "Kenworth" },
+      { label: "Oil Filter for Peterbilt", make: "Peterbilt" },
+      { label: "Oil Filter for Mack", make: "Mack" },
+    ],
+  },
+  {
+    id: "air-filters",
+    title: "Air Filters",
+    badge: "RadialSeal",
+    subtitle: "High-airflow engine intake and secondary safety elements",
+    iconType: "air" as const,
+    categoryParam: "Air Filters",
+    options: [
+      { label: "Air Filter for Volvo", make: "Volvo" },
+      { label: "Air Filter for Freightliner", make: "Freightliner" },
+      { label: "Air Filter for Kenworth", make: "Kenworth" },
+      { label: "Air Filter for Peterbilt", make: "Peterbilt" },
+      { label: "Air Filter for Mack", make: "Mack" },
+    ],
+  },
+  {
+    id: "fuel-filters",
+    title: "Fuel & Separators",
+    badge: "Water Separation",
+    subtitle: "Primary and secondary diesel fuel spin-ons with water bowls",
+    iconType: "fuel" as const,
+    categoryParam: "Fuel Filters",
+    options: [
+      { label: "Fuel Filter for Volvo", make: "Volvo" },
+      { label: "Fuel Filter for Freightliner", make: "Freightliner" },
+      { label: "Fuel Filter for Kenworth", make: "Kenworth" },
+      { label: "Fuel Filter for Peterbilt", make: "Peterbilt" },
+      { label: "Fuel Filter for Mack", make: "Mack" },
+    ],
+  },
+  {
+    id: "cabin-filters",
+    title: "Cabin Air Filters",
+    badge: "HVAC Clean Air",
+    subtitle: "Multi-stage activated carbon sleeper-cab ventilation",
+    iconType: "cabin" as const,
+    categoryParam: "Cabin Filters",
+    options: [
+      { label: "Cabin Filter for Volvo", make: "Volvo" },
+      { label: "Cabin Filter for Freightliner", make: "Freightliner" },
+      { label: "Cabin Filter for Kenworth", make: "Kenworth" },
+      { label: "Cabin Filter for Peterbilt", make: "Peterbilt" },
+      { label: "Cabin Filter for Mack", make: "Mack" },
+    ],
+  },
 ];
 
-const TRUCK_TABS = [
-  "All Trucks",
-  "Volvo",
-  "Freightliner",
-  "Kenworth",
-  "Peterbilt",
-  "Mack",
+const TRUCK_MAKE_DIRECTORIES = [
+  {
+    id: "volvo",
+    title: "Volvo Trucks",
+    tag: "VNL 760 · 860 · VNR",
+    engine: "D13, D13TC, D11 Engines",
+    makeParam: "Volvo",
+    options: [
+      { label: "Volvo Oil Filters", category: "Oil Filters" },
+      { label: "Volvo Air Filters", category: "Air Filters" },
+      { label: "Volvo Fuel Separators", category: "Fuel Filters" },
+      { label: "Volvo Cabin Air Filters", category: "Cabin Filters" },
+    ],
+  },
+  {
+    id: "freightliner",
+    title: "Freightliner",
+    tag: "Cascadia · 114SD · 122SD",
+    engine: "Detroit DD15, DD13, DD16",
+    makeParam: "Freightliner",
+    options: [
+      { label: "Freightliner Oil Filters", category: "Oil Filters" },
+      { label: "Freightliner Air Filters", category: "Air Filters" },
+      { label: "Freightliner Fuel Separators", category: "Fuel Filters" },
+      { label: "Freightliner Cabin Air Filters", category: "Cabin Filters" },
+    ],
+  },
+  {
+    id: "kenworth",
+    title: "Kenworth",
+    tag: "T680 · W900 · T880",
+    engine: "PACCAR MX-13, Cummins X15",
+    makeParam: "Kenworth",
+    options: [
+      { label: "Kenworth Oil Filters", category: "Oil Filters" },
+      { label: "Kenworth Air Filters", category: "Air Filters" },
+      { label: "Kenworth Fuel Separators", category: "Fuel Filters" },
+      { label: "Kenworth Cabin Air Filters", category: "Cabin Filters" },
+    ],
+  },
+  {
+    id: "peterbilt",
+    title: "Peterbilt",
+    tag: "Model 579 · 389 · 567",
+    engine: "PACCAR MX-13, Cummins X15",
+    makeParam: "Peterbilt",
+    options: [
+      { label: "Peterbilt Oil Filters", category: "Oil Filters" },
+      { label: "Peterbilt Air Filters", category: "Air Filters" },
+      { label: "Peterbilt Fuel Separators", category: "Fuel Filters" },
+      { label: "Peterbilt Cabin Air Filters", category: "Cabin Filters" },
+    ],
+  },
+  {
+    id: "mack",
+    title: "Mack Trucks",
+    tag: "Anthem · Pinnacle · Granite",
+    engine: "Mack MP8, MP7 Engines",
+    makeParam: "Mack",
+    options: [
+      { label: "Mack Oil Filters", category: "Oil Filters" },
+      { label: "Mack Air Filters", category: "Air Filters" },
+      { label: "Mack Fuel Separators", category: "Fuel Filters" },
+      { label: "Mack Cabin Air Filters", category: "Cabin Filters" },
+    ],
+  },
 ];
+
+function renderDirectoryIcon(type: "oil" | "air" | "fuel" | "cabin") {
+  switch (type) {
+    case "oil":
+      return <OilFilterIcon size={26} />;
+    case "air":
+      return <AirFilterIcon size={26} />;
+    case "fuel":
+      return <FuelFilterIcon size={26} />;
+    case "cabin":
+      return <CabinFilterIcon size={26} />;
+  }
+}
 
 export function HomeClient({
   products,
@@ -69,13 +204,6 @@ export function HomeClient({
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [engine, setEngine] = useState("");
-
-  // Tab filters for Filters by Type block
-  const [typeTab, setTypeTab] = useState("All");
-
-  // Tab filters for Filters by Truck Make block
-  const [truckTab, setTruckTab] = useState("All Trucks");
-
   const makeObj = VEHICLE_DATA.find((m) => m.make === make);
 
   const handleMakeChange = (newMake: string) => {
@@ -97,24 +225,6 @@ export function HomeClient({
     selectVehicle({ year, make, model, engine });
     router.push(`/shop?make=${encodeURIComponent(make)}&year=${encodeURIComponent(year)}`);
   };
-
-  // Filtered products for Filters by Type
-  const filteredByType = products.filter((p) => {
-    if (typeTab === "All") return true;
-    if (typeTab === "Air Filters") return p.category?.toLowerCase().includes("air");
-    if (typeTab === "Oil Filters") return p.category?.toLowerCase().includes("oil");
-    if (typeTab === "Fuel Filters") return p.category?.toLowerCase().includes("fuel");
-    if (typeTab === "Cabin Filters") return p.category?.toLowerCase().includes("cabin");
-    return true;
-  });
-
-  // Filtered products for Filters by Truck Make
-  const filteredByTruck = products.filter((p) => {
-    if (truckTab === "All Trucks") return true;
-    return p.compatibleMakes?.some((m) => m.toLowerCase() === truckTab.toLowerCase());
-  });
-
-  // Latest blog posts data
   const posts = [
     {
       id: 1,
@@ -254,97 +364,137 @@ export function HomeClient({
 
       <div className="block-space block-space--layout--divider-nl" />
 
-      {/* 2. Filters by Type */}
-      <div className="block block-products-carousel" data-layout="grid-4">
+      {/* 2. Filters by Type Directory */}
+      <div className="block block-directory">
         <div className="container">
           <div className="section-header">
             <div className="section-header__body">
-              <h2 className="section-header__title">Filters by Type</h2>
+              <div>
+                <h2 className="section-header__title">Filters by Type</h2>
+                <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                  Browse core filtration categories with direct fitment options for commercial truck makes
+                </div>
+              </div>
               <div className="section-header__spring" />
-              <ul className="section-header__groups">
-                {TYPE_TABS.map((tab) => (
-                  <li key={tab} className="section-header__groups-item">
-                    <button
-                      type="button"
-                      className={`section-header__groups-button ${typeTab === tab ? "section-header__groups-button--active" : ""}`}
-                      onClick={() => setTypeTab(tab)}
-                    >
-                      {tab}
-                    </button>
-                  </li>
-                ))}
-              </ul>
               <div className="section-header__divider" />
             </div>
           </div>
 
-          <div className="row">
-            {filteredByType.slice(0, 8).map((product) => (
-              <div key={product._id} className="col-12 col-sm-6 col-md-6 col-lg-3 mb-4">
-                <ProductCard product={product} layout="grid" />
+          <div className="home-directory-grid--4col">
+            {FILTER_TYPE_DIRECTORIES.map((cat) => (
+              <div key={cat.id} className="home-directory-card">
+                <div className="home-directory-card__header">
+                  <div className="home-directory-card__icon">
+                    {renderDirectoryIcon(cat.iconType)}
+                  </div>
+                  <div className="home-directory-card__header-content">
+                    <div className="home-directory-card__title-row">
+                      <h3 className="home-directory-card__title">{cat.title}</h3>
+                      <span className="home-directory-card__badge">{cat.badge}</span>
+                    </div>
+                    <p className="home-directory-card__subtitle">{cat.subtitle}</p>
+                  </div>
+                </div>
+
+                <ul className="home-directory-card__options">
+                  {cat.options.map((opt) => (
+                    <li key={opt.make} className="home-directory-card__option-item">
+                      <Link
+                        href={`/shop?category=${encodeURIComponent(cat.categoryParam)}&make=${encodeURIComponent(opt.make)}`}
+                        className="home-directory-card__option-link"
+                      >
+                        <span className="home-directory-card__option-text">
+                          <span className="home-directory-card__option-bullet" />
+                          {opt.label}
+                        </span>
+                        <span className="home-directory-card__option-arrow">→</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="home-directory-card__footer">
+                  <Link
+                    href={`/shop?category=${encodeURIComponent(cat.categoryParam)}`}
+                    className="home-directory-card__cta"
+                  >
+                    <span>Browse All {cat.title}</span>
+                    <span>→</span>
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
-
-          {filteredByType.length > 8 && (
-            <div className="text-center mt-2 mb-3">
-              <Link
-                href={typeTab === "All" ? "/shop" : `/shop?category=${encodeURIComponent(typeTab)}`}
-                className="btn btn-secondary btn-sm"
-                style={{ borderRadius: 3, fontWeight: 500 }}
-              >
-                View All {typeTab} ({filteredByType.length})
-              </Link>
-            </div>
-          )}
         </div>
       </div>
 
       <div className="block-space block-space--layout--divider-nl" />
 
-      {/* 3. Filters by Truck Make */}
-      <div className="block block-products-carousel" data-layout="grid-4">
+      {/* 3. Filters by Truck Make Directory */}
+      <div className="block block-directory">
         <div className="container">
           <div className="section-header">
             <div className="section-header__body">
-              <h2 className="section-header__title">Filters by Truck Make</h2>
+              <div>
+                <h2 className="section-header__title">Filters by Truck Make</h2>
+                <div style={{ fontSize: 13, color: "#64748b", marginTop: 4 }}>
+                  Select your power unit brand to access verified oil, air, fuel & cabin filtration
+                </div>
+              </div>
               <div className="section-header__spring" />
-              <ul className="section-header__groups">
-                {TRUCK_TABS.map((tab) => (
-                  <li key={tab} className="section-header__groups-item">
-                    <button
-                      type="button"
-                      className={`section-header__groups-button ${truckTab === tab ? "section-header__groups-button--active" : ""}`}
-                      onClick={() => setTruckTab(tab)}
-                    >
-                      {tab}
-                    </button>
-                  </li>
-                ))}
-              </ul>
               <div className="section-header__divider" />
             </div>
           </div>
 
-          <div className="row">
-            {filteredByTruck.slice(0, 8).map((product) => (
-              <div key={product._id} className="col-12 col-sm-6 col-md-6 col-lg-3 mb-4">
-                <ProductCard product={product} layout="grid" />
+          <div className="home-directory-grid--5col">
+            {TRUCK_MAKE_DIRECTORIES.map((maker) => (
+              <div key={maker.id} className="home-directory-card">
+                <div className="home-directory-card__header">
+                  <div className="home-directory-card__icon">
+                    <TruckIcon size={26} />
+                  </div>
+                  <div className="home-directory-card__header-content">
+                    <div className="home-directory-card__title-row">
+                      <h3 className="home-directory-card__title">{maker.title}</h3>
+                    </div>
+                    <span className="home-directory-card__badge" style={{ display: "inline-block", marginTop: 2 }}>
+                      {maker.tag}
+                    </span>
+                    <p className="home-directory-card__subtitle" style={{ marginTop: 4 }}>
+                      {maker.engine}
+                    </p>
+                  </div>
+                </div>
+
+                <ul className="home-directory-card__options">
+                  {maker.options.map((opt) => (
+                    <li key={opt.category} className="home-directory-card__option-item">
+                      <Link
+                        href={`/shop?category=${encodeURIComponent(opt.category)}&make=${encodeURIComponent(maker.makeParam)}`}
+                        className="home-directory-card__option-link"
+                      >
+                        <span className="home-directory-card__option-text">
+                          <span className="home-directory-card__option-bullet" />
+                          {opt.label}
+                        </span>
+                        <span className="home-directory-card__option-arrow">→</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="home-directory-card__footer">
+                  <Link
+                    href={`/shop?make=${encodeURIComponent(maker.makeParam)}`}
+                    className="home-directory-card__cta"
+                  >
+                    <span>Shop All {maker.makeParam} Filters</span>
+                    <span>→</span>
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
-
-          {filteredByTruck.length > 8 && (
-            <div className="text-center mt-2 mb-3">
-              <Link
-                href={truckTab === "All Trucks" ? "/shop" : `/shop?make=${encodeURIComponent(truckTab)}`}
-                className="btn btn-secondary btn-sm"
-                style={{ borderRadius: 3, fontWeight: 500 }}
-              >
-                View All {truckTab} Filters ({filteredByTruck.length})
-              </Link>
-            </div>
-          )}
         </div>
       </div>
 

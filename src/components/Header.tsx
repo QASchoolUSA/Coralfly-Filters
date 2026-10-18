@@ -523,7 +523,7 @@ export function Header() {
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const cartSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const { currentVehicle, openPicker } = useVehicleStore();
+  const { currentVehicle, openPicker, clearCurrentVehicle } = useVehicleStore();
 
   // State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -1436,23 +1436,42 @@ export function Header() {
               <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1d21", marginTop: 2 }}>
                 {currentVehicle ? `${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}` : "No vehicle selected"}
               </div>
-              <button
-                type="button"
-                className="btn btn-sm btn-primary"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openPicker();
-                }}
-                style={{
-                  marginTop: 8,
-                  fontSize: 12,
-                  width: "100%",
-                  backgroundColor: "#0081c9",
-                  borderColor: "#0081c9",
-                }}
-              >
-                {currentVehicle ? "Change Vehicle" : "Select Vehicle"}
-              </button>
+              <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-primary"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    openPicker();
+                  }}
+                  style={{
+                    fontSize: 12,
+                    flex: 1,
+                    backgroundColor: "#0081c9",
+                    borderColor: "#0081c9",
+                  }}
+                >
+                  {currentVehicle ? "Change Vehicle" : "Select Vehicle"}
+                </button>
+                {currentVehicle && (
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-light"
+                    onClick={() => {
+                      clearCurrentVehicle();
+                    }}
+                    style={{
+                      fontSize: 12,
+                      padding: "0 14px",
+                      border: "1px solid #ced4da",
+                      color: "#6c757d",
+                      backgroundColor: "#fff",
+                    }}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
             </div>
 
             <div style={{ padding: "12px 0", flex: 1 }}>
