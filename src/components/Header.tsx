@@ -7,6 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { useVehicleStore, isAllowedMake } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
+import { MobileTabBar } from "@/components/MobileTabBar";
+import { MobileCategoriesSheet } from "@/components/MobileCategoriesSheet";
 
 type SearchResult = {
   id: string;
@@ -523,7 +525,7 @@ export function Header() {
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const cartSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
-  const { currentVehicle, openPicker, clearCurrentVehicle } = useVehicleStore();
+  const { currentVehicle, openPicker } = useVehicleStore();
 
   // State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -1361,190 +1363,17 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile Slide-in Drawer */}
-      {mobileMenuOpen && (
-        <div
-          className="mobilemenu"
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            zIndex: 1070,
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              backgroundColor: "rgba(0,0,0,0.6)",
-            }}
-            onClick={() => setMobileMenuOpen(false)}
-          />
-          <div
-            style={{
-              position: "relative",
-              width: 320,
-              maxWidth: "85%",
-              height: "100%",
-              backgroundColor: "#fff",
-              display: "flex",
-              flexDirection: "column",
-              zIndex: 1,
-              boxShadow: "0 0 20px rgba(0,0,0,0.3)",
-              overflowY: "auto",
-            }}
-          >
-            <div
-              style={{
-                padding: "16px 20px",
-                borderBottom: "1px solid #ebebeb",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                backgroundColor: "#0081c9",
-                color: "#fff",
-              }}
-            >
-              <div style={{ fontWeight: 700, fontSize: 16 }}>CORALFLY Navigation</div>
-              <button
-                type="button"
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  color: "#fff",
-                  fontSize: 24,
-                  cursor: "pointer",
-                  lineHeight: 1,
-                }}
-              >
-                &times;
-              </button>
-            </div>
+      {/* Modern Slide-Up Bottom Sheet for Categories & Trucks */}
+      <MobileCategoriesSheet
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
 
-            {/* Vehicle Active Banner in Mobile Menu */}
-            <div style={{ padding: 16, backgroundColor: "#f7f7f7", borderBottom: "1px solid #ebebeb" }}>
-              <div style={{ fontSize: 12, color: "#6c757d", textTransform: "uppercase", fontWeight: 700 }}>
-                Selected Vehicle
-              </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1d21", marginTop: 2 }}>
-                {currentVehicle ? `${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}` : "No vehicle selected"}
-              </div>
-              <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-primary"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    openPicker();
-                  }}
-                  style={{
-                    fontSize: 12,
-                    flex: 1,
-                    backgroundColor: "#0081c9",
-                    borderColor: "#0081c9",
-                  }}
-                >
-                  {currentVehicle ? "Change Vehicle" : "Select Vehicle"}
-                </button>
-                {currentVehicle && (
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-light"
-                    onClick={() => {
-                      clearCurrentVehicle();
-                    }}
-                    style={{
-                      fontSize: 12,
-                      padding: "0 14px",
-                      border: "1px solid #ced4da",
-                      color: "#6c757d",
-                      backgroundColor: "#fff",
-                    }}
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div style={{ padding: "12px 0", flex: 1 }}>
-              <div style={{ padding: "8px 20px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
-                Main Navigation
-              </div>
-              <Link href="/" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                Home
-              </Link>
-              <Link href="/shop" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Browse All Filters
-              </Link>
-              <Link href="/shop?category=Oil%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Oil & Lube Filters
-              </Link>
-              <Link href="/shop?category=Air%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Air & Intake Filters
-              </Link>
-              <Link href="/shop?category=Fuel%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Fuel & Water Separators
-              </Link>
-              <Link href="/shop?category=Cabin%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Cabin Air Filters
-              </Link>
-
-              <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
-                Filter by Truck Maker
-              </div>
-              <Link href="/shop?make=Volvo" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Volvo Filters
-              </Link>
-              <Link href="/shop?make=Kenworth" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Kenworth Filters
-              </Link>
-              <Link href="/shop?make=Freightliner" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Freightliner Filters
-              </Link>
-              <Link href="/shop?make=Peterbilt" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Peterbilt Filters
-              </Link>
-              <Link href="/shop?make=Mack" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Mack Filters
-              </Link>
-              <Link href="/shop" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block", color: "#0081c9", fontWeight: 600 }}>
-                All Makes & Models &rarr;
-              </Link>
-
-              <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
-                Resources
-              </div>
-              <Link href="/guides" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Guides & Cross-Reference
-              </Link>
-
-              <Link href="/about" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                About Us
-              </Link>
-              <Link href="/contact" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                Contact Us
-              </Link>
-              <Link href="/faq" className="topbar__menu-item" style={{ padding: "10px 20px", display: "block" }}>
-                FAQ
-              </Link>
-            </div>
-
-            <div style={{ padding: 20, borderTop: "1px solid #ebebeb", fontSize: 13, color: "#6c757d" }}>
-              <a href="tel:+14077681488" style={{ color: "inherit", textDecoration: "none" }}>
-                Call Us: <strong>(407) 768-1488</strong>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Native App-Style Mobile Bottom Tab Bar */}
+      <MobileTabBar
+        isCategoriesOpen={mobileMenuOpen}
+        onOpenCategories={() => setMobileMenuOpen(true)}
+      />
     </>
   );
 }

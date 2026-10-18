@@ -2500,6 +2500,486 @@ html {
   color: #0f172a;
 }
 
+/* ==========================================================================
+   CORALFLY Native-Style Mobile Tab Bar & Categories Bottom Sheet
+   ========================================================================== */
+
+/* Bottom spacing offset on mobile to prevent content from hiding behind tab bar */
+@media (max-width: 1199px) {
+  body {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+/* 1. Mobile Bottom Tab Bar (Frosted Glass Acrylic) */
+.cf-mobile-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1060;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.08);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Hide on desktop (XL and up) */
+@media (min-width: 1200px) {
+  .cf-mobile-tabbar {
+    display: none !important;
+  }
+}
+
+.cf-mobile-tabbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 60px;
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 0 4px;
+}
+
+.cf-mobile-tabbar__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  height: 100%;
+  min-width: 48px;
+  min-height: 48px;
+  padding: 6px 2px 4px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  transition: color 0.18s ease, transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cf-mobile-tabbar__tab:active {
+  transform: scale(0.92);
+}
+
+.cf-mobile-tabbar__tab:hover {
+  color: #0081c9;
+  text-decoration: none;
+}
+
+.cf-mobile-tabbar__tab--active {
+  color: #0081c9 !important;
+  font-weight: 700;
+}
+
+.cf-mobile-tabbar__icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 2px;
+  transition: transform 0.15s ease;
+}
+
+.cf-mobile-tabbar__tab--active .cf-mobile-tabbar__icon {
+  transform: translateY(-1px);
+}
+
+/* Center Highlight for Categories Tab */
+.cf-mobile-tabbar__tab--categories .cf-mobile-tabbar__icon--center {
+  background: #f1f5f9;
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  margin-bottom: 1px;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.cf-mobile-tabbar__tab--categories:hover .cf-mobile-tabbar__icon--center,
+.cf-mobile-tabbar__tab--categories.cf-mobile-tabbar__tab--active .cf-mobile-tabbar__icon--center {
+  background: #e0f2fe;
+  color: #0081c9;
+}
+
+.cf-mobile-tabbar__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+}
+
+.cf-mobile-tabbar__badge {
+  position: absolute;
+  top: -4px;
+  right: -8px;
+  background: #e11d48;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(225, 29, 72, 0.4);
+  border: 2px solid #ffffff;
+  pointer-events: none;
+}
+
+/* 2. Slide-up Bottom Sheet (Drawer replacement) */
+.cf-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1070;
+  background: rgba(15, 23, 42, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  animation: cfSheetFadeIn 0.22s ease-out;
+}
+
+@keyframes cfSheetFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cf-sheet-container {
+  background: #ffffff;
+  border-radius: 24px 24px 0 0;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 -16px 40px rgba(0, 0, 0, 0.22);
+  padding-bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+  animation: cfSheetSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+@keyframes cfSheetSlideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.cf-sheet-grab-bar {
+  display: flex;
+  justify-content: center;
+  padding: 12px 0 8px;
+  cursor: pointer;
+}
+
+.cf-sheet-grab-handle {
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: #cbd5e1;
+}
+
+.cf-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 20px 14px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.cf-sheet-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.cf-sheet-subtitle {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.cf-sheet-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cf-sheet-close-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.cf-sheet-content {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Selected Vehicle Rig Card */
+.cf-sheet-vehicle-card {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  border: 1px solid #bae6fd;
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cf-sheet-vehicle-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0284c7;
+}
+
+.cf-sheet-vehicle-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0c4a6e;
+  margin-top: 2px;
+}
+
+.cf-sheet-vehicle-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.cf-sheet-vehicle-btn {
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: none;
+  transition: opacity 0.15s ease;
+}
+
+.cf-sheet-vehicle-btn:active {
+  opacity: 0.8;
+}
+
+.cf-sheet-vehicle-btn--primary {
+  background: #0081c9;
+  color: #ffffff;
+}
+
+.cf-sheet-vehicle-btn--clear {
+  background: #ffffff;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+}
+
+/* Sections */
+.cf-sheet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cf-sheet-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+}
+
+.cf-sheet-section-link {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+  color: #0081c9;
+  text-decoration: none;
+}
+
+/* Category Cards Grid */
+.cf-sheet-categories-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cf-sheet-cat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cf-sheet-cat-card:hover,
+.cf-sheet-cat-card:active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+  text-decoration: none;
+  color: inherit;
+  transform: translateX(2px);
+}
+
+.cf-sheet-cat-icon-wrap {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cf-sheet-cat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cf-sheet-cat-name {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.cf-sheet-cat-desc {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 1px;
+}
+
+.cf-sheet-cat-arrow {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+/* Truck Makes Grid */
+.cf-sheet-makes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.cf-sheet-make-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cf-sheet-make-card:hover,
+.cf-sheet-make-card:active {
+  background: #f0f9ff;
+  border-color: #bae6fd;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cf-sheet-make-icon {
+  color: #0081c9;
+  flex-shrink: 0;
+}
+
+.cf-sheet-make-text {
+  min-width: 0;
+}
+
+.cf-sheet-make-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.cf-sheet-make-engines {
+  font-size: 10.5px;
+  color: #64748b;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Shortcuts Footer */
+.cf-sheet-shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cf-sheet-shortcut-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cf-sheet-shortcut-item:hover,
+.cf-sheet-shortcut-item:active {
+  background: #e2e8f0;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+
 
 
 
