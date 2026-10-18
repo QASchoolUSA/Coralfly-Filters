@@ -13,7 +13,7 @@ export function PromoBanner() {
           </h2>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/80 sm:text-base">
             Order CORALFLY filters online with secure Stripe checkout. Build your
-            cart for oil, air, fuel, cabin, and hydraulic lines in one go.
+            cart for oil, air, fuel, and cabin filter lines in one go.
           </p>
         </div>
         <Link

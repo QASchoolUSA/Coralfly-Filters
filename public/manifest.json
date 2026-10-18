@@ -1,7 +1,7 @@
 {
   "name": "CORALFLY Filters",
   "short_name": "CORALFLY",
-  "description": "Shop CORALFLY oil, air, fuel, cabin, hydraulic, and coolant filters.",
+  "description": "Shop CORALFLY oil, air, fuel, cabin, and coolant filters.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

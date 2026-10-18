@@ -74,7 +74,7 @@ export function CartView() {
             </h2>
             <p style={{ color: "#6c757d", fontSize: 15, marginBottom: 24, lineHeight: 1.6 }}>
               Your heavy duty filtration cart is currently empty. Explore our complete catalog of oil,
-              fuel, air, and hydraulic filters for commercial fleets.
+              fuel, air, and cabin filters for commercial fleets.
             </p>
             <div>
               <Link

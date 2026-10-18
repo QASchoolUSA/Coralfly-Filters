@@ -321,16 +321,38 @@ html.light {
   color: #dc3545;
 }
 .cart-panel__empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 60px 24px;
   text-align: center;
   color: #6c757d;
 }
 .cart-panel__empty-icon {
-  margin-bottom: 16px;
-  color: #adb5bd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 20px auto;
+  border-radius: 50%;
+  background: #f1f5f9;
+  color: #8b95a5;
+  transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+.cart-panel__empty:hover .cart-panel__empty-icon {
+  transform: scale(1.05);
+  background: #e6f4fb;
+  color: #0081c9;
+}
+.cart-panel__empty-icon svg {
+  display: block;
+  margin: 0 auto;
 }
 .cart-panel__empty h3 {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   margin-bottom: 8px;
   color: #1a1d21;
@@ -338,6 +360,47 @@ html.light {
 .cart-panel__empty p {
   font-size: 14px;
   margin-bottom: 24px;
+  color: #6c757d;
+  max-width: 260px;
+}
+.cart-panel__empty-btn {
+  display: inline-flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  white-space: nowrap !important;
+  padding: 12px 26px !important;
+  background-color: #0081c9 !important;
+  border: 1px solid #0081c9 !important;
+  border-radius: 4px !important;
+  color: #ffffff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 8px rgba(0, 129, 201, 0.22);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.cart-panel__empty-btn:hover {
+  background-color: #006ba8 !important;
+  border-color: #006ba8 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 129, 201, 0.35);
+}
+.cart-panel__empty-btn:active {
+  transform: translateY(0);
+}
+.cart-panel__empty-btn svg {
+  display: inline-block !important;
+  vertical-align: middle !important;
+  flex-shrink: 0 !important;
+  transition: transform 0.2s ease;
+}
+.cart-panel__empty-btn:hover svg {
+  transform: translateX(3px);
 }
 .cart-panel__view-cart { display: block; margin-top: 14px; text-align: center; color: #0081c9; font-size: 0.9rem; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .cart-panel__summary { margin-bottom: 18px; }

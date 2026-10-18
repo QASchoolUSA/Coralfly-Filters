@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     template: "%s | CORALFLY",
   },
   description:
-    "Buy CORALFLY filters online — oil, air, fuel, cabin, and hydraulic. In-stock SKUs, free shipping $75+, secure Stripe checkout.",
+    "Buy CORALFLY filters online — oil, air, fuel, and cabin filters. In-stock SKUs, free shipping $75+, secure Stripe checkout.",
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },

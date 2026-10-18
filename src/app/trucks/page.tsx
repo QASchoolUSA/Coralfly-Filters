@@ -76,7 +76,7 @@ export default async function TrucksIndexPage() {
 
       <div className="container" style={{ paddingBottom: 60 }}>
         <p style={{ fontSize: 16, color: "#5c6570", maxWidth: 800, marginBottom: 36, lineHeight: 1.6 }}>
-          Select your truck brand below to browse all verified CORALFLY oil, air, fuel, and hydraulic filters
+          Select your truck brand below to browse all verified CORALFLY oil, air, fuel, and cabin filters
           engineered to OEM specifications for your exact power unit.
         </p>
 

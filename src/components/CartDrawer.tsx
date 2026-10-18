@@ -44,11 +44,18 @@ export function CartDrawer() {
 
         {items.length === 0 ? (
           <div className="cart-panel__empty">
-            <div className="cart-panel__empty-icon"><BagIcon size={48} /></div>
+            <div className="cart-panel__empty-icon" aria-hidden="true">
+              <BagIcon size={46} />
+            </div>
             <h3>Your cart is empty</h3>
             <p>Discover our filter selection.</p>
-            <Link href="/shop" className="btn btn-primary" onClick={closeCart}>
-              Browse Products <ArrowIcon />
+            <Link
+              href="/shop"
+              className="cart-panel__empty-btn btn btn-primary"
+              onClick={closeCart}
+            >
+              <span>Browse Products</span>
+              <ArrowIcon />
             </Link>
           </div>
         ) : (
@@ -144,9 +151,40 @@ function CloseIcon() {
 }
 
 function BagIcon({ size = 22 }: { size?: number }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8Z" /><path d="M9 9V6a3 3 0 0 1 6 0v3" /></svg>;
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{ display: "block", margin: "0 auto" }}
+    >
+      <path d="M5 8h14l-1 13H6L5 8Z" />
+      <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+    </svg>
+  );
 }
 
 function ArrowIcon() {
-  return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>;
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0 }}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
 }

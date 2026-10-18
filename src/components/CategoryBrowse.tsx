@@ -11,8 +11,6 @@ const categoryVisuals: Record<string, string> = {
     "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80",
   "Cabin Filters":
     "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-  "Hydraulic Filters":
-    "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80",
   "Coolant Filters":
     "https://images.unsplash.com/photo-1487754180451-c456f719a1fc?w=800&q=80",
 };

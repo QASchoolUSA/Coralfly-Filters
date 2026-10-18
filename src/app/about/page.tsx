@@ -143,7 +143,7 @@ export default function AboutPage() {
         >
           <h2 style={{ fontSize: 26, fontWeight: 700, marginBottom: 12, color: "#fff" }}>Ready to Outfit Your Rig?</h2>
           <p style={{ color: "#cce3ff", fontSize: 16, marginBottom: 24, maxWidth: 600, margin: "0 auto 24px" }}>
-            Explore our catalog of certified air, oil, fuel, and hydraulic filters with guaranteed compatibility.
+            Explore our catalog of certified air, oil, fuel, and cabin filters with guaranteed compatibility.
           </p>
           <div>
             <Link

@@ -44,7 +44,6 @@ const TYPE_TABS = [
   "Oil Filters",
   "Fuel Filters",
   "Cabin Filters",
-  "Hydraulic Filters",
 ];
 
 const TRUCK_TABS = [
@@ -106,7 +105,6 @@ export function HomeClient({
     if (typeTab === "Oil Filters") return p.category?.toLowerCase().includes("oil");
     if (typeTab === "Fuel Filters") return p.category?.toLowerCase().includes("fuel");
     if (typeTab === "Cabin Filters") return p.category?.toLowerCase().includes("cabin");
-    if (typeTab === "Hydraulic Filters") return p.category?.toLowerCase().includes("hydraulic");
     return true;
   });
 

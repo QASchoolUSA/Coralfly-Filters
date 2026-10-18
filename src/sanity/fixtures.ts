@@ -101,31 +101,6 @@ export const fixtureProducts: Product[] = [
     ],
   },
   {
-    _id: "fixture-hydraulic-filter",
-    name: "Hydraulic Filter HY-300",
-    slug: "hydraulic-filter-hy-300",
-    description:
-      "Industrial hydraulic return-line cartridge for semi-truck wet kits and commercial equipment. Built for high flow and continuous duty cycles.",
-    price: 67.0,
-    currency: "usd",
-    sku: "CF-HY-300",
-    category: "Hydraulic Filters",
-    compatibleMakes: ["Kenworth", "Peterbilt", "Volvo", "Mack"],
-    featured: true,
-    inStock: true,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80",
-        alt: "Industrial hydraulic equipment",
-      },
-    ],
-    specs: [
-      { label: "Beta rating", value: "β10 ≥ 200" },
-      { label: "Flow", value: "Up to 120 L/min" },
-      { label: "Housing", value: "Steel cartridge" },
-    ],
-  },
-  {
     _id: "fixture-coolant-filter",
     name: "Coolant Filter CL-18",
     slug: "coolant-filter-cl-18",
@@ -447,31 +422,6 @@ export const fixtureProducts: Product[] = [
       { label: "Fitment", value: "Volvo VNL / VNX / VNR" },
       { label: "Interchange", value: "82348995 / AF26405" },
       { label: "Media", value: "Activated Carbon" },
-    ],
-  },
-  {
-    _id: "fixture-hydraulic-wetkit-450",
-    name: "Commercial Fleet Hydraulic Return Filter HY-450",
-    slug: "commercial-fleet-hydraulic-return-filter-hy-450",
-    description:
-      "Severe-duty hydraulic return element for dump truck PTOs, walking-floor trailers, and heavy semi-truck wet kit reservoirs.",
-    price: 72.0,
-    currency: "usd",
-    sku: "CF-HY-450",
-    category: "Hydraulic Filters",
-    compatibleMakes: ["Freightliner", "Kenworth", "Peterbilt"],
-    featured: false,
-    inStock: true,
-    images: [
-      {
-        url: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&q=80",
-        alt: "Wet kit hydraulic filter",
-      },
-    ],
-    specs: [
-      { label: "Flow Rate", value: "Up to 50 GPM" },
-      { label: "Filtration", value: "10 Micron Beta 200" },
-      { label: "Interchange", value: "HF6510 / P164375" },
     ],
   },
   {

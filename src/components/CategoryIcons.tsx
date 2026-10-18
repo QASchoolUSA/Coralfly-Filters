@@ -86,25 +86,6 @@ export function CabinFilterIcon({ size = 48, className }: { size?: number; class
     )
 }
 
-export function HydraulicFilterIcon({ size = 48, className }: { size?: number; className?: string }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
-            {/* Hydraulic filter housing */}
-            <rect x="16" y="10" width="32" height="44" rx="5" stroke="currentColor" strokeWidth="2" />
-            {/* Pressure gauge top */}
-            <circle cx="32" cy="6" r="4" stroke="currentColor" strokeWidth="1.5" />
-            <line x1="32" y1="4" x2="34" y2="6" stroke="currentColor" strokeWidth="1" />
-            {/* Filter element inside */}
-            <rect x="22" y="18" width="20" height="28" rx="2" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 2" opacity="0.5" />
-            <circle cx="32" cy="32" r="5" stroke="currentColor" strokeWidth="1.5" opacity="0.6" />
-            <circle cx="32" cy="32" r="2" fill="currentColor" opacity="0.3" />
-            {/* Hydraulic lines */}
-            <line x1="10" y1="24" x2="16" y2="24" stroke="currentColor" strokeWidth="2" opacity="0.5" />
-            <line x1="48" y1="38" x2="54" y2="38" stroke="currentColor" strokeWidth="2" opacity="0.5" />
-        </svg>
-    )
-}
-
 // Map category slugs to their icon components
 export function getCategoryIcon(slug: string, size = 48): React.ReactNode {
     switch (slug) {
@@ -117,6 +98,6 @@ export function getCategoryIcon(slug: string, size = 48): React.ReactNode {
         case 'cabin-filters':
             return <CabinFilterIcon size={size} />
         default:
-            return <HydraulicFilterIcon size={size} />
+            return <OilFilterIcon size={size} />
     }
 }

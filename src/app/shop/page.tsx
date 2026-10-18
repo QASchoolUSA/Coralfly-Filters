@@ -5,7 +5,7 @@ import { ShopCatalog } from "@/components/ShopCatalog";
 export const metadata: Metadata = {
   title: "Shop Filters",
   description:
-    "Shop CORALFLY oil, air, fuel, cabin, hydraulic, and coolant filters. Filter by truck make, search by part number, and checkout securely.",
+    "Shop CORALFLY oil, air, fuel, cabin, and coolant filters. Filter by truck make, search by part number, and checkout securely.",
 };
 
 export default function ShopPage() {

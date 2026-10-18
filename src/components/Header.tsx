@@ -33,7 +33,7 @@ type BrowseTab = {
   id: string;
   title: string;
   subtitle: string;
-  iconType: "oil" | "air" | "fuel" | "cabin" | "hydraulic" | "truck";
+  iconType: "oil" | "air" | "fuel" | "cabin" | "truck";
   headerTitle: string;
   headerDescription: string;
   primaryHref: string;
@@ -206,48 +206,6 @@ const BROWSE_FILTER_TYPES: BrowseTab[] = [
           { label: "Prevents Cab AC Evaporator Clog", href: "/shop?category=Cabin%20Filters" },
           { label: "Baldwin PA4681 / Donaldson Cross", href: "/shop?category=Cabin%20Filters" },
           { label: "Fleet Volume Pricing Available", href: "/shop?category=Cabin%20Filters" },
-        ],
-      },
-    ],
-  },
-  {
-    id: "hydraulic",
-    title: "Hydraulic Filters",
-    subtitle: "High Pressure, Return Line",
-    iconType: "hydraulic",
-    headerTitle: "Commercial Hydraulic & Transmission Filters",
-    headerDescription: "Maximum protection for high-pressure wet kits, steering systems, and heavy-duty automatic transmissions.",
-    primaryHref: "/shop?category=Hydraulic%20Filters",
-    primaryCta: "View All Hydraulic Filters",
-    columns: [
-      {
-        title: "Hydraulic Applications",
-        links: [
-          { label: "High-Pressure Line Spin-On Filters", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Tank In-Line Return Elements", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Power Steering Hydraulic Cartridges", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Dump Trailer & Wet Kit Filters", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Heavy-Duty Transmission Filters", href: "/shop?category=Hydraulic%20Filters" },
-        ],
-      },
-      {
-        title: "Cross References",
-        links: [
-          { label: "Donaldson Duramax Hydraulic Cross", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Baldwin BT8850 / BT8851 Series", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Fleetguard HF6510 Hydraulic Elements", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Parker & Schroeder Cross Reference", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Microglass High-Efficiency Media", href: "/shop?category=Hydraulic%20Filters" },
-        ],
-      },
-      {
-        title: "Quality Assurances",
-        links: [
-          { label: "150+ PSI High Collapse Pressure", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Viton Heat-Resistant Gaskets", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Vocational & Severe Duty Certified", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Ships Same-Day from Sanford, FL", href: "/shop?category=Hydraulic%20Filters" },
-          { label: "Full 1-Year Commercial Warranty", href: "/shop?category=Hydraulic%20Filters" },
         ],
       },
     ],
@@ -541,13 +499,6 @@ function renderBrowseIcon(type: BrowseTab["iconType"]) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           <path d="M9 12l2 2 4-4" />
-        </svg>
-      );
-    case "hydraulic":
-      return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
         </svg>
       );
     case "truck":
@@ -1525,9 +1476,6 @@ export function Header() {
               </Link>
               <Link href="/shop?category=Cabin%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
                 Cabin Air Filters
-              </Link>
-              <Link href="/shop?category=Hydraulic%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Hydraulic Filters
               </Link>
 
               <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>

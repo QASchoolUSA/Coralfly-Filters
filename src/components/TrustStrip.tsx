@@ -5,7 +5,7 @@ const items = [
   },
   {
     title: "In-stock SKUs",
-    copy: "Oil, air, fuel, cabin & hydraulic",
+    copy: "Oil, air, fuel & cabin filters",
   },
   {
     title: "Secure Stripe pay",

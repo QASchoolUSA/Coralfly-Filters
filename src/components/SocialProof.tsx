@@ -7,7 +7,7 @@ const reviews = [
   },
   {
     quote:
-      "We switched our hydraulic line stock to CORALFLY. Consistent quality and checkout that just works.",
+      "We switched our heavy-duty fleet filter stock to CORALFLY. Consistent quality and checkout that just works.",
     name: "Elena R.",
     role: "Parts buyer",
   },

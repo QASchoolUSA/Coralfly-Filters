@@ -26,7 +26,7 @@ export function Hero({ featuredImage, featuredAlt }: { featuredImage?: ProductIm
         <div className="hero-content fade-in-up">
           <div className="hero-discount-wrapper"><span className="hero-discount">CORALFLY · Reliable Filter Reliable service</span></div>
           <h1 className="hero-heading">Premium Filters for Semi Trucks</h1>
-          <p className="hero-subheading">OEM-quality filtration solutions to keep your fleet running at peak performance. Shop oil, air, fuel, cabin, and hydraulic filters with clear pricing and secure checkout.</p>
+          <p className="hero-subheading">OEM-quality filtration solutions to keep your fleet running at peak performance. Shop oil, air, fuel, and cabin filters with clear pricing and secure checkout.</p>
           <div className="hero-actions"><Link href="/shop" className="btn btn-primary btn-lg hero-cta-primary">Shop All Filters</Link></div>
           <div className="hero-trust-indicators">
             <div className="trust-item"><CheckIcon /><span className="trust-text">Free shipping on orders $75+</span></div>

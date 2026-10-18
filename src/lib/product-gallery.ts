@@ -152,39 +152,6 @@ export function getEnhancedGalleryImages(product: Product): EnhancedGalleryItem[
     ];
   }
 
-  if (category.includes("hydraulic")) {
-    return [
-      {
-        url: primaryUrl,
-        alt: `${name} - Front 3/4 Main View`,
-        tag: "Main View",
-        title: `${name} — Primary Front 3/4 View`,
-        subtitle: "High-pressure hydraulic return-line cartridge for commercial wet kits",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&q=85&auto=format",
-        alt: `${name} - Stainless Wire-Reinforced Pleats`,
-        tag: "Pleats Detail",
-        title: "Hydraulic Media — Multi-Layer Micro-Glass Matrix",
-        subtitle: "Beta 10 ≥ 200 rating with high collapse-pressure support sleeve",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=1200&q=85&auto=format",
-        alt: `${name} - Machined Return Port & O-Ring`,
-        tag: "Port & O-Ring",
-        title: "Machined Steel Flange — Viton High-Temp O-Ring",
-        subtitle: "Heavy duty end-caps rated for continuous fluid pressure and surge cycles",
-      },
-      {
-        url: "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1200&q=85&auto=format",
-        alt: `${name} - Commercial Fleet Packaging`,
-        tag: "Fleet Box & ISO",
-        title: "Industrial Bulk Packaging — Quality Assured",
-        subtitle: "Corrosion-inhibiting protective vapor bag inside heavy duty carton",
-      },
-    ];
-  }
-
   if (category.includes("cabin")) {
     return [
       {

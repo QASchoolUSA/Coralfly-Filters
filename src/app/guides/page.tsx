@@ -118,14 +118,9 @@ export default function GuidesIndexPage() {
                     Fuel Water Separator Elements
                   </Link>
                 </li>
-                <li style={{ padding: "8px 0", borderBottom: "1px solid #f0f0f0" }}>
+                <li style={{ padding: "8px 0" }}>
                   <Link href="/shop?category=Cabin%20Filters" style={{ color: "#495057", textDecoration: "none" }}>
                     Cabin Air Cleaners
-                  </Link>
-                </li>
-                <li style={{ padding: "8px 0" }}>
-                  <Link href="/shop?category=Hydraulic%20Filters" style={{ color: "#495057", textDecoration: "none" }}>
-                    Hydraulic High-Pressure Elements
                   </Link>
                 </li>
               </ul>
