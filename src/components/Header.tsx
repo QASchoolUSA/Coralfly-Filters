@@ -19,6 +19,550 @@ type SearchResult = {
   image?: { url: string; alt?: string };
 };
 
+type BrowseLink = {
+  label: string;
+  href: string;
+};
+
+type BrowseColumn = {
+  title: string;
+  links: BrowseLink[];
+};
+
+type BrowseTab = {
+  id: string;
+  title: string;
+  subtitle: string;
+  iconType: "oil" | "air" | "fuel" | "cabin" | "hydraulic" | "truck";
+  headerTitle: string;
+  headerDescription: string;
+  primaryHref: string;
+  primaryCta: string;
+  columns: BrowseColumn[];
+};
+
+const BROWSE_FILTER_TYPES: BrowseTab[] = [
+  {
+    id: "oil",
+    title: "Oil Filters",
+    subtitle: "Lube, By-Pass, Cartridge",
+    iconType: "oil",
+    headerTitle: "Commercial Truck Oil & Lube Filtration",
+    headerDescription: "Heavy-duty full-flow, bypass, and cartridge oil filtration built to exceed OEM engine specifications.",
+    primaryHref: "/shop?category=Oil%20Filters",
+    primaryCta: "View All Oil Filters",
+    columns: [
+      {
+        title: "Filter Types & Styles",
+        links: [
+          { label: "Full-Flow Spin-On Oil Filters", href: "/shop?category=Oil%20Filters" },
+          { label: "By-Pass Lube Filters", href: "/shop?category=Oil%20Filters" },
+          { label: "Cartridge & Eco Element Filters", href: "/shop?category=Oil%20Filters" },
+          { label: "Synthetic Blend Fleet Filters", href: "/shop?category=Oil%20Filters" },
+          { label: "Dual Lube Filter Service Kits", href: "/shop?category=Oil%20Filters" },
+        ],
+      },
+      {
+        title: "OEM Cross Reference",
+        links: [
+          { label: "Donaldson P559000 Equivalents", href: "/shop?category=Oil%20Filters" },
+          { label: "Fleetguard LF14000NN / LF9009", href: "/shop?category=Oil%20Filters" },
+          { label: "Baldwin BD7154 Equivalents", href: "/shop?category=Oil%20Filters" },
+          { label: "Wix HD Commercial Filters", href: "/shop?category=Oil%20Filters" },
+          { label: "Direct OEM Fit Replacements", href: "/shop?category=Oil%20Filters" },
+        ],
+      },
+      {
+        title: "Engine Compatibility",
+        links: [
+          { label: "Detroit DD13 / DD15 / DD16", href: "/shop?category=Oil%20Filters&make=Freightliner" },
+          { label: "Cummins X15 & ISX15 Engines", href: "/shop?category=Oil%20Filters" },
+          { label: "PACCAR MX-11 & MX-13", href: "/shop?category=Oil%20Filters&make=Kenworth" },
+          { label: "Volvo D11 / D13 & Mack MP8", href: "/shop?category=Oil%20Filters&make=Volvo" },
+          { label: "Caterpillar C15 & 3406E", href: "/shop?category=Oil%20Filters" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "air",
+    title: "Air Filters",
+    subtitle: "RadialSeal, Intake, Safety",
+    iconType: "air",
+    headerTitle: "Heavy-Duty Air Filtration & Intake",
+    headerDescription: "High-airflow engine intake and 99.9% dust filtration for extreme highway and vocational hauling.",
+    primaryHref: "/shop?category=Air%20Filters",
+    primaryCta: "View All Air Filters",
+    columns: [
+      {
+        title: "Filter Styles",
+        links: [
+          { label: "Primary RadialSeal Air Filters", href: "/shop?category=Air%20Filters" },
+          { label: "Secondary Inner Safety Filters", href: "/shop?category=Air%20Filters" },
+          { label: "High-Flow Engine Intake Elements", href: "/shop?category=Air%20Filters" },
+          { label: "Cylindrical Heavy Duty Elements", href: "/shop?category=Air%20Filters" },
+          { label: "Complete Air Filter Service Sets", href: "/shop?category=Air%20Filters" },
+        ],
+      },
+      {
+        title: "Top Truck Fitment",
+        links: [
+          { label: "Freightliner Cascadia Air Filters", href: "/shop?category=Air%20Filters&make=Freightliner" },
+          { label: "Kenworth T680 & W900 Intake", href: "/shop?category=Air%20Filters&make=Kenworth" },
+          { label: "Peterbilt 579 & 389 Air Filters", href: "/shop?category=Air%20Filters&make=Peterbilt" },
+          { label: "Volvo VNL 760 / 860 Air Filters", href: "/shop?category=Air%20Filters&make=Volvo" },
+          { label: "Mack Anthem & Granite Air Filters", href: "/shop?category=Air%20Filters&make=Mack" },
+        ],
+      },
+      {
+        title: "Cross Reference Brands",
+        links: [
+          { label: "Donaldson Blue & RadialSeal Cross", href: "/shop?category=Air%20Filters" },
+          { label: "Fleetguard AF26154 / AF25667", href: "/shop?category=Air%20Filters" },
+          { label: "Baldwin PA4999 & RS3544 Series", href: "/shop?category=Air%20Filters" },
+          { label: "Luber-finer LAF Replacements", href: "/shop?category=Air%20Filters" },
+          { label: "Vocational High Dust Elements", href: "/shop?category=Air%20Filters" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "fuel",
+    title: "Fuel & Water Separators",
+    subtitle: "Primary, Secondary, Clear Bowls",
+    iconType: "fuel",
+    headerTitle: "Fuel Filters & Water Separators",
+    headerDescription: "Critical diesel fuel injection protection removing emulsified water, rust, and particulate matter.",
+    primaryHref: "/shop?category=Fuel%20Filters",
+    primaryCta: "View All Fuel & Water Separators",
+    columns: [
+      {
+        title: "Separation Systems",
+        links: [
+          { label: "Primary Fuel / Water Separators", href: "/shop?category=Fuel%20Filters" },
+          { label: "Secondary High-Efficiency Fuel Filters", href: "/shop?category=Fuel%20Filters" },
+          { label: "Clear Water Collection Bowls", href: "/shop?category=Fuel%20Filters" },
+          { label: "WIF Water-In-Fuel Sensor Fitment", href: "/shop?category=Fuel%20Filters" },
+          { label: "Davco Fuel Pro Compatible Filters", href: "/shop?category=Fuel%20Filters" },
+        ],
+      },
+      {
+        title: "Truck & Engine Applications",
+        links: [
+          { label: "Detroit DD15 Fuel Filter Module", href: "/shop?category=Fuel%20Filters&make=Freightliner" },
+          { label: "Cummins X15 NanoNet Replacements", href: "/shop?category=Fuel%20Filters" },
+          { label: "PACCAR MX-13 Fuel Separators", href: "/shop?category=Fuel%20Filters&make=Kenworth" },
+          { label: "Volvo D13 & Mack MP8 Separators", href: "/shop?category=Fuel%20Filters&make=Volvo" },
+          { label: "Peterbilt 579 / 389 Fuel Elements", href: "/shop?category=Fuel%20Filters&make=Peterbilt" },
+        ],
+      },
+      {
+        title: "OEM Equivalent Codes",
+        links: [
+          { label: "Fleetguard FS19764 / FS19765", href: "/shop?category=Fuel%20Filters" },
+          { label: "Donaldson DBF5810 & P551000", href: "/shop?category=Fuel%20Filters" },
+          { label: "Baldwin BF1259 / BF1383-O Cross", href: "/shop?category=Fuel%20Filters" },
+          { label: "Racor 2020 & 2040 Turbine Series", href: "/shop?category=Fuel%20Filters" },
+          { label: "10-Micron & 2-Micron Final Filters", href: "/shop?category=Fuel%20Filters" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "cabin",
+    title: "Cabin Air Filters",
+    subtitle: "Carbon Activated, Cab HVAC",
+    iconType: "cabin",
+    headerTitle: "Heavy-Duty Cabin & Sleeper Air Filters",
+    headerDescription: "Clean, fresh air for driver health and comfort, blocking diesel soot, pollen, allergens, and road dust.",
+    primaryHref: "/shop?category=Cabin%20Filters",
+    primaryCta: "View All Cabin Filters",
+    columns: [
+      {
+        title: "Filter Media Options",
+        links: [
+          { label: "Activated Carbon Odor Defense", href: "/shop?category=Cabin%20Filters" },
+          { label: "High-Efficiency Particulate Air", href: "/shop?category=Cabin%20Filters" },
+          { label: "Main Cab HVAC Fresh Air Intake", href: "/shop?category=Cabin%20Filters" },
+          { label: "Sleeper Berth Recirculation Filters", href: "/shop?category=Cabin%20Filters" },
+          { label: "Dual Cab & Sleeper Combo Packs", href: "/shop?category=Cabin%20Filters" },
+        ],
+      },
+      {
+        title: "Truck Fitment",
+        links: [
+          { label: "Freightliner Cascadia Cab & Sleeper", href: "/shop?category=Cabin%20Filters&make=Freightliner" },
+          { label: "Kenworth T680 & W900 HVAC Filters", href: "/shop?category=Cabin%20Filters&make=Kenworth" },
+          { label: "Peterbilt 579 & 389 Cab Elements", href: "/shop?category=Cabin%20Filters&make=Peterbilt" },
+          { label: "Volvo VNL 760 / 860 Cabin Sets", href: "/shop?category=Cabin%20Filters&make=Volvo" },
+          { label: "Mack Anthem & Pinnacle Cab Air", href: "/shop?category=Cabin%20Filters&make=Mack" },
+        ],
+      },
+      {
+        title: "Specifications & Assurances",
+        links: [
+          { label: "Blocks 99.5% of Road Diesel Soot", href: "/shop?category=Cabin%20Filters" },
+          { label: "Direct Snap-In 5-Minute Install", href: "/shop?category=Cabin%20Filters" },
+          { label: "Prevents Cab AC Evaporator Clog", href: "/shop?category=Cabin%20Filters" },
+          { label: "Baldwin PA4681 / Donaldson Cross", href: "/shop?category=Cabin%20Filters" },
+          { label: "Fleet Volume Pricing Available", href: "/shop?category=Cabin%20Filters" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "hydraulic",
+    title: "Hydraulic Filters",
+    subtitle: "High Pressure, Return Line",
+    iconType: "hydraulic",
+    headerTitle: "Commercial Hydraulic & Transmission Filters",
+    headerDescription: "Maximum protection for high-pressure wet kits, steering systems, and heavy-duty automatic transmissions.",
+    primaryHref: "/shop?category=Hydraulic%20Filters",
+    primaryCta: "View All Hydraulic Filters",
+    columns: [
+      {
+        title: "Hydraulic Applications",
+        links: [
+          { label: "High-Pressure Line Spin-On Filters", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Tank In-Line Return Elements", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Power Steering Hydraulic Cartridges", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Dump Trailer & Wet Kit Filters", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Heavy-Duty Transmission Filters", href: "/shop?category=Hydraulic%20Filters" },
+        ],
+      },
+      {
+        title: "Cross References",
+        links: [
+          { label: "Donaldson Duramax Hydraulic Cross", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Baldwin BT8850 / BT8851 Series", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Fleetguard HF6510 Hydraulic Elements", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Parker & Schroeder Cross Reference", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Microglass High-Efficiency Media", href: "/shop?category=Hydraulic%20Filters" },
+        ],
+      },
+      {
+        title: "Quality Assurances",
+        links: [
+          { label: "150+ PSI High Collapse Pressure", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Viton Heat-Resistant Gaskets", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Vocational & Severe Duty Certified", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Ships Same-Day from Sanford, FL", href: "/shop?category=Hydraulic%20Filters" },
+          { label: "Full 1-Year Commercial Warranty", href: "/shop?category=Hydraulic%20Filters" },
+        ],
+      },
+    ],
+  },
+];
+
+const BROWSE_FILTER_MAKERS: BrowseTab[] = [
+  {
+    id: "volvo",
+    title: "Volvo Trucks",
+    subtitle: "VNL 760, 860, D11/D13/D16",
+    iconType: "truck",
+    headerTitle: "Volvo Commercial Truck Filters",
+    headerDescription: "Factory-precision filters engineered specifically for Volvo VNL, VNR, VNX, and D11/D13/D16 engines.",
+    primaryHref: "/shop?make=Volvo",
+    primaryCta: "View All Volvo Filters",
+    columns: [
+      {
+        title: "Volvo Truck Models",
+        links: [
+          { label: "Volvo VNL 760 Long Haul", href: "/shop?make=Volvo" },
+          { label: "Volvo VNL 860 Flagship Sleeper", href: "/shop?make=Volvo" },
+          { label: "Volvo VNR Regional Haul", href: "/shop?make=Volvo" },
+          { label: "Volvo VNX Heavy Haul / Severe", href: "/shop?make=Volvo" },
+          { label: "Volvo VHD Vocational / Dump", href: "/shop?make=Volvo" },
+        ],
+      },
+      {
+        title: "Volvo Filter Categories",
+        links: [
+          { label: "Volvo Engine Oil & Bypass Filters", href: "/shop?category=Oil%20Filters&make=Volvo" },
+          { label: "Volvo Fuel & Water Separators", href: "/shop?category=Fuel%20Filters&make=Volvo" },
+          { label: "Volvo RadialSeal Air Filters", href: "/shop?category=Air%20Filters&make=Volvo" },
+          { label: "Volvo Cab & Sleeper HVAC Filters", href: "/shop?category=Cabin%20Filters&make=Volvo" },
+          { label: "Complete Volvo 4-Filter PM Kits", href: "/shop?make=Volvo" },
+        ],
+      },
+      {
+        title: "Engine Fitment & Specs",
+        links: [
+          { label: "Volvo D13 Turbo Compound Engines", href: "/shop?make=Volvo" },
+          { label: "Volvo D11 11-Liter Fleet Power", href: "/shop?make=Volvo" },
+          { label: "Volvo D16 Heavy Hauler Engines", href: "/shop?make=Volvo" },
+          { label: "Replaces OEM 21707134, 21707132", href: "/shop?make=Volvo" },
+          { label: "100% Guaranteed Bolt-On Fitment", href: "/shop?make=Volvo" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "kenworth",
+    title: "Kenworth",
+    subtitle: "T680, W900, PACCAR MX-13",
+    iconType: "truck",
+    headerTitle: "Kenworth Commercial Truck Filters",
+    headerDescription: "Heavy-duty filtration engineered for Kenworth T680, W900, T880, and PACCAR / Cummins powerplants.",
+    primaryHref: "/shop?make=Kenworth",
+    primaryCta: "View All Kenworth Filters",
+    columns: [
+      {
+        title: "Kenworth Truck Models",
+        links: [
+          { label: "Kenworth T680 & T680 Next Gen", href: "/shop?make=Kenworth" },
+          { label: "Kenworth W900 & W900L Classic", href: "/shop?make=Kenworth" },
+          { label: "Kenworth T880 Vocational Workhorse", href: "/shop?make=Kenworth" },
+          { label: "Kenworth T800 Severe Duty", href: "/shop?make=Kenworth" },
+          { label: "Kenworth W990 Modern Long Hood", href: "/shop?make=Kenworth" },
+        ],
+      },
+      {
+        title: "Kenworth Filter Categories",
+        links: [
+          { label: "Kenworth PACCAR MX Lube Filters", href: "/shop?category=Oil%20Filters&make=Kenworth" },
+          { label: "Kenworth Fuel & Water Separators", href: "/shop?category=Fuel%20Filters&make=Kenworth" },
+          { label: "Kenworth RadialSeal Air Filters", href: "/shop?category=Air%20Filters&make=Kenworth" },
+          { label: "Kenworth Cab & Sleeper HVAC Elements", href: "/shop?category=Cabin%20Filters&make=Kenworth" },
+          { label: "Complete Kenworth PM Service Kits", href: "/shop?make=Kenworth" },
+        ],
+      },
+      {
+        title: "Engine Fitment & Specs",
+        links: [
+          { label: "PACCAR MX-13 12.9-Liter Engines", href: "/shop?make=Kenworth" },
+          { label: "PACCAR MX-11 Fleet Powerplants", href: "/shop?make=Kenworth" },
+          { label: "Cummins X15 Performance Series", href: "/shop?make=Kenworth" },
+          { label: "Replaces PACCAR 1948921PE, 2115995PE", href: "/shop?make=Kenworth" },
+          { label: "Heavy-Duty Donaldson Cross", href: "/shop?make=Kenworth" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "freightliner",
+    title: "Freightliner",
+    subtitle: "Cascadia, Detroit DD15/DD13",
+    iconType: "truck",
+    headerTitle: "Freightliner Commercial Truck Filters",
+    headerDescription: "High-mileage filtration for Freightliner Cascadia, Coronado, M2 106, and Detroit Diesel engines.",
+    primaryHref: "/shop?make=Freightliner",
+    primaryCta: "View All Freightliner Filters",
+    columns: [
+      {
+        title: "Freightliner Models",
+        links: [
+          { label: "Freightliner Cascadia 126 & 116", href: "/shop?make=Freightliner" },
+          { label: "Freightliner Classic Cascadia", href: "/shop?make=Freightliner" },
+          { label: "Freightliner M2 106 Medium Duty", href: "/shop?make=Freightliner" },
+          { label: "Freightliner Coronado Highway Tractor", href: "/shop?make=Freightliner" },
+          { label: "Freightliner 114SD / 122SD Severe Duty", href: "/shop?make=Freightliner" },
+        ],
+      },
+      {
+        title: "Freightliner Filter Categories",
+        links: [
+          { label: "Detroit DD15 / DD13 Oil Filter Kits", href: "/shop?category=Oil%20Filters&make=Freightliner" },
+          { label: "Two-Stage Fuel Filter & Separator Sets", href: "/shop?category=Fuel%20Filters&make=Freightliner" },
+          { label: "Cascadia RadialSeal Heavy-Duty Air", href: "/shop?category=Air%20Filters&make=Freightliner" },
+          { label: "Cascadia Cab & Sleeper HVAC Filters", href: "/shop?category=Cabin%20Filters&make=Freightliner" },
+          { label: "Complete Freightliner PM Service Kits", href: "/shop?make=Freightliner" },
+        ],
+      },
+      {
+        title: "Engine Fitment & Specs",
+        links: [
+          { label: "Detroit DD15 Gen 5 / GHG17 Engines", href: "/shop?make=Freightliner" },
+          { label: "Detroit DD13 & DD16 Heavy Duty", href: "/shop?make=Freightliner" },
+          { label: "Cummins ISX15 / X15 in Cascadia", href: "/shop?make=Freightliner" },
+          { label: "Replaces Detroit A4720900451, A4720900551", href: "/shop?make=Freightliner" },
+          { label: "Exceeds OEM Detroit Diesel Specs", href: "/shop?make=Freightliner" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "peterbilt",
+    title: "Peterbilt",
+    subtitle: "Model 579, 389, Cummins X15",
+    iconType: "truck",
+    headerTitle: "Peterbilt Commercial Truck Filters",
+    headerDescription: "Class-leading filtration for Peterbilt Model 579, 389, 567, and Cummins / PACCAR powerplants.",
+    primaryHref: "/shop?make=Peterbilt",
+    primaryCta: "View All Peterbilt Filters",
+    columns: [
+      {
+        title: "Peterbilt Models",
+        links: [
+          { label: "Peterbilt Model 579 UltraLoft", href: "/shop?make=Peterbilt" },
+          { label: "Peterbilt Model 389 Classic Hood", href: "/shop?make=Peterbilt" },
+          { label: "Peterbilt Model 567 Vocational / Dump", href: "/shop?make=Peterbilt" },
+          { label: "Peterbilt Model 386 Aerodynamic", href: "/shop?make=Peterbilt" },
+          { label: "Peterbilt Model 587 Wide Cab", href: "/shop?make=Peterbilt" },
+        ],
+      },
+      {
+        title: "Peterbilt Filter Categories",
+        links: [
+          { label: "Peterbilt Cummins X15 Oil Filters", href: "/shop?category=Oil%20Filters&make=Peterbilt" },
+          { label: "Peterbilt Fuel & Water Separator Sets", href: "/shop?category=Fuel%20Filters&make=Peterbilt" },
+          { label: "Dual Canister Air Filters for 389", href: "/shop?category=Air%20Filters&make=Peterbilt" },
+          { label: "Peterbilt Cab & Sleeper HVAC Elements", href: "/shop?category=Cabin%20Filters&make=Peterbilt" },
+          { label: "Complete Peterbilt PM Service Kits", href: "/shop?make=Peterbilt" },
+        ],
+      },
+      {
+        title: "Engine Fitment & Specs",
+        links: [
+          { label: "Cummins X15 400–605 HP Powerplants", href: "/shop?make=Peterbilt" },
+          { label: "PACCAR MX-13 Peterbilt Engine Packages", href: "/shop?make=Peterbilt" },
+          { label: "Cummins ISX15 Dual Overhead Cam", href: "/shop?make=Peterbilt" },
+          { label: "Donaldson & Baldwin Cross Reference", href: "/shop?make=Peterbilt" },
+          { label: "Exact Bolt-On Fit Guaranteed", href: "/shop?make=Peterbilt" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "mack",
+    title: "Mack Trucks",
+    subtitle: "Anthem, Pinnacle, MP7/MP8",
+    iconType: "truck",
+    headerTitle: "Mack Heavy-Duty Truck Filters",
+    headerDescription: "Bulldog-tough filtration built for Mack Anthem, Pinnacle, Granite, and Mack MP7 / MP8 / MP10 engines.",
+    primaryHref: "/shop?make=Mack",
+    primaryCta: "View All Mack Filters",
+    columns: [
+      {
+        title: "Mack Truck Models",
+        links: [
+          { label: "Mack Anthem Highway Tractor", href: "/shop?make=Mack" },
+          { label: "Mack Pinnacle Axle Forward & Back", href: "/shop?make=Mack" },
+          { label: "Mack Granite Vocational & Dump", href: "/shop?make=Mack" },
+          { label: "Mack LR Refuse & Severe Service", href: "/shop?make=Mack" },
+          { label: "Mack TerraPro Heavy Hauler", href: "/shop?make=Mack" },
+        ],
+      },
+      {
+        title: "Mack Filter Categories",
+        links: [
+          { label: "Mack Dual Lube Oil Spin-On Sets", href: "/shop?category=Oil%20Filters&make=Mack" },
+          { label: "Mack Fuel & Water Separators", href: "/shop?category=Fuel%20Filters&make=Mack" },
+          { label: "Mack RadialSeal Heavy-Duty Air", href: "/shop?category=Air%20Filters&make=Mack" },
+          { label: "Mack Anthem Cab & Sleeper Filters", href: "/shop?category=Cabin%20Filters&make=Mack" },
+          { label: "Complete Mack PM Service Kits", href: "/shop?make=Mack" },
+        ],
+      },
+      {
+        title: "Engine Fitment & Specs",
+        links: [
+          { label: "Mack MP8 13-Liter Turbo Compound", href: "/shop?make=Mack" },
+          { label: "Mack MP7 High Efficiency 11-Liter", href: "/shop?make=Mack" },
+          { label: "Mack MP10 16-Liter Heavy Hauler", href: "/shop?make=Mack" },
+          { label: "Replaces Mack OEM 21707134, 485GB3191C", href: "/shop?make=Mack" },
+          { label: "Fleet Ready & Ships Same-Day from FL", href: "/shop?make=Mack" },
+        ],
+      },
+    ],
+  },
+  {
+    id: "more",
+    title: "More Makers & Engines",
+    subtitle: "International, Western Star & more",
+    iconType: "truck",
+    headerTitle: "More Commercial Truck Makers & Engines",
+    headerDescription: "Complete commercial filtration coverage for International, Western Star, Cummins, CAT, and Detroit Diesel.",
+    primaryHref: "/shop",
+    primaryCta: "Browse Full Filter Catalog",
+    columns: [
+      {
+        title: "Additional Truck Makers",
+        links: [
+          { label: "International Trucks (LT, RH, ProStar)", href: "/shop?make=International" },
+          { label: "Western Star (4900, 5700XE, 49X)", href: "/shop?make=Western%20Star" },
+          { label: "Isuzu Commercial Medium-Duty", href: "/shop" },
+          { label: "Hino Trucks Commercial Fleet", href: "/shop" },
+          { label: "Ford Super Duty Commercial F-650/750", href: "/shop" },
+        ],
+      },
+      {
+        title: "Major Engine Families",
+        links: [
+          { label: "Cummins Heavy-Duty Diesel (X15, ISX)", href: "/shop" },
+          { label: "Detroit Diesel Engines (DD13, DD15)", href: "/shop" },
+          { label: "Caterpillar Heavy Truck (C15, C13)", href: "/shop" },
+          { label: "PACCAR MX-11 & MX-13 Engines", href: "/shop" },
+          { label: "Navistar International A26 Diesel", href: "/shop" },
+        ],
+      },
+      {
+        title: "Fleet Tools & Guarantees",
+        links: [
+          { label: "100% Guaranteed OEM Cross Reference", href: "/shop" },
+          { label: "Donaldson, Fleetguard & Baldwin Cross", href: "/shop" },
+          { label: "Bulk Commercial Fleet Tier Discounts", href: "/shop" },
+          { label: "Fast Same-Day Florida Dispatch", href: "/shop" },
+          { label: "Open Vehicle Fitment Finder Tool", href: "/shop" },
+        ],
+      },
+    ],
+  },
+];
+
+const ALL_BROWSE_TABS: Record<string, BrowseTab> = {
+  ...BROWSE_FILTER_TYPES.reduce((acc, tab) => ({ ...acc, [tab.id]: tab }), {}),
+  ...BROWSE_FILTER_MAKERS.reduce((acc, tab) => ({ ...acc, [tab.id]: tab }), {}),
+};
+
+function renderBrowseIcon(type: BrowseTab["iconType"]) {
+  switch (type) {
+    case "oil":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+        </svg>
+      );
+    case "air":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2" />
+        </svg>
+      );
+    case "fuel":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17" />
+          <path d="M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2v0a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L20.5 6.5" />
+          <path d="M7 9h4" />
+        </svg>
+      );
+    case "cabin":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="M9 12l2 2 4-4" />
+        </svg>
+      );
+    case "hydraulic":
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      );
+    case "truck":
+    default:
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="1" y="3" width="15" height="13" />
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+          <circle cx="5.5" cy="18.5" r="2.5" />
+          <circle cx="18.5" cy="18.5" r="2.5" />
+        </svg>
+      );
+  }
+}
+
 export function Header() {
   const pathname = usePathname();
   const router = useRouter();
@@ -33,6 +577,8 @@ export function Header() {
   // State
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [departmentsOpen, setDepartmentsOpen] = useState(false);
+  const [activeBrowseTab, setActiveBrowseTab] = useState<string>("oil");
+  const departmentsRef = useRef<HTMLDivElement>(null);
 
   // Live Search State
   const [searchQuery, setSearchQuery] = useState("");
@@ -53,6 +599,9 @@ export function Header() {
       }
       if (desktopSearchRef.current && !desktopSearchRef.current.contains(e.target as Node)) {
         setDesktopSearchFocused(false);
+      }
+      if (departmentsRef.current && !departmentsRef.current.contains(e.target as Node)) {
+        setDepartmentsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -622,676 +1171,212 @@ export function Header() {
 
           {/* Navigation Bar */}
           <div className="header__navbar">
-            {/* Departments Button & Mega-Menu */}
-            <div className="header__navbar-departments">
+            {/* Departments Button & Browse Mega-Menu */}
+            <div className="header__navbar-departments" ref={departmentsRef}>
               <div className={`departments ${departmentsOpen ? "departments--open" : ""}`}>
                 <button
                   className="departments__button"
                   type="button"
                   onClick={() => setDepartmentsOpen(!departmentsOpen)}
+                  aria-expanded={departmentsOpen}
+                  aria-label="Browse filter categories and makers"
                 >
                   <span className="departments__button-icon">
-                    <svg width="16px" height="12px">
+                    <svg width="16px" height="12px" viewBox="0 0 16 12" fill="currentColor">
                       <path d="M0,7L0,5L16,5L16,7L0,7ZM0,0L16,0L16,2L0,2L0,0ZM12,12L0,12L0,10L12,10L12,12Z" />
                     </svg>
                   </span>
-                  <span className="departments__button-title">All Filter Categories</span>
+                  <span className="departments__button-title">Browse</span>
                   <span className="departments__button-arrow">
-                    <svg width="9px" height="6px">
+                    <svg width="9px" height="6px" viewBox="0 0 9 6" fill="currentColor">
                       <path d="M0.2,0.4c0.4-0.4,1-0.5,1.4-0.1l2.9,3l2.9-3c0.4-0.4,1.1-0.4,1.4,0.1c0.3,0.4,0.3,0.9-0.1,1.3L4.5,6L0.3,1.6C-0.1,1.3-0.1,0.7,0.2,0.4z" />
                     </svg>
                   </span>
                 </button>
 
-                {/* Mega-Menu Dropdown */}
-                <div className="departments__menu">
+                {/* Browse Mega-Menu Dropdown */}
+                <div className="departments__menu browse-dropdown__menu">
                   <div className="departments__arrow" />
-                  <div className="departments__body">
-                    <ul className="departments__list">
-                      <li className="departments__list-padding" role="presentation" />
+                  <div className="browse-dropdown__body">
+                    {/* Left Sidebar: Filter Categories & Truck Makers */}
+                    <div className="browse-dropdown__sidebar">
+                      {/* Section 1: By Filter Type */}
+                      <div className="browse-dropdown__section-title">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                        </svg>
+                        Filter by Type
+                      </div>
+                      {BROWSE_FILTER_TYPES.map((tab) => {
+                        const isActive = activeBrowseTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            type="button"
+                            className={`browse-dropdown__item ${isActive ? "browse-dropdown__item--active" : ""}`}
+                            onMouseEnter={() => setActiveBrowseTab(tab.id)}
+                            onFocus={() => setActiveBrowseTab(tab.id)}
+                            onClick={() => {
+                              router.push(tab.primaryHref);
+                              setDepartmentsOpen(false);
+                            }}
+                          >
+                            <div className="browse-dropdown__item-main">
+                              <span className="browse-dropdown__item-icon">
+                                {renderBrowseIcon(tab.iconType)}
+                              </span>
+                              <div className="browse-dropdown__item-text">
+                                <span className="browse-dropdown__item-title">{tab.title}</span>
+                                <span className="browse-dropdown__item-subtitle">{tab.subtitle}</span>
+                              </div>
+                            </div>
+                            <span className="browse-dropdown__item-arrow">
+                              <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M1 1L5 5L1 9" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          </button>
+                        );
+                      })}
 
-                      {/* 1. Air Filters */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu">
-                        <Link
-                          href="/shop?category=Air%20Filters"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Air Filters & Intake
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--lg">
-                            <div className="row">
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                      Filter Types
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Primary Heavy Duty RadialSeal
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Secondary Inner Safety Elements
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          High-Flow Panel Air Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>
-                                          Browse All Air Filters &rarr;
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
+                      {/* Section 2: Filter by Maker */}
+                      <div className="browse-dropdown__section-title">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <rect x="1" y="3" width="15" height="13" />
+                          <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+                          <circle cx="5.5" cy="18.5" r="2.5" />
+                          <circle cx="18.5" cy="18.5" r="2.5" />
+                        </svg>
+                        Filter by Maker
+                      </div>
+                      {BROWSE_FILTER_MAKERS.map((tab) => {
+                        const isActive = activeBrowseTab === tab.id;
+                        return (
+                          <button
+                            key={tab.id}
+                            type="button"
+                            className={`browse-dropdown__item ${isActive ? "browse-dropdown__item--active" : ""}`}
+                            onMouseEnter={() => setActiveBrowseTab(tab.id)}
+                            onFocus={() => setActiveBrowseTab(tab.id)}
+                            onClick={() => {
+                              router.push(tab.primaryHref);
+                              setDepartmentsOpen(false);
+                            }}
+                          >
+                            <div className="browse-dropdown__item-main">
+                              <span className="browse-dropdown__item-icon">
+                                {renderBrowseIcon(tab.iconType)}
+                              </span>
+                              <div className="browse-dropdown__item-text">
+                                <span className="browse-dropdown__item-title">{tab.title}</span>
+                                <span className="browse-dropdown__item-subtitle">{tab.subtitle}</span>
                               </div>
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <span className="megamenu-links__item-link" style={{ color: "#333", fontWeight: 700 }}>
-                                      By Truck Maker
-                                    </span>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>
-                                          Freightliner Air Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>
-                                          Kenworth Air Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>
-                                          Peterbilt Air Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>
-                                          Volvo Air Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Mack" onClick={() => setDepartmentsOpen(false)}>
-                                          Mack Air Filters
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
+                            </div>
+                            <span className="browse-dropdown__item-arrow">
+                              <svg width="6" height="10" viewBox="0 0 6 10" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M1 1L5 5L1 9" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Right Panel: Active Category / Maker Sub-Dropdown Details */}
+                    {(() => {
+                      const currentTab = ALL_BROWSE_TABS[activeBrowseTab] || BROWSE_FILTER_TYPES[0];
+                      return (
+                        <div className="browse-dropdown__panel">
+                          <div>
+                            {/* Panel Header */}
+                            <div className="browse-dropdown__panel-header">
+                              <div>
+                                <h3 className="browse-dropdown__panel-title">{currentTab.headerTitle}</h3>
+                                <p className="browse-dropdown__panel-desc">{currentTab.headerDescription}</p>
                               </div>
+                              <Link
+                                href={currentTab.primaryHref}
+                                className="browse-dropdown__panel-cta"
+                                onClick={() => setDepartmentsOpen(false)}
+                              >
+                                {currentTab.primaryCta} &rarr;
+                              </Link>
+                            </div>
+
+                            {/* 3-Column Sub-Dropdown Links */}
+                            <div className="browse-dropdown__grid">
+                              {currentTab.columns.map((col, colIdx) => (
+                                <div key={colIdx} className="browse-dropdown__col">
+                                  <div className="browse-dropdown__col-title">{col.title}</div>
+                                  <ul className="browse-dropdown__links">
+                                    {col.links.map((link, linkIdx) => (
+                                      <li key={linkIdx}>
+                                        <Link
+                                          href={link.href}
+                                          className="browse-dropdown__link"
+                                          onClick={() => setDepartmentsOpen(false)}
+                                        >
+                                          <span className="browse-dropdown__link-bullet" />
+                                          <span>{link.label}</span>
+                                        </Link>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Footer Assurances & Action Strip */}
+                          <div className="browse-dropdown__footer">
+                            <div className="browse-dropdown__footer-badges">
+                              <span className="browse-dropdown__footer-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0081c9" strokeWidth="2.5">
+                                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                </svg>
+                                100% Guaranteed OEM Fitment
+                              </span>
+                              <span className="browse-dropdown__footer-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5">
+                                  <rect x="1" y="3" width="15" height="13" />
+                                  <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+                                  <circle cx="5.5" cy="18.5" r="2.5" />
+                                  <circle cx="18.5" cy="18.5" r="2.5" />
+                                </svg>
+                                Fast Dispatch from Sanford, FL (32771)
+                              </span>
+                              <span className="browse-dropdown__footer-badge">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2.5">
+                                  <circle cx="12" cy="12" r="10" />
+                                  <polyline points="12 6 12 12 16 14" />
+                                </svg>
+                                24/7 Support Everyday
+                              </span>
+                            </div>
+                            <div className="browse-dropdown__footer-actions">
+                              <button
+                                type="button"
+                                className="browse-dropdown__footer-btn"
+                                onClick={() => {
+                                  setDepartmentsOpen(false);
+                                  openPicker();
+                                }}
+                              >
+                                {currentVehicle ? "Change Vehicle" : "Select Your Truck"}
+                              </button>
+                              <Link
+                                href="/shop"
+                                className="browse-dropdown__footer-btn"
+                                onClick={() => setDepartmentsOpen(false)}
+                                style={{ background: "#0081c9", color: "#ffffff", borderColor: "#0081c9" }}
+                              >
+                                View All 1,400+ Filters
+                              </Link>
                             </div>
                           </div>
                         </div>
-                      </li>
-
-                      {/* 2. Oil & Lube Filters */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu">
-                        <Link
-                          href="/shop?category=Oil%20Filters"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Oil & Lube Filters
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--lg">
-                            <div className="row">
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                      Filter Types
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Full-Flow Spin-On Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Heavy Duty Eco-Cartridges
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Extended-Drain Synthetic Blend
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>
-                                          Browse All Oil Filters &rarr;
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <span className="megamenu-links__item-link" style={{ color: "#333", fontWeight: 700 }}>
-                                      By Truck Maker
-                                    </span>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>
-                                          Freightliner Oil Filters (DD13/DD15)
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>
-                                          Kenworth Oil Filters (PACCAR/Cummins)
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>
-                                          Peterbilt Oil Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>
-                                          Volvo Oil Filters (D11/D13)
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Mack" onClick={() => setDepartmentsOpen(false)}>
-                                          Mack Oil Filters (MP7/MP8)
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      {/* 3. Fuel & Water Separators */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu">
-                        <Link
-                          href="/shop?category=Fuel%20Filters"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Fuel & Water Separators
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--lg">
-                            <div className="row">
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                      Filter Types
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Primary Fuel Water Separators
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Secondary High-Pressure Fuel Cartridges
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Spin-On Fuel Filters with Drain
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>
-                                          Browse All Fuel Filters &rarr;
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <span className="megamenu-links__item-link" style={{ color: "#333", fontWeight: 700 }}>
-                                      By Truck Maker
-                                    </span>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>
-                                          Freightliner Fuel Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>
-                                          Kenworth Fuel Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>
-                                          Peterbilt Fuel Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>
-                                          Volvo Fuel Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Mack" onClick={() => setDepartmentsOpen(false)}>
-                                          Mack Fuel Filters
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      {/* 4. Cabin Air Filters */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu">
-                        <Link
-                          href="/shop?category=Cabin%20Filters"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Cabin Air Filters
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--md">
-                            <div className="row">
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                      Filter Types
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Activated Carbon Odor Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          HVAC Particulate Elements
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>
-                                          Browse All Cabin Filters &rarr;
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <span className="megamenu-links__item-link" style={{ color: "#333", fontWeight: 700 }}>
-                                      By Truck Maker
-                                    </span>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>
-                                          Freightliner Cabin Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>
-                                          Kenworth Cabin Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>
-                                          Peterbilt Cabin Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>
-                                          Volvo Cabin Filters
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      {/* 5. Hydraulic & Transmission */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu">
-                        <Link
-                          href="/shop?category=Hydraulic%20Filters"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Hydraulic & Transmission
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--md">
-                            <div className="row">
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                      Filter Types
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Return-Line Hydraulic Cartridges
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Severe-Duty PTO Wet Kit Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>
-                                          Browse All Hydraulics &rarr;
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <span className="megamenu-links__item-link" style={{ color: "#333", fontWeight: 700 }}>
-                                      By Truck Maker
-                                    </span>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>
-                                          Freightliner Hydraulics
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>
-                                          Kenworth Hydraulics
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>
-                                          Peterbilt Hydraulics
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Hydraulic%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>
-                                          Volvo / Mack Hydraulics
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      {/* 6. Coolant & Chemical Filters */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu">
-                        <Link
-                          href="/shop?category=Coolant%20Filters"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Coolant & Chemical Filters
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--md">
-                            <div className="row">
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                      Filter Types
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          SCA Slow-Release Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters" onClick={() => setDepartmentsOpen(false)}>
-                                          Corrosion & Scale Inhibitor Spin-Ons
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>
-                                          Browse All Coolant Filters &rarr;
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-6">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <span className="megamenu-links__item-link" style={{ color: "#333", fontWeight: 700 }}>
-                                      By Truck Maker
-                                    </span>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>
-                                          Freightliner Coolant Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>
-                                          Kenworth Coolant Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>
-                                          Peterbilt Coolant Filters
-                                        </Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Coolant%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>
-                                          Volvo Coolant Filters
-                                        </Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      {/* 7. Dedicated Filters by Truck Maker */}
-                      <li className="departments__item departments__item--submenu--megamenu departments__item--has-submenu" style={{ borderTop: "1px solid #ebebeb", marginTop: 4, paddingTop: 4 }}>
-                        <Link
-                          href="/shop"
-                          className="departments__item-link"
-                          style={{ fontWeight: 700, color: "#0081c9" }}
-                          onClick={() => setDepartmentsOpen(false)}
-                        >
-                          Filters by Truck Maker
-                          <span className="departments__item-arrow">
-                            <svg width="7" height="11">
-                              <path d="M0.3,10.7L0.3,10.7c0.4,0.4,0.9,0.4,1.3,0L7,5.5L1.6,0.3C1.2-0.1,0.7,0,0.3,0.3l0,0c-0.4,0.4-0.4,1,0,1.3l4,3.9l-4,3.9C-0.1,9.8-0.1,10.4,0.3,10.7z" />
-                            </svg>
-                          </span>
-                        </Link>
-                        <div className="departments__item-menu">
-                          <div className="megamenu departments__megamenu departments__megamenu--size--xl">
-                            <div className="row">
-                              <div className="col-3">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?make=Freightliner" onClick={() => setDepartmentsOpen(false)} style={{ fontWeight: 700 }}>
-                                      Freightliner
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>Air Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>Oil Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>Fuel Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Freightliner" onClick={() => setDepartmentsOpen(false)}>Cabin Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?make=Freightliner" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>All Freightliner &rarr;</Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-3">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?make=Kenworth" onClick={() => setDepartmentsOpen(false)} style={{ fontWeight: 700 }}>
-                                      Kenworth
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>Air Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>Oil Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>Fuel Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Kenworth" onClick={() => setDepartmentsOpen(false)}>Cabin Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?make=Kenworth" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>All Kenworth &rarr;</Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-3">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?make=Peterbilt" onClick={() => setDepartmentsOpen(false)} style={{ fontWeight: 700 }}>
-                                      Peterbilt
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>Air Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>Oil Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>Fuel Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Cabin%20Filters&make=Peterbilt" onClick={() => setDepartmentsOpen(false)}>Cabin Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?make=Peterbilt" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>All Peterbilt &rarr;</Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                              <div className="col-3">
-                                <ul className="megamenu__links megamenu-links megamenu-links--root">
-                                  <li className="megamenu-links__item megamenu-links__item--has-submenu">
-                                    <Link className="megamenu-links__item-link" href="/shop?make=Volvo" onClick={() => setDepartmentsOpen(false)} style={{ fontWeight: 700 }}>
-                                      Volvo & Mack
-                                    </Link>
-                                    <ul className="megamenu-links">
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Air%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>Volvo Air Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Oil%20Filters&make=Volvo" onClick={() => setDepartmentsOpen(false)}>Volvo Oil Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?category=Fuel%20Filters&make=Mack" onClick={() => setDepartmentsOpen(false)}>Mack Fuel Filters</Link>
-                                      </li>
-                                      <li className="megamenu-links__item">
-                                        <Link className="megamenu-links__item-link" href="/shop?make=Volvo" onClick={() => setDepartmentsOpen(false)} style={{ color: "#0081c9", fontWeight: 700 }}>All Volvo & Mack &rarr;</Link>
-                                      </li>
-                                    </ul>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </li>
-
-                      {/* 8. Browse All Filters */}
-                      <li className="departments__item">
-                        <Link
-                          href="/shop"
-                          className="departments__item-link"
-                          onClick={() => setDepartmentsOpen(false)}
-                          style={{ fontWeight: 600 }}
-                        >
-                          Browse All Filters & Parts
-                        </Link>
-                      </li>
-
-                      <li className="departments__list-padding" role="presentation" />
-                    </ul>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -1440,13 +1525,13 @@ export function Header() {
                 Home
               </Link>
               <Link href="/shop" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                All Filters & Parts
-              </Link>
-              <Link href="/shop?category=Air%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Air & Intake Filters
+                Browse All Filters
               </Link>
               <Link href="/shop?category=Oil%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
                 Oil & Lube Filters
+              </Link>
+              <Link href="/shop?category=Air%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
+                Air & Intake Filters
               </Link>
               <Link href="/shop?category=Fuel%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
                 Fuel & Water Separators
@@ -1455,26 +1540,29 @@ export function Header() {
                 Cabin Air Filters
               </Link>
               <Link href="/shop?category=Hydraulic%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Hydraulic & Transmission
-              </Link>
-              <Link href="/shop?category=Coolant%20Filters" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Coolant & Chemical Filters
+                Hydraulic Filters
               </Link>
 
               <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
-                By Truck Maker
+                Filter by Truck Maker
               </div>
-              <Link href="/shop?make=Freightliner" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Freightliner Filters
+              <Link href="/shop?make=Volvo" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
+                Volvo Filters
               </Link>
               <Link href="/shop?make=Kenworth" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
                 Kenworth Filters
               </Link>
+              <Link href="/shop?make=Freightliner" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
+                Freightliner Filters
+              </Link>
               <Link href="/shop?make=Peterbilt" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
                 Peterbilt Filters
               </Link>
-              <Link href="/shop?make=Volvo" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
-                Volvo & Mack Filters
+              <Link href="/shop?make=Mack" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block" }}>
+                Mack Filters
+              </Link>
+              <Link href="/shop" className="topbar__menu-item" onClick={() => setMobileMenuOpen(false)} style={{ padding: "10px 20px", display: "block", color: "#0081c9", fontWeight: 600 }}>
+                All Makes & Models &rarr;
               </Link>
 
               <div style={{ padding: "16px 20px 8px", fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "#999" }}>
