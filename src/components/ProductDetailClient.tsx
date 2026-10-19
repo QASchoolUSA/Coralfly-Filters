@@ -11,6 +11,39 @@ import { getEnhancedGalleryImages } from "@/lib/product-gallery";
 import { ProductDescription } from "@/components/ProductDescription";
 import type { Product } from "@/sanity/types";
 
+const VERIFIED_APPLICATIONS = [
+  {
+    make: "Volvo",
+    models: ["VNL 760", "VNL 860", "VNR", "VHD"],
+    years: "2016–2026",
+    engines: ["Volvo D13", "D13TC", "D11"],
+  },
+  {
+    make: "Freightliner",
+    models: ["Cascadia 126", "Cascadia 116", "122SD"],
+    years: "2017–2026",
+    engines: ["Detroit Diesel DD15", "DD13", "DD16"],
+  },
+  {
+    make: "Kenworth",
+    models: ["T680", "W900", "T880", "C500"],
+    years: "2015–2026",
+    engines: ["PACCAR MX-13", "Cummins X15"],
+  },
+  {
+    make: "Peterbilt",
+    models: ["579", "389", "567"],
+    years: "2015–2026",
+    engines: ["PACCAR MX-13", "Cummins X15"],
+  },
+  {
+    make: "Mack",
+    models: ["Anthem", "Pinnacle", "Granite"],
+    years: "2018–2026",
+    engines: ["Mack MP8", "MP7"],
+  },
+];
+
 export function ProductDetailClient({
   product,
   related,
@@ -25,7 +58,7 @@ export function ProductDetailClient({
 
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<"desc" | "specs" | "fitment">("desc");
+  const [activeTab, setActiveTab] = useState<"specs" | "fitment">("specs");
   const [added, setAdded] = useState(false);
 
   // Gallery multi-angle dataset & Lightbox modal state
@@ -488,8 +521,8 @@ export function ProductDetailClient({
                         product={product}
                         mode="excerpt"
                         onSeeFull={() => {
-                          setActiveTab("desc");
-                          const el = document.getElementById("tab-desc");
+                          setActiveTab("specs");
+                          const el = document.getElementById("tab-specs");
                           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
                       />
@@ -681,21 +714,6 @@ export function ProductDetailClient({
                     <ul className="product-tabs__list">
                       <li
                         className={`product-tabs__item ${
-                          activeTab === "desc" ? "product-tabs__item--active" : ""
-                        }`}
-                      >
-                        <a
-                          href="#tab-desc"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveTab("desc");
-                          }}
-                        >
-                          Description
-                        </a>
-                      </li>
-                      <li
-                        className={`product-tabs__item ${
                           activeTab === "specs" ? "product-tabs__item--active" : ""
                         }`}
                       >
@@ -727,18 +745,6 @@ export function ProductDetailClient({
                     </ul>
 
                     <div className="product-tabs__content">
-                      {/* Description Pane */}
-                      <div
-                        className={`product-tabs__pane ${
-                          activeTab === "desc" ? "product-tabs__pane--active" : ""
-                        }`}
-                        id="tab-desc"
-                      >
-                        <div className="typography">
-                          <ProductDescription product={product} mode="full" />
-                        </div>
-                      </div>
-
                       {/* Specifications Pane */}
                       <div
                         className={`product-tabs__pane ${
@@ -816,50 +822,107 @@ export function ProductDetailClient({
                         }`}
                         id="tab-fitment"
                       >
-                        <div className="typography">
-                          <h4>Verified Commercial Rig Applications</h4>
-                          <table className="table table-bordered table-striped" style={{ marginTop: 16 }}>
-                            <thead style={{ background: "#f8f9fa" }}>
-                              <tr>
-                                <th>Make</th>
-                                <th>Chassis / Model</th>
-                                <th>Production Years</th>
-                                <th>Engine Fitment</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td><strong>Volvo</strong></td>
-                                <td>VNL 760, VNL 860, VNR, VHD</td>
-                                <td>2016–2026</td>
-                                <td>Volvo D13, D13TC, D11</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Freightliner</strong></td>
-                                <td>Cascadia 126, Cascadia 116, 122SD</td>
-                                <td>2017–2026</td>
-                                <td>Detroit Diesel DD15, DD13, DD16</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Kenworth</strong></td>
-                                <td>T680, W900, T880, C500</td>
-                                <td>2015–2026</td>
-                                <td>PACCAR MX-13, Cummins X15</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Peterbilt</strong></td>
-                                <td>579, 389, 567</td>
-                                <td>2015–2026</td>
-                                <td>PACCAR MX-13, Cummins X15</td>
-                              </tr>
-                              <tr>
-                                <td><strong>Mack</strong></td>
-                                <td>Anthem, Pinnacle, Granite</td>
-                                <td>2018–2026</td>
-                                <td>Mack MP8, MP7</td>
-                              </tr>
-                            </tbody>
-                          </table>
+                        <div className="cf-fitment-wrapper">
+                          {/* Trust / Fitment Guarantee Banner */}
+                          <div className="cf-fitment-banner">
+                            <div className="cf-fitment-banner__icon">🛡️</div>
+                            <div className="cf-fitment-banner__info">
+                              <h4 className="cf-fitment-banner__title">Verified Commercial Fleet Fitment</h4>
+                              <p className="cf-fitment-banner__desc">
+                                Guaranteed direct OEM replacement compatibility engineered for Class 7 &amp; 8 commercial rigs.
+                              </p>
+                            </div>
+                            <span className="cf-fitment-banner__badge">SAE J1858 Tested</span>
+                          </div>
+
+                          {/* Mobile Cards Layout (visible < 768px) */}
+                          <div className="cf-fitment-mobile-cards">
+                            {VERIFIED_APPLICATIONS.map((app) => (
+                              <div key={app.make} className="cf-fitment-card">
+                                <div className="cf-fitment-card__header">
+                                  <div className="cf-fitment-card__brand">
+                                    <span className="cf-fitment-card__icon">🚛</span>
+                                    <span className="cf-fitment-card__make">{app.make}</span>
+                                  </div>
+                                  <span className="cf-fitment-card__years">{app.years}</span>
+                                </div>
+
+                                <div className="cf-fitment-card__row">
+                                  <span className="cf-fitment-card__label">Chassis Models</span>
+                                  <div className="cf-fitment-card__chips">
+                                    {app.models.map((model) => (
+                                      <span key={model} className="cf-fitment-chip cf-fitment-chip--model">
+                                        {model}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+
+                                <div className="cf-fitment-card__row">
+                                  <span className="cf-fitment-card__label">Engine Fitment</span>
+                                  <div className="cf-fitment-card__chips">
+                                    {app.engines.map((eng) => (
+                                      <span key={eng} className="cf-fitment-chip cf-fitment-chip--engine">
+                                        {eng}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Desktop Table Layout (visible >= 768px) */}
+                          <div className="cf-fitment-desktop-container">
+                            <table className="cf-fitment-table">
+                              <thead>
+                                <tr>
+                                  <th>Truck Make</th>
+                                  <th>Chassis / Model</th>
+                                  <th>Production Years</th>
+                                  <th>Engine Compatibility</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {VERIFIED_APPLICATIONS.map((app) => (
+                                  <tr key={app.make}>
+                                    <td>
+                                      <div className="cf-fitment-table__make">
+                                        <span className="cf-fitment-table__icon">🚛</span>
+                                        <strong>{app.make}</strong>
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <div className="cf-fitment-table__chips">
+                                        {app.models.map((m) => (
+                                          <span key={m} className="cf-fitment-chip cf-fitment-chip--model">
+                                            {m}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </td>
+                                    <td>
+                                      <span className="cf-fitment-card__years">{app.years}</span>
+                                    </td>
+                                    <td>
+                                      <div className="cf-fitment-table__chips">
+                                        {app.engines.map((e) => (
+                                          <span key={e} className="cf-fitment-chip cf-fitment-chip--engine">
+                                            {e}
+                                          </span>
+                                        ))}
+                                      </div>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+
+                          {/* Disclaimer Note */}
+                          <div className="cf-fitment-disclaimer">
+                            ℹ️ Fitment data cross-referenced with OEM manufacturer service bulletins. If you have custom vocational chassis configurations or require VIN verification, contact CORALFLY technical fleet support.
+                          </div>
                         </div>
                       </div>
 

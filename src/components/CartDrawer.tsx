@@ -1,11 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CheckoutButton } from "@/components/CheckoutButton";
 import { formatPrice } from "@/lib/format";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartItems } from "@/lib/use-cart";
+import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function CartDrawer() {
   const isOpen = useCartStore((state) => state.isCartOpen);
@@ -13,8 +14,59 @@ export function CartDrawer() {
   const setQuantity = useCartStore((state) => state.setQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const items = useCartItems();
+
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
+
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const shippingAmount = subtotal >= 75 || subtotal === 0 ? 0 : 12;
+  const progressPercent = Math.min(100, Math.round((subtotal / 75) * 100));
+  const amountToFreeShipping = Math.max(0, 75 - subtotal);
+  const currency = items[0]?.currency || "usd";
+
+  // Close on Escape key and lock body scroll
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeCart();
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen, closeCart]);
+
+  const handleCheckout = async () => {
+    if (items.length === 0) return;
+    setCheckoutLoading(true);
+    setCheckoutError(null);
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
+      });
+
+      const data = (await res.json()) as { url?: string; error?: string };
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Unable to initiate Stripe checkout");
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      setCheckoutError(err instanceof Error ? err.message : "Checkout failed");
+      setCheckoutLoading(false);
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -32,12 +84,22 @@ export function CartDrawer() {
         aria-label="Shopping cart"
         aria-hidden={!isOpen}
       >
+        {/* Drawer Header */}
         <header className="cart-panel__header">
           <h2 className="cart-panel__title">
             Your Cart
-            {itemCount > 0 ? <span className="cart-panel__count">{itemCount}</span> : null}
+            {itemCount > 0 ? (
+              <span className="cart-panel__count">
+                {itemCount} {itemCount === 1 ? "item" : "items"}
+              </span>
+            ) : null}
           </h2>
-          <button type="button" className="cart-panel__close" onClick={closeCart} aria-label="Close cart">
+          <button
+            type="button"
+            className="cart-panel__close"
+            onClick={closeCart}
+            aria-label="Close cart drawer"
+          >
             <CloseIcon />
           </button>
         </header>
@@ -45,99 +107,214 @@ export function CartDrawer() {
         {items.length === 0 ? (
           <div className="cart-panel__empty">
             <div className="cart-panel__empty-icon" aria-hidden="true">
-              <BagIcon size={46} />
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+              </svg>
             </div>
             <h3>Your cart is empty</h3>
-            <p>Discover our filter selection.</p>
+            <p>Explore our complete OEM-grade catalog of heavy duty filtration solutions.</p>
             <Link
               href="/shop"
-              className="cart-panel__empty-btn btn btn-primary"
+              className="cart-panel__empty-btn"
               onClick={closeCart}
             >
-              <span>Browse Products</span>
-              <ArrowIcon />
+              Browse Products
             </Link>
           </div>
         ) : (
           <>
-            {/* Free Shipping Progress Meter for Drawer */}
-            <div
-              style={{
-                padding: "12px 16px",
-                background: subtotal >= 75 ? "#e8f8ec" : "#e8f4fb",
-                borderBottom: `1px solid ${subtotal >= 75 ? "#c3e6cb" : "#b8daff"}`,
-                fontSize: 12,
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: 6,
-                  fontWeight: 600,
-                  color: subtotal >= 75 ? "#155724" : "#004085",
-                }}
-              >
-                <span>
-                  {subtotal >= 75
-                    ? "🎉 FREE Standard Shipping Unlocked!"
-                    : `Add $${(75 - subtotal).toFixed(2)} for Free Shipping`}
+            {/* Free Shipping Progress Meter */}
+            <div className={`cart-panel__meter ${subtotal >= 75 ? "cart-panel__meter--unlocked" : ""}`}>
+              <div className="cart-panel__meter-header">
+                <span className="cart-panel__meter-title">
+                  {subtotal >= 75 ? "🎉" : "🚚"}{" "}
+                  {subtotal >= 75 ? (
+                    <span><strong>FREE Standard Shipping</strong> Unlocked!</span>
+                  ) : (
+                    <span>Add <strong>${amountToFreeShipping.toFixed(2)}</strong> for Free Shipping</span>
+                  )}
                 </span>
-                <span>{Math.min(100, Math.round((subtotal / 75) * 100))}%</span>
+                <span className="cart-panel__meter-badge">
+                  {subtotal >= 75 ? "UNLOCKED" : `${progressPercent}%`}
+                </span>
               </div>
-              <div style={{ height: 6, background: "rgba(0,0,0,0.08)", borderRadius: 3, overflow: "hidden" }}>
+              <div className="cart-panel__meter-track">
                 <div
-                  style={{
-                    height: "100%",
-                    width: `${Math.min(100, Math.round((subtotal / 75) * 100))}%`,
-                    backgroundColor: subtotal >= 75 ? "#28a745" : "#0081c9",
-                    transition: "width 0.3s ease",
-                  }}
+                  className="cart-panel__meter-bar"
+                  style={{ width: `${progressPercent}%` }}
                 />
               </div>
             </div>
 
+            {/* Scrollable Items List */}
             <div className="cart-panel__items">
               {items.map((item) => (
                 <article className="cart-item-card" key={item.id}>
-                  <Link href={`/shop/${item.slug}`} className="cart-item-card__image" onClick={closeCart}>
-                    {item.image ? (
-                      <Image src={item.image} alt={item.name} width={100} height={100} />
-                    ) : <BagIcon size={28} />}
+                  <Link
+                    href={`/shop/${item.slug}`}
+                    className="cart-item-card__image"
+                    onClick={closeCart}
+                  >
+                    <Image
+                      src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
+                      alt={item.name}
+                      fill
+                      sizes="74px"
+                      style={{ objectFit: "contain" }}
+                    />
                   </Link>
+
                   <div className="cart-item-card__body">
-                    <Link href={`/shop/${item.slug}`} onClick={closeCart}>
-                      <h3 className="cart-item-card__name">{item.name}</h3>
-                    </Link>
-                    {item.sku ? <span className="cart-item-card__part">SKU {item.sku}</span> : null}
+                    <div className="cart-item-card__header">
+                      <Link
+                        href={`/shop/${item.slug}`}
+                        className="cart-item-card__name"
+                        onClick={closeCart}
+                      >
+                        {item.name}
+                      </Link>
+                      <button
+                        type="button"
+                        className="cart-item-card__remove"
+                        onClick={() => removeItem(item.id)}
+                        aria-label={`Remove ${item.name}`}
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+
+                    <div className="cart-item-card__meta">
+                      <span className="cart-item-card__sku">
+                        SKU: {item.sku || "CF-PART"}
+                      </span>
+                      <span className="cart-item-card__stock">
+                        <svg width="7" height="7" viewBox="0 0 8 8" fill="#16a34a">
+                          <circle cx="4" cy="4" r="4" />
+                        </svg>
+                        In Stock
+                      </span>
+                    </div>
+
+                    <div className="cart-item-card__unit-price">
+                      {formatPrice(item.price, item.currency)} each
+                    </div>
+
                     <div className="cart-item-card__controls">
-                      <div className="cart-item-card__qty" aria-label={`Quantity ${item.quantity}`}>
-                        <button type="button" onClick={() => setQuantity(item.id, item.quantity - 1)} aria-label="Decrease quantity">−</button>
-                        <span>{item.quantity}</span>
-                        <button type="button" onClick={() => setQuantity(item.id, item.quantity + 1)} aria-label="Increase quantity">+</button>
+                      {/* Modern Capsule Stepper */}
+                      <div className="cf-stepper">
+                        <button
+                          type="button"
+                          className="cf-stepper__btn"
+                          onClick={() => setQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          disabled={item.quantity <= 1}
+                          aria-label="Decrease quantity"
+                        >
+                          −
+                        </button>
+                        <span className="cf-stepper__val">{item.quantity}</span>
+                        <button
+                          type="button"
+                          className="cf-stepper__btn"
+                          onClick={() => setQuantity(item.id, item.quantity + 1)}
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
                       </div>
-                      <span className="cart-item-card__price">{formatPrice(item.price * item.quantity, item.currency)}</span>
+
+                      <span className="cart-item-card__price">
+                        {formatPrice(item.price * item.quantity, item.currency)}
+                      </span>
                     </div>
                   </div>
-                  <button type="button" className="cart-item-card__remove" onClick={() => removeItem(item.id)} aria-label={`Remove ${item.name}`}>
-                    <CloseIcon />
-                  </button>
                 </article>
               ))}
             </div>
+
+            {/* Drawer Footer */}
             <footer className="cart-panel__footer">
               <div className="cart-panel__summary">
-                <div className="cart-panel__row"><span>Subtotal</span><span>{formatPrice(subtotal, items[0]?.currency)}</span></div>
+                <div className="cart-panel__row">
+                  <span>Subtotal</span>
+                  <span>{formatPrice(subtotal, currency)}</span>
+                </div>
                 <div className="cart-panel__row">
                   <span>Shipping</span>
-                  <span style={{ color: subtotal >= 75 ? "#28a745" : "inherit", fontWeight: subtotal >= 75 ? 700 : 400 }}>
-                    {subtotal >= 75 ? "FREE" : "$12.00 (or free over $75)"}
-                  </span>
+                  {shippingAmount === 0 ? (
+                    <span className="cart-panel__free-badge">FREE</span>
+                  ) : (
+                    <span>{formatPrice(shippingAmount, currency)}</span>
+                  )}
                 </div>
-                <div className="cart-panel__row cart-panel__row--total"><span>Total</span><span>{formatPrice(subtotal, items[0]?.currency)}</span></div>
+                <div className="cart-panel__row cart-panel__row--total">
+                  <span>Estimated Total</span>
+                  <span>{formatPrice(subtotal + shippingAmount, currency)}</span>
+                </div>
               </div>
-              <CheckoutButton />
-              <Link href="/cart" className="cart-panel__view-cart" onClick={closeCart}>View full cart</Link>
+
+              {/* Primary Checkout CTA */}
+              <button
+                type="button"
+                className="cart-panel__checkout-btn"
+                disabled={checkoutLoading || items.length === 0}
+                onClick={handleCheckout}
+              >
+                {checkoutLoading ? (
+                  <>
+                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                      <path d="M12 2a10 10 0 0 1 10 10" />
+                    </svg>
+                    Redirecting to Stripe…
+                  </>
+                ) : (
+                  <>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    Proceed to Checkout
+                  </>
+                )}
+              </button>
+
+              {checkoutError && (
+                <div style={{ marginTop: 8, fontSize: 12, color: "#ef4444", textAlign: "center" }}>
+                  {checkoutError}
+                </div>
+              )}
+
+              {/* Secondary Link: View Full Cart */}
+              <Link
+                href="/cart"
+                className="cart-panel__view-cart-btn"
+                onClick={closeCart}
+              >
+                View Full Cart
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+
+              {/* Trust Assurances Strip */}
+              <div className="cart-panel__trust">
+                <div className="cart-panel__trust-item">
+                  <span>🔒</span>
+                  <span>256-Bit SSL Encrypted Checkout via Stripe</span>
+                </div>
+                <div className="cart-panel__payment-icons">
+                  <span>Visa</span>
+                  <span>•</span>
+                  <span>Mastercard</span>
+                  <span>•</span>
+                  <span>Amex</span>
+                  <span>•</span>
+                  <span>Apple Pay</span>
+                </div>
+              </div>
             </footer>
           </>
         )}
@@ -147,44 +324,19 @@ export function CartDrawer() {
 }
 
 function CloseIcon() {
-  return <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><path d="m18 6-12 12M6 6l12 12" /></svg>;
-}
-
-function BagIcon({ size = 22 }: { size?: number }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      style={{ display: "block", margin: "0 auto" }}
-    >
-      <path d="M5 8h14l-1 13H6L5 8Z" />
-      <path d="M9 9V6a3 3 0 0 1 6 0v3" />
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
     </svg>
   );
 }
 
-function ArrowIcon() {
+function TrashIcon() {
   return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      style={{ display: "inline-block", verticalAlign: "middle", flexShrink: 0 }}
-    >
-      <path d="M5 12h14M13 6l6 6-6 6" />
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     </svg>
   );
 }
