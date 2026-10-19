@@ -5124,7 +5124,7 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
+  padding: 4px;
   margin-bottom: 12px;
   border: 1px solid rgba(226, 232, 240, 0.7);
   transition: background-color 0.25s ease;
@@ -5142,11 +5142,13 @@ input:focus-visible {
 }
 
 .cf-card-stage__img {
+  transform: scale(1.14);
+  transform-origin: center center;
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .cf-product-card:hover .cf-card-stage__img {
-  transform: scale(1.05);
+  transform: scale(1.20) !important;
 }
 
 /* Promo / Discount Badges */
@@ -5472,7 +5474,7 @@ input:focus-visible {
   }
 
   .cf-card-stage {
-    padding: 8px;
+    padding: 2px;
     margin-bottom: 8px;
     border-radius: 10px;
   }
