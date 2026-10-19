@@ -5969,6 +5969,169 @@ input:focus-visible {
   }
 }
 
+/* --------------------------------------------------------------------------
+   SKU Copy Button & Article/Guide Badges (Base Styles)
+   -------------------------------------------------------------------------- */
+.cf-sku-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #0081c9;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.cf-sku-copy-btn:hover {
+  background: #e2e8f0;
+  color: #006ba8;
+  border-color: #94a3b8;
+}
+
+.cf-sku-copy-btn--copied {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border-color: #86efac !important;
+}
+
+.cf-article-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #0081c9;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.cf-guide-card {
+  border: 1px solid #ebebeb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cf-guide-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.cf-guide-title a {
+  color: #1a1d21;
+}
+
+.cf-guide-title a:hover {
+  color: #0081c9;
+}
+
+.cf-guide-excerpt {
+  color: #5c6570;
+}
+
+.cf-article-detail-card {
+  padding: 40px;
+  border: 1px solid #ebebeb;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+.cf-article-detail-meta {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #ebebeb;
+  font-size: 13px;
+  color: #6c757d;
+}
+
+.cf-article-detail-excerpt {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #1a1d21;
+  margin-bottom: 32px;
+  fontWeight: 500;
+}
+
+.cf-article-detail-body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #495057;
+}
+
+.cf-article-detail-h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1a1d21;
+  margin-bottom: 14px;
+}
+
+.cf-article-detail-faqs-wrap {
+  margin-top: 40px;
+  border-top: 2px solid #ebebeb;
+  padding-top: 24px;
+}
+
+.cf-article-detail-h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1d21;
+  margin-bottom: 16px;
+}
+
+.cf-article-detail-faq-box {
+  background: #f8f9fa;
+  padding: 18px;
+  border-radius: 6px;
+  border: 1px solid #ebebeb;
+}
+
+.cf-article-detail-faq-q {
+  display: block;
+  font-size: 15px;
+  color: #1a1d21;
+  margin-bottom: 6px;
+}
+
+.cf-article-detail-faq-a {
+  margin: 0;
+  font-size: 14px;
+  color: #5c6570;
+}
+
+.cf-article-detail-footer {
+  margin-top: 40px;
+  border-top: 1px solid #ebebeb;
+  padding-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cf-article-detail-makes {
+  font-size: 14px;
+  color: #6c757d;
+}
+
+.cf-article-detail-link {
+  color: #0081c9;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cf-article-detail-link:hover {
+  text-decoration: underline;
+}
+
 /* ==========================================================================
    Obsidian Performance Dark Theme System & Theme Toggle
    ========================================================================== */
@@ -6493,32 +6656,159 @@ html.dark .product-tabs {
   border-color: #1e293b !important;
 }
 
-html.dark .product-tabs__item {
+html.dark .product-tabs__list {
+  background: #111827 !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .product-tabs__content {
+  border-top-color: #1e293b !important;
+  background: #111827 !important;
+}
+
+html.dark .product-tabs__item a {
   color: #94a3b8 !important;
 }
 
-html.dark .product-tabs__item--active {
-  color: #38bdf8 !important;
-  border-bottom-color: #38bdf8 !important;
-}
-
-html.dark .spec-table,
-html.dark .spec-row {
-  background: #111827 !important;
+html.dark .product-tabs__item a:hover {
+  background: #172033 !important;
   color: #f8fafc !important;
-  border-color: #1e293b !important;
+  box-shadow: inset 0 -1px #1e293b !important;
 }
 
-html.dark .spec-row:nth-child(even) {
+html.dark .product-tabs__item--active a,
+html.dark .product-tabs__item--active a:hover,
+html.dark .product-tabs__item--active a:active {
+  background: transparent !important;
+  color: #38bdf8 !important;
+  box-shadow: inset 0 -2px #38bdf8 !important;
+}
+
+/* Specifications Tab Pane in Dark Mode */
+html.dark .spec {
+  color: #f8fafc !important;
+}
+
+html.dark .spec__section-title {
+  color: #f8fafc !important;
+  font-weight: 700 !important;
+}
+
+html.dark .spec__row {
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .spec__row:first-of-type {
+  border-top: 1px solid #1e293b !important;
+}
+
+html.dark .spec__name {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+}
+
+html.dark .spec__value {
+  color: #f8fafc !important;
+}
+
+html.dark .spec__disclaimer {
+  color: #64748b !important;
+}
+
+/* Truck Fitment Tab Pane in Dark Mode */
+html.dark .cf-fitment-wrapper {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-fitment-banner {
+  background: linear-gradient(135deg, #131d2e 0%, #0d1522 100%) !important;
+  border-color: #1e3a5f !important;
+}
+
+html.dark .cf-fitment-banner__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-fitment-banner__desc {
+  color: #cbd5e1 !important;
+}
+
+html.dark .cf-fitment-banner__badge {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2) !important;
+}
+
+html.dark .cf-fitment-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  box-shadow: none !important;
+}
+
+html.dark .cf-fitment-card:hover {
+  border-color: #38bdf8 !important;
+}
+
+html.dark .cf-fitment-card__header {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-fitment-card__make {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-fitment-card__years {
+  background: #172033 !important;
+  border: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-fitment-card__label {
+  color: #64748b !important;
+}
+
+html.dark .cf-fitment-desktop-container {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  box-shadow: none !important;
+}
+
+html.dark .cf-fitment-table th {
+  background: #0d131f !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .cf-fitment-table td {
+  border-bottom: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-fitment-table tbody tr:hover td {
   background: #172033 !important;
 }
 
-html.dark .spec-label {
-  color: #94a3b8 !important;
+html.dark .cf-fitment-table__make strong {
+  color: #f8fafc !important;
 }
 
-html.dark .spec-value {
-  color: #f8fafc !important;
+html.dark .cf-fitment-chip--model {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .cf-fitment-chip--engine {
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-fitment-disclaimer {
+  background: #131b2a !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
 }
 
 html.dark .product__header.cf-pdp-header,
@@ -6617,26 +6907,271 @@ html.dark .cf-sheet-cat-arrow {
   color: #64748b !important;
 }
 
-/* Cart Drawer */
-html.dark .cart-drawer,
-html.dark .cf-cart-drawer {
-  background: #0f172a !important;
+/* --------------------------------------------------------------------------
+   Sidebar Cart Drawer (.cart-panel) & Dropcart in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .cart-overlay {
+  background: rgba(7, 11, 18, 0.75) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+html.dark .cart-panel {
+  background-color: #0f172a !important;
   color: #f8fafc !important;
-  border-left-color: #1e293b !important;
+  border-left: 1px solid #1e293b !important;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7) !important;
 }
 
-html.dark .cart-drawer__header {
-  border-bottom-color: #1e293b !important;
-  background: #0f172a !important;
+html.dark .cart-panel__header {
+  background-color: #0f172a !important;
+  border-bottom: 1px solid #1e293b !important;
 }
 
-html.dark .cart-drawer__item {
-  border-bottom-color: #1e293b !important;
+html.dark .cart-panel__title {
+  color: #f8fafc !important;
 }
 
-html.dark .cart-drawer__footer {
-  background: #0a0e17 !important;
+html.dark .cart-panel__count {
+  background-color: #172033 !important;
+  border: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cart-panel__close {
+  background-color: #172033 !important;
+  border: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cart-panel__close:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #38bdf8 !important;
+}
+
+html.dark .cart-panel__meter {
+  background: #131b2a !important;
+  background-image: none !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .cart-panel__meter--unlocked {
+  background: rgba(16, 185, 129, 0.12) !important;
+  background-image: none !important;
+  border-bottom-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+html.dark .cart-panel__meter-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cart-panel__meter-title strong {
+  color: #38bdf8 !important;
+}
+
+html.dark .cart-panel__meter-badge {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cart-panel__meter--unlocked .cart-panel__meter-badge {
+  background-color: #10b981 !important;
+  color: #ffffff !important;
+  border-color: #10b981 !important;
+}
+
+html.dark .cart-panel__meter-track {
+  background-color: #1e293b !important;
+}
+
+html.dark .cart-panel__items {
+  background-color: #0f172a !important;
+}
+
+html.dark .cart-item-card {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cart-item-card:hover {
+  border-color: #38bdf8 !important;
+}
+
+html.dark .cart-item-card__image {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cart-item-card__name {
+  color: #f8fafc !important;
+}
+
+html.dark .cart-item-card__name:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .cart-item-card__sku {
+  color: #94a3b8 !important;
+}
+
+html.dark .cart-item-card__unit-price {
+  color: #64748b !important;
+}
+
+html.dark .cart-item-card__remove {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #64748b !important;
+}
+
+html.dark .cart-item-card__remove:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+}
+
+html.dark .cart-item-card__controls .cf-stepper {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-stepper__btn {
+  color: #e2e8f0 !important;
+}
+
+html.dark .cf-stepper__btn:hover:not(:disabled) {
+  background-color: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-stepper__btn:disabled {
+  color: #475569 !important;
+}
+
+html.dark .cf-stepper__val {
+  color: #f8fafc !important;
+}
+
+html.dark .cart-item-card__price {
+  color: #38bdf8 !important;
+}
+
+html.dark .cart-panel__footer {
+  background-color: #0a0e17 !important;
   border-top-color: #1e293b !important;
+}
+
+html.dark .cart-panel__summary {
+  color: #94a3b8 !important;
+}
+
+html.dark .cart-panel__row {
+  color: #94a3b8 !important;
+}
+
+html.dark .cart-panel__row--total {
+  border-top-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cart-panel__row--total span:last-child {
+  color: #38bdf8 !important;
+}
+
+html.dark .cart-panel__view-cart-btn {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cart-panel__view-cart-btn:hover {
+  background-color: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cart-panel__trust {
+  color: #64748b !important;
+}
+
+html.dark .cart-panel__empty {
+  background-color: #0f172a !important;
+}
+
+html.dark .cart-panel__empty-icon {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cart-panel__empty h3 {
+  color: #f8fafc !important;
+}
+
+html.dark .cart-panel__empty p {
+  color: #94a3b8 !important;
+}
+
+/* Header Dropcart Hover Preview in Dark Mode */
+html.dark .dropcart {
+  background-color: #0f172a !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+  border: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .dropcart__item {
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .dropcart__item-image {
+  background-color: #172033 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .dropcart__item-name a {
+  color: #f8fafc !important;
+}
+
+html.dark .dropcart__item-name a:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .dropcart__item-features {
+  color: #94a3b8 !important;
+}
+
+html.dark .dropcart__item-quantity {
+  color: #94a3b8 !important;
+}
+
+html.dark .dropcart__item-price {
+  color: #38bdf8 !important;
+}
+
+html.dark .dropcart__item-remove {
+  background-color: transparent !important;
+  color: #64748b !important;
+}
+
+html.dark .dropcart__item-remove:hover {
+  color: #ef4444 !important;
+}
+
+html.dark .dropcart__totals {
+  border-top: 1px solid #1e293b !important;
+}
+
+html.dark .dropcart__totals th,
+html.dark .dropcart__totals td {
+  background: transparent !important;
+  color: #f8fafc !important;
+}
+
+html.dark .dropcart__actions {
+  background-color: #0d131f !important;
+  border-top: 1px solid #1e293b !important;
 }
 
 /* Mobile Tab Bar */
@@ -6974,14 +7509,62 @@ html.dark .product__price--old {
   color: #64748b !important;
 }
 
-html.dark .product__meta th {
-  color: #94a3b8 !important;
+/* Product Meta Table (Price Section) in Dark Mode */
+html.dark .product__meta,
+html.dark .cf-pdp-meta-table {
+  border-top-color: #1e293b !important;
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .product__meta table,
+html.dark .cf-pdp-meta-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+html.dark .product__meta th,
+html.dark .cf-pdp-meta-table th {
+  background: transparent !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+  font-weight: 600 !important;
+  padding-right: 14px;
+}
+
+html.dark .product__meta td,
+html.dark .cf-pdp-meta-table td {
+  background: transparent !important;
+  color: #f8fafc !important;
   border-color: #1e293b !important;
 }
 
-html.dark .product__meta td {
+html.dark .product__meta tr+tr>*,
+html.dark .cf-pdp-meta-table tr+tr>* {
+  border-top: 1px solid #1e293b !important;
+}
+
+html.dark .cf-pdp-meta-sku-val {
   color: #f8fafc !important;
-  border-color: #1e293b !important;
+  font-weight: 700;
+}
+
+html.dark .cf-sku-copy-btn {
+  background: #172033 !important;
+  border-color: #253347 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-sku-copy-btn:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #7dd3fc !important;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25) !important;
+}
+
+html.dark .cf-sku-copy-btn--copied {
+  background: rgba(16, 185, 129, 0.2) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #34d399 !important;
 }
 
 html.dark .product__shop-features {
@@ -7017,15 +7600,78 @@ html.dark .product__features-title {
 }
 
 html.dark .product__features li {
-  color: #94a3b8 !important;
+  color: #cbd5e1 !important;
 }
 
 html.dark .product__features li span {
   color: #f8fafc !important;
+  font-weight: 600 !important;
 }
 
+html.dark .product__features-link a {
+  color: #38bdf8 !important;
+}
+
+/* Product Description & Excerpt Typography in Dark Mode */
 html.dark .product__excerpt {
-  color: #cbd5e1 !important;
+  color: #f1f5f9 !important;
+}
+
+html.dark .product-excerpt__p {
+  color: #f1f5f9 !important;
+  font-size: 14.5px;
+  line-height: 1.68;
+}
+
+html.dark .product-excerpt__h4 {
+  color: #f8fafc !important;
+}
+
+html.dark .product-excerpt__ul {
+  color: #e2e8f0 !important;
+}
+
+html.dark .product-excerpt__li {
+  color: #e2e8f0 !important;
+}
+
+html.dark .product-excerpt__strong {
+  color: #f8fafc !important;
+}
+
+html.dark .product-excerpt__bullet {
+  background: rgba(56, 189, 248, 0.16) !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .product-excerpt__more-btn {
+  color: #38bdf8 !important;
+}
+
+html.dark .product-excerpt__more-btn:hover {
+  color: #7dd3fc !important;
+}
+
+html.dark .product-full-desc__p {
+  color: #f1f5f9 !important;
+}
+
+html.dark .product-full-desc__h3,
+html.dark .product-full-desc__h4 {
+  color: #f8fafc !important;
+}
+
+html.dark .product-full-desc__li {
+  color: #e2e8f0 !important;
+}
+
+html.dark .product-full-desc__strong {
+  color: #f8fafc !important;
+}
+
+html.dark .product-full-desc__bullet {
+  background: rgba(56, 189, 248, 0.16) !important;
+  color: #38bdf8 !important;
 }
 
 html.dark .input-number__input {
@@ -7182,10 +7828,43 @@ html.dark .block-finder__form-control--button:disabled {
   cursor: not-allowed;
 }
 
-/* Post Cards & Technical Guides */
+/* Post Cards & Technical Guides in Dark Mode */
 html.dark .post-card {
   background: #111827 !important;
   border-color: #1e293b !important;
+}
+
+html.dark .post-card__category,
+html.dark .post-card--layout--grid .post-card__category,
+html.dark .post-card--layout--list .post-card__category,
+html.dark .post-card--layout--grid-sm .post-card__category {
+  color: #38bdf8 !important;
+  background: transparent !important;
+  border: none !important;
+  font-weight: 700 !important;
+}
+
+html.dark .post-card__category a,
+html.dark .post-card--layout--grid .post-card__category a,
+html.dark .post-card--layout--list .post-card__category a,
+html.dark .post-card--layout--grid-sm .post-card__category a {
+  color: #38bdf8 !important;
+}
+
+html.dark .post-card__category:before,
+html.dark .post-card__category:after,
+html.dark .post-card--layout--grid .post-card__category:before,
+html.dark .post-card--layout--grid .post-card__category:after,
+html.dark .post-card--layout--list .post-card__category:before,
+html.dark .post-card--layout--list .post-card__category:after,
+html.dark .post-card--layout--grid-sm .post-card__category:before,
+html.dark .post-card--layout--grid-sm .post-card__category:after {
+  background: #131b2a !important;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.45) !important;
+}
+
+html.dark .cf-article-badge {
+  color: #38bdf8 !important;
 }
 
 html.dark .post-card__name a {
@@ -7198,6 +7877,80 @@ html.dark .post-card__name a:hover {
 
 html.dark .post-card__date {
   color: #94a3b8 !important;
+}
+
+html.dark .cf-guide-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-guide-title a {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-guide-title a:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-guide-excerpt {
+  color: #cbd5e1 !important;
+}
+
+html.dark .cf-article-detail-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-article-detail-meta {
+  border-bottom-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-article-detail-meta strong {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-article-detail-excerpt {
+  color: #f1f5f9 !important;
+}
+
+html.dark .cf-article-detail-body {
+  color: #cbd5e1 !important;
+}
+
+html.dark .cf-article-detail-h2,
+html.dark .cf-article-detail-h3 {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-article-detail-faqs-wrap {
+  border-top-color: #1e293b !important;
+}
+
+html.dark .cf-article-detail-faq-box {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-article-detail-faq-q {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-article-detail-faq-a {
+  color: #cbd5e1 !important;
+}
+
+html.dark .cf-article-detail-footer {
+  border-top-color: #1e293b !important;
+}
+
+html.dark .cf-article-detail-makes {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-article-detail-link {
+  color: #38bdf8 !important;
 }
 
 /* Mobile Categories Sheet Truck Make Cards & Shortcuts */

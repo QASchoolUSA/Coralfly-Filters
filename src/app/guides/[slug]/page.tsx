@@ -51,24 +51,24 @@ export default async function GuidePage({ params }: Props) {
       <div className="container" style={{ paddingBottom: 60 }}>
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10">
-            <div className="card" style={{ padding: 40, border: "1px solid #ebebeb", borderRadius: 4, background: "#fff" }}>
+            <div className="card cf-article-detail-card">
               {/* Meta */}
-              <div style={{ display: "flex", gap: 16, alignItems: "center", marginBottom: 24, paddingBottom: 16, borderBottom: "1px solid #ebebeb", fontSize: 13, color: "#6c757d" }}>
+              <div className="cf-article-detail-meta">
                 <span>Published by <strong>CORALFLY Technical Engineering</strong></span>
                 <span>•</span>
                 <span>Category: <strong>Heavy Duty Filtration Guide</strong></span>
               </div>
 
               {/* Lead Intro */}
-              <div style={{ fontSize: 18, lineHeight: 1.6, color: "#1a1d21", marginBottom: 32, fontWeight: 500 }}>
+              <div className="cf-article-detail-excerpt">
                 {guide.excerpt}
               </div>
 
               {/* Guide Sections */}
-              <div style={{ fontSize: 15, lineHeight: 1.8, color: "#495057" }}>
+              <div className="cf-article-detail-body">
                 {guide.sections.map((section) => (
                   <div key={section.heading} style={{ marginBottom: 36 }}>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#1a1d21", marginBottom: 14 }}>
+                    <h2 className="cf-article-detail-h2">
                       {section.heading}
                     </h2>
                     {section.intro && <p style={{ marginBottom: 12 }}>{section.intro}</p>}
@@ -88,15 +88,15 @@ export default async function GuidePage({ params }: Props) {
 
               {/* Guide FAQs */}
               {guide.faqs && guide.faqs.length > 0 && (
-                <div style={{ marginTop: 40, borderTop: "2px solid #ebebeb", paddingTop: 24 }}>
-                  <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 16 }}>Frequently Asked Questions</h3>
+                <div className="cf-article-detail-faqs-wrap">
+                  <h3 className="cf-article-detail-h3">Frequently Asked Questions</h3>
                   <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                     {guide.faqs.map((faq) => (
-                      <div key={faq.question} style={{ background: "#f8f9fa", padding: 18, borderRadius: 4 }}>
-                        <strong style={{ display: "block", fontSize: 15, color: "#1a1d21", marginBottom: 6 }}>
+                      <div key={faq.question} className="cf-article-detail-faq-box">
+                        <strong className="cf-article-detail-faq-q">
                           {faq.question}
                         </strong>
-                        <p style={{ margin: 0, fontSize: 14, color: "#5c6570" }}>{faq.answer}</p>
+                        <p className="cf-article-detail-faq-a">{faq.answer}</p>
                       </div>
                     ))}
                   </div>
@@ -104,13 +104,13 @@ export default async function GuidePage({ params }: Props) {
               )}
 
               {/* Related Makes Strip */}
-              <div style={{ marginTop: 40, borderTop: "1px solid #ebebeb", paddingTop: 20, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
-                <div style={{ fontSize: 14, color: "#6c757d" }}>
+              <div className="cf-article-detail-footer">
+                <div className="cf-article-detail-makes">
                   Related Truck Makes:{" "}
                   {guide.relatedTruckBrands.map((b, idx) => (
                     <span key={b}>
                       {idx > 0 && ", "}
-                      <Link href={`/shop?make=${encodeURIComponent(b)}`} style={{ color: "#0081c9", fontWeight: 600 }}>
+                      <Link href={`/shop?make=${encodeURIComponent(b)}`} className="cf-article-detail-link">
                         {b}
                       </Link>
                     </span>

@@ -580,7 +580,7 @@ export function HomeClient({
                     </Link>
                   </div>
                   <div className="post-card__info" style={{ padding: 20 }}>
-                    <div className="post-card__category" style={{ fontSize: 11, fontWeight: 700, color: "#0081c9", textTransform: "uppercase", marginBottom: 6 }}>
+                    <div className="post-card__category cf-article-badge">
                       Special Technical Report
                     </div>
                     <div className="post-card__name" style={{ fontSize: 16, fontWeight: 700, lineHeight: 1.4, marginBottom: 12 }}>

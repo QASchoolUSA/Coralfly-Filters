@@ -58,8 +58,12 @@ export const useThemeStore = create<ThemeState>()(
           const raw = localStorage.getItem("coralfly-theme");
           if (raw === "dark" || raw === "light" || raw === "system") {
             savedTheme = raw;
+          } else {
+            savedTheme = getSystemTheme();
           }
-        } catch {}
+        } catch {
+          savedTheme = getSystemTheme();
+        }
 
         const resolved = savedTheme === "system" ? getSystemTheme() : savedTheme;
         applyThemeToDOM(resolved);

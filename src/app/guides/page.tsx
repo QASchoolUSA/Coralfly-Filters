@@ -50,7 +50,7 @@ export default function GuidesIndexPage() {
                 const img = guideImages[idx % guideImages.length];
                 return (
                   <div key={guide.slug} className="col-12 mb-4">
-                    <div className="card" style={{ border: "1px solid #ebebeb", borderRadius: 4, overflow: "hidden" }}>
+                    <div className="card cf-guide-card" style={{ borderRadius: 6, overflow: "hidden" }}>
                       <div className="row no-gutters">
                         <div className="col-12 col-md-5">
                           <Link href={`/guides/${guide.slug}`} style={{ display: "block", height: "100%", minHeight: 220, position: "relative" }}>
@@ -65,15 +65,15 @@ export default function GuidesIndexPage() {
                         </div>
                         <div className="col-12 col-md-7">
                           <div style={{ padding: 24 }}>
-                            <div style={{ fontSize: 11, fontWeight: 700, color: "#0081c9", textTransform: "uppercase", marginBottom: 6 }}>
+                            <div className="cf-article-badge">
                               Fleet Engineering Reference
                             </div>
-                            <h3 style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.4, marginBottom: 10 }}>
-                              <Link href={`/guides/${guide.slug}`} style={{ color: "#1a1d21", textDecoration: "none" }}>
+                            <h3 className="cf-guide-title" style={{ fontSize: 18, fontWeight: 700, lineHeight: 1.4, marginBottom: 10 }}>
+                              <Link href={`/guides/${guide.slug}`} style={{ textDecoration: "none" }}>
                                 {guide.title}
                               </Link>
                             </h3>
-                            <p style={{ color: "#5c6570", fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>
+                            <p className="cf-guide-excerpt" style={{ fontSize: 14, lineHeight: 1.6, marginBottom: 16 }}>
                               {guide.excerpt}
                             </p>
                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

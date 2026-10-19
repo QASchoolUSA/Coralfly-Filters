@@ -697,31 +697,36 @@ export function ProductDetailClient({
                           </div>
                         </div>
 
-                        <div className="product__meta">
+                        <div className="product__meta cf-pdp-meta-table">
                           <table>
                             <tbody>
                               <tr>
                                 <th>SKU</th>
                                 <td>
-                                  <span style={{ fontWeight: 600 }}>{productSku}</span>
+                                  <span className="cf-pdp-meta-sku-val">{productSku}</span>
                                   <button
                                     type="button"
                                     onClick={handleCopySku}
-                                    style={{
-                                      background: "none",
-                                      border: "none",
-                                      marginLeft: 10,
-                                      cursor: "pointer",
-                                      color: copiedSku ? "#28a745" : "#0081c9",
-                                      fontSize: 12,
-                                      fontWeight: 600,
-                                      padding: "2px 6px",
-                                      borderRadius: 3,
-                                      backgroundColor: copiedSku ? "#e8f8ec" : "#e8f4fb",
-                                    }}
+                                    className={`cf-sku-copy-btn ${copiedSku ? "cf-sku-copy-btn--copied" : ""}`}
                                     title="Copy SKU Part Number"
+                                    aria-label="Copy SKU Part Number"
                                   >
-                                    {copiedSku ? "✓ Copied" : "📋 Copy"}
+                                    {copiedSku ? (
+                                      <>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                          <polyline points="20 6 9 17 4 12" />
+                                        </svg>
+                                        <span>Copied</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                                          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                                        </svg>
+                                        <span>Copy</span>
+                                      </>
+                                    )}
                                   </button>
                                 </td>
                               </tr>
