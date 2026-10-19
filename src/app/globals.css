@@ -6162,38 +6162,150 @@ html.dark .indicator__value {
   color: #f8fafc !important;
 }
 
-/* Slanted Desktop Search Bar */
+/* --------------------------------------------------------------------------
+   Slanted Desktop Spaceship Search Bar & Vehicle Trigger in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .search__decor-start:before,
+html.dark .search__decor-end:before {
+  background-color: #131b2a !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45) !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .search__decor-start:before {
+  border-left: 1px solid #1e293b !important;
+}
+
+html.dark .search__decor-end:before {
+  border-right: 1px solid #1e293b !important;
+}
+
 html.dark .search__body {
   background: #131b2a !important;
-  border: 1px solid #1e293b !important;
+  border-top: 1px solid #1e293b !important;
+  border-bottom: 1px solid #1e293b !important;
+  border-radius: 2px;
+}
+
+html.dark .search__box {
+  color: #131b2a !important;
+}
+
+html.dark .search__box:before,
+html.dark .search__box:after {
+  background: #131b2a !important;
+}
+
+html.dark .search__input:focus ~ .search__box,
+html.dark .search__input:hover ~ .search__box {
+  opacity: 1 !important;
+  color: #172033 !important;
+}
+
+html.dark .search__input:focus ~ .search__box:before,
+html.dark .search__input:focus ~ .search__box:after,
+html.dark .search__input:hover ~ .search__box:before,
+html.dark .search__input:hover ~ .search__box:after {
+  background: #172033 !important;
 }
 
 html.dark .search__input {
   background: transparent !important;
   color: #f8fafc !important;
+  border: none !important;
 }
 
 html.dark .search__input::placeholder {
-  color: #64748b !important;
-}
-
-html.dark .search__button {
   color: #94a3b8 !important;
 }
 
-html.dark .search__button:hover {
+/* Slanted separator lines between vehicle button/search button and input */
+html.dark .search__button:before {
+  background: #253347 !important;
+}
+
+/* Button hover overlay */
+html.dark .search__button:after {
+  background: transparent !important;
+}
+
+html.dark .search__button--hover:after,
+html.dark .search__button:hover:after {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .search__button--hover:active:after,
+html.dark .search__button:active:after {
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+/* Vehicle Rig Selector button on the left */
+html.dark .search__button--start {
+  color: #94a3b8 !important;
+}
+
+html.dark .search__button--start svg {
+  fill: currentColor !important;
+}
+
+html.dark .search__button--start:hover {
   color: #38bdf8 !important;
 }
 
-html.dark .search__vehicle-picker-btn {
-  background: #172033 !important;
-  border-right-color: #1e293b !important;
-  color: #f8fafc !important;
+html.dark .search__button--start.search__button--vehicle-selected,
+html.dark .search__button--start[style*="0081c9"],
+html.dark .search__button--start[style*="rgb(0, 129, 201)"] {
+  color: #38bdf8 !important;
+}
+
+/* Search Submit button on the right */
+html.dark .search__button--end {
+  color: #94a3b8 !important;
+}
+
+html.dark .search__button--end svg {
+  fill: currentColor !important;
+}
+
+html.dark .search__button--end:hover {
+  color: #38bdf8 !important;
 }
 
 html.dark .search__shadow {
   display: none !important;
 }
+
+/* Search Auto-Suggestions Dropdown */
+html.dark .search__dropdown {
+  background-color: #111827 !important;
+  color: #f8fafc !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+html.dark .suggestions__group-title {
+  background: #172033 !important;
+  color: #94a3b8 !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .suggestions__product {
+  border-bottom: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .suggestions__product:hover {
+  background: #172033 !important;
+}
+
+html.dark .suggestions__product-name {
+  color: #f8fafc !important;
+}
+
+html.dark .suggestions__product-price {
+  color: #38bdf8 !important;
+}
+
 
 /* Mobile Header */
 html.dark .mobile-header {
@@ -7371,6 +7483,258 @@ html.dark .cf-shop-drawer-btn--reset {
   border-color: #1e293b !important;
   color: #cbd5e1 !important;
 }
+
+/* --------------------------------------------------------------------------
+   Vehicle Picker Modal
+   -------------------------------------------------------------------------- */
+.cf-picker-modal {
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.cf-picker-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid #ebebeb;
+}
+
+.cf-picker-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1d21;
+  margin: 0;
+}
+
+.cf-picker-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.cf-picker-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.cf-picker-select {
+  height: 42px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+}
+
+.cf-picker-select:disabled {
+  background-color: #f8fafc;
+  color: #94a3b8;
+  opacity: 0.8;
+}
+
+.cf-picker-close {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.cf-picker-close:hover {
+  color: #1e293b;
+}
+
+.cf-picker-btn-cancel {
+  height: 42px;
+  padding: 0 20px;
+  font-size: 14px;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #475569;
+  border-radius: 6px;
+}
+
+.cf-picker-btn-cancel:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.cf-picker-btn-submit {
+  height: 42px;
+  padding: 0 24px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+.cf-picker-btn-submit:disabled {
+  background-color: #cbd5e1 !important;
+  border-color: #cbd5e1 !important;
+  color: #ffffff !important;
+  cursor: not-allowed;
+}
+
+.cf-picker-btn-clear {
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13px;
+  color: #dc3545;
+  border-color: #dc3545;
+  background-color: transparent;
+  border-radius: 6px;
+}
+
+/* Vehicle Picker Modal in Dark Mode */
+html.dark .cf-picker-modal {
+  background: #111827 !important;
+  border: 1px solid #1e293b !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7) !important;
+}
+
+html.dark .cf-picker-header {
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .cf-picker-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-picker-subtitle {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-picker-label {
+  color: #e2e8f0 !important;
+}
+
+html.dark .cf-picker-select {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-picker-select:disabled {
+  background-color: #0d131f !important;
+  border-color: #1e293b !important;
+  color: #64748b !important;
+  opacity: 0.65;
+}
+
+html.dark .cf-picker-close {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-picker-close:hover {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-picker-btn-cancel {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .cf-picker-btn-cancel:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-picker-btn-submit:disabled {
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
+  color: #64748b !important;
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar Active Rig Card in Shop
+   -------------------------------------------------------------------------- */
+.cf-sidebar-active-rig {
+  background: #e8f4fb;
+  border: 1px solid #0081c9;
+  border-radius: 6px;
+  padding: 10px 12px;
+}
+
+.cf-sidebar-active-rig__badge {
+  font-size: 11px;
+  color: #0081c9;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cf-sidebar-active-rig__title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1d21;
+  margin-top: 2px;
+}
+
+.cf-sidebar-active-rig__btn-change {
+  background: none;
+  border: none;
+  color: #0081c9;
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.cf-sidebar-active-rig__btn-clear {
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+  cursor: pointer;
+}
+
+html.dark .cf-sidebar-active-rig {
+  background: #172033 !important;
+  border: 1px solid #1aa4f0 !important;
+}
+
+html.dark .cf-sidebar-active-rig__badge {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-sidebar-active-rig__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sidebar-active-rig__btn-change {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-sidebar-active-rig__btn-clear {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-sidebar-select-vehicle-btn {
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-sidebar-select-vehicle-btn:hover {
+  background-color: #1aa4f0 !important;
+  color: #ffffff !important;
+  border-color: #1aa4f0 !important;
+}
+
+/* Vehicle Selected State for Header Search Button */
+.search__button--vehicle-selected {
+  color: #0081c9 !important;
+}
+
+html.dark .search__button--vehicle-selected {
+  color: #38bdf8 !important;
+}
+
 
 
 

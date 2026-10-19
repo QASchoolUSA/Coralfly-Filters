@@ -243,29 +243,29 @@ export function ShopFilters({ products, categories }: Props) {
                 <div className="widget-filters__list" style={{ padding: 20 }}>
                   {/* Filter 1: Active Vehicle Filter Box */}
                   <div className="widget-filters__item mb-4" style={{ paddingBottom: 16, borderBottom: "1px solid #ebebeb" }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", color: "#333", marginBottom: 10 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>
                       Vehicle Fitment
                     </div>
                     {currentVehicle ? (
-                      <div style={{ background: "#e8f4fb", border: "1px solid #0081c9", borderRadius: 4, padding: "10px 12px" }}>
-                        <div style={{ fontSize: 11, color: "#0081c9", fontWeight: 700, textTransform: "uppercase" }}>
+                      <div className="cf-sidebar-active-rig">
+                        <div className="cf-sidebar-active-rig__badge">
                           Active Rig
                         </div>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1d21", marginTop: 2 }}>
+                        <div className="cf-sidebar-active-rig__title">
                           {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 6 }}>
                           <button
                             type="button"
                             onClick={openPicker}
-                            style={{ background: "none", border: "none", color: "#0081c9", fontSize: 12, textDecoration: "underline", padding: 0, cursor: "pointer", fontWeight: 600 }}
+                            className="cf-sidebar-active-rig__btn-change"
                           >
                             Change Vehicle
                           </button>
                           <button
                             type="button"
                             onClick={clearCurrentVehicle}
-                            style={{ background: "none", border: "none", color: "#6c757d", fontSize: 12, textDecoration: "underline", padding: 0, cursor: "pointer" }}
+                            className="cf-sidebar-active-rig__btn-clear"
                           >
                             Clear
                           </button>
@@ -274,9 +274,8 @@ export function ShopFilters({ products, categories }: Props) {
                     ) : (
                       <button
                         type="button"
-                        className="btn btn-sm btn-outline-primary"
+                        className="btn btn-sm btn-outline-primary cf-sidebar-select-vehicle-btn"
                         onClick={openPicker}
-                        style={{ width: "100%", borderColor: "#0081c9", color: "#0081c9" }}
                       >
                         + Select Vehicle
                       </button>

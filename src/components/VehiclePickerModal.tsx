@@ -111,24 +111,23 @@ function VehiclePickerModalContent({
   };
 
   return (
-    <div className="modal fade show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.6)", zIndex: 1050 }}>
+    <div className="modal fade show" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.65)", zIndex: 1050 }}>
       <div className="modal-dialog modal-dialog-centered" style={{ maxWidth: 540 }}>
-        <div className="modal-content" style={{ borderRadius: 6, overflow: "hidden", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
-          <div className="modal-header" style={{ padding: "18px 24px", borderBottom: "1px solid #ebebeb", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div className="modal-content cf-picker-modal">
+          <div className="modal-header cf-picker-header">
             <div>
-              <h5 className="modal-title" style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>
+              <h5 className="modal-title cf-picker-title">
                 {currentVehicle ? "Change Selected Rig" : "Select Your Rig For Exact Fitment"}
               </h5>
-              <div style={{ fontSize: 13, color: "#6c757d", marginTop: 2 }}>
+              <div className="cf-picker-subtitle">
                 {currentVehicle ? `Currently Selected: ${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}` : "Choose your truck to verify guaranteed filter compatibility"}
               </div>
             </div>
             <button
               type="button"
-              className="close"
+              className="close cf-picker-close"
               aria-label="Close"
               onClick={closePicker}
-              style={{ background: "none", border: "none", fontSize: 26, cursor: "pointer", color: "#999", lineHeight: 1 }}
             >
               &times;
             </button>
@@ -137,15 +136,14 @@ function VehiclePickerModalContent({
           <div className="modal-body" style={{ padding: 24 }}>
             <form onSubmit={handleSave}>
               <div className="form-group mb-3">
-                <label htmlFor="vehicle-picker-year" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                <label htmlFor="vehicle-picker-year" className="cf-picker-label">
                   1. Select Year *
                 </label>
                 <select
                   id="vehicle-picker-year"
-                  className="form-control"
+                  className="form-control cf-picker-select"
                   value={selectedYear}
                   onChange={(e) => setSelectedYear(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 4 }}
                   required
                 >
                   <option value="">— Choose Year —</option>
@@ -158,15 +156,14 @@ function VehiclePickerModalContent({
               </div>
 
               <div className="form-group mb-3">
-                <label htmlFor="vehicle-picker-make" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                <label htmlFor="vehicle-picker-make" className="cf-picker-label">
                   2. Select Make *
                 </label>
                 <select
                   id="vehicle-picker-make"
-                  className="form-control"
+                  className="form-control cf-picker-select"
                   value={selectedMake}
                   onChange={(e) => handleMakeChange(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 4 }}
                   required
                 >
                   <option value="">— Choose Commercial Truck Make —</option>
@@ -179,16 +176,15 @@ function VehiclePickerModalContent({
               </div>
 
               <div className="form-group mb-3">
-                <label htmlFor="vehicle-picker-model" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                <label htmlFor="vehicle-picker-model" className="cf-picker-label">
                   3. Select Model *
                 </label>
                 <select
                   id="vehicle-picker-model"
-                  className="form-control"
+                  className="form-control cf-picker-select"
                   value={selectedModel}
                   disabled={!selectedMake || !makeObj}
                   onChange={(e) => handleModelChange(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 4, backgroundColor: !selectedMake ? "#f8f9fa" : "#ffffff" }}
                   required
                 >
                   <option value="">{selectedMake ? "— Choose Truck Model —" : "— Select Make First —"}</option>
@@ -201,16 +197,15 @@ function VehiclePickerModalContent({
               </div>
 
               <div className="form-group mb-4">
-                <label htmlFor="vehicle-picker-engine" style={{ fontSize: 13, fontWeight: 600, color: "#333", marginBottom: 6, display: "block" }}>
+                <label htmlFor="vehicle-picker-engine" className="cf-picker-label">
                   4. Select Engine *
                 </label>
                 <select
                   id="vehicle-picker-engine"
-                  className="form-control"
+                  className="form-control cf-picker-select"
                   value={selectedEngine}
                   disabled={!selectedModel || !modelObj}
                   onChange={(e) => setSelectedEngine(e.target.value)}
-                  style={{ height: 42, fontSize: 14, borderRadius: 4, backgroundColor: !selectedModel ? "#f8f9fa" : "#ffffff" }}
                   required
                 >
                   <option value="">{selectedModel ? "— Choose Engine Configuration —" : "— Select Model First —"}</option>
@@ -227,12 +222,11 @@ function VehiclePickerModalContent({
                   {currentVehicle && (
                     <button
                       type="button"
-                      className="btn btn-outline-danger btn-sm"
+                      className="btn btn-outline-danger btn-sm cf-picker-btn-clear"
                       onClick={() => {
                         clearCurrentVehicle();
                         closePicker();
                       }}
-                      style={{ height: 40, padding: "0 16px", fontSize: 13, color: "#dc3545", borderColor: "#dc3545", backgroundColor: "transparent" }}
                     >
                       Clear Selected Rig
                     </button>
@@ -241,27 +235,17 @@ function VehiclePickerModalContent({
                 <div style={{ display: "flex", gap: 12, marginLeft: "auto" }}>
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn cf-picker-btn-cancel"
                     onClick={closePicker}
-                    style={{ height: 42, padding: "0 20px", fontSize: 14 }}
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={!isComplete}
-                    className="btn btn-primary"
-                    style={{
-                      height: 42,
-                      padding: "0 24px",
-                      fontSize: 14,
-                      fontWeight: 600,
-                      backgroundColor: isComplete ? "#0081c9" : "#cbd5e1",
-                      borderColor: isComplete ? "#0081c9" : "#cbd5e1",
-                      cursor: isComplete ? "pointer" : "not-allowed",
-                    }}
+                    className="btn btn-primary cf-picker-btn-submit"
                   >
-                    Save & Confirm Fitment
+                    Save &amp; Confirm Fitment
                   </button>
                 </div>
               </div>

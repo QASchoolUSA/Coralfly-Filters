@@ -978,7 +978,7 @@ export function Header() {
                 {/* Vehicle Selector Trigger Button */}
                 <button
                   type="button"
-                  className="search__button search__button--start"
+                  className={`search__button search__button--start ${currentVehicle && isAllowedMake(currentVehicle.make) ? "search__button--vehicle-selected" : ""}`}
                   onClick={openPicker}
                   title={
                     currentVehicle && isAllowedMake(currentVehicle.make)
@@ -989,7 +989,6 @@ export function Header() {
                   style={{
                     cursor: "pointer",
                     pointerEvents: "auto",
-                    color: currentVehicle && isAllowedMake(currentVehicle.make) ? "#0081c9" : undefined,
                   }}
                 >
                   <span className="search__button-icon">
