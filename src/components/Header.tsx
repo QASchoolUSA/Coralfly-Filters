@@ -544,6 +544,29 @@ export function Header() {
   const desktopSearchRef = useRef<HTMLDivElement>(null);
   const searchTimer = useRef<NodeJS.Timeout | null>(null);
   const [headerCheckoutLoading, setHeaderCheckoutLoading] = useState(false);
+  const [cartBump, setCartBump] = useState(false);
+  const prevCountRef = useRef(cartCount);
+
+  // Trigger bounce animation when cart count increases
+  useEffect(() => {
+    if (cartCount > prevCountRef.current) {
+      setCartBump(true);
+      const timer = setTimeout(() => setCartBump(false), 550);
+      prevCountRef.current = cartCount;
+      return () => clearTimeout(timer);
+    }
+    prevCountRef.current = cartCount;
+  }, [cartCount]);
+
+  // Also listen for explicit item-added custom events across the window
+  useEffect(() => {
+    const handleItemAdded = () => {
+      setCartBump(true);
+      setTimeout(() => setCartBump(false), 550);
+    };
+    window.addEventListener("cart:item-added", handleItemAdded);
+    return () => window.removeEventListener("cart:item-added", handleItemAdded);
+  }, []);
 
   // Close search suggestions when clicking outside
   useEffect(() => {
@@ -665,7 +688,11 @@ export function Header() {
                         <circle cx="15" cy="17" r="2" />
                         <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z" />
                       </svg>
-                      {cartCount > 0 && <span className="mobile-indicator__counter">{cartCount}</span>}
+                      {cartCount > 0 && (
+                        <span className={`mobile-indicator__counter ${cartBump ? "mobile-indicator__counter--bump" : ""}`}>
+                          {cartCount}
+                        </span>
+                      )}
                     </span>
                   </button>
                 </div>
@@ -1025,7 +1052,11 @@ export function Header() {
                     <circle cx="23.5" cy="27.5" r="2.5" />
                     <path d="M26.4,21H10.2L6.1,4H1V2h6.9l1.2,5H29l-2.6,14z M11.8,19H25l1.9-10H8.5L11.8,19z" />
                   </svg>
-                  {cartCount > 0 && <span className="indicator__counter">{cartCount}</span>}
+                  {cartCount > 0 && (
+                    <span className={`indicator__counter ${cartBump ? "indicator__counter--bump" : ""}`}>
+                      {cartCount}
+                    </span>
+                  )}
                 </span>
                 <span className="indicator__title">Shopping Cart</span>
                 <span className="indicator__value">{formatPrice(cartSubtotal, "usd")}</span>

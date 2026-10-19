@@ -17,6 +17,15 @@ export function CartDrawer() {
 
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [removingIds, setRemovingIds] = useState<string[]>([]);
+
+  const handleRemoveItem = (id: string) => {
+    setRemovingIds((prev) => [...prev, id]);
+    setTimeout(() => {
+      removeItem(id);
+      setRemovingIds((prev) => prev.filter((itemId) => itemId !== id));
+    }, 240);
+  };
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -151,7 +160,10 @@ export function CartDrawer() {
             {/* Scrollable Items List */}
             <div className="cart-panel__items">
               {items.map((item) => (
-                <article className="cart-item-card" key={item.id}>
+                <article
+                  className={`cart-item-card ${removingIds.includes(item.id) ? "cart-item-card--removing" : ""}`}
+                  key={item.id}
+                >
                   <Link
                     href={`/shop/${item.slug}`}
                     className="cart-item-card__image"
@@ -178,7 +190,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         className="cart-item-card__remove"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => handleRemoveItem(item.id)}
                         aria-label={`Remove ${item.name}`}
                       >
                         <TrashIcon />

@@ -14,6 +14,15 @@ export function CartView() {
   const [couponError, setCouponError] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
+  const [removingIds, setRemovingIds] = useState<string[]>([]);
+
+  const handleRemoveItem = (id: string) => {
+    setRemovingIds((prev) => [...prev, id]);
+    setTimeout(() => {
+      removeItem(id);
+      setRemovingIds((prev) => prev.filter((itemId) => itemId !== id));
+    }, 240);
+  };
 
   const handleProceedToCheckout = async () => {
     if (items.length === 0) return;
@@ -149,7 +158,10 @@ export function CartView() {
           {/* Mobile View: Sleek Horizontal Cards */}
           <div className="cf-cart-mobile-list">
             {items.map((item) => (
-              <div key={item.id} className="cf-cart-m-item">
+              <div
+                key={item.id}
+                className={`cf-cart-m-item ${removingIds.includes(item.id) ? "cf-cart-m-item--removing" : ""}`}
+              >
                 <Link href={`/shop/${item.slug}`} className="cf-cart-m-thumb">
                   <Image
                     src={item.image || PRODUCT_PLACEHOLDER_IMAGE}
@@ -168,7 +180,7 @@ export function CartView() {
                     <button
                       type="button"
                       className="cf-cart-m-remove-btn"
-                      onClick={() => removeItem(item.id)}
+                      onClick={() => handleRemoveItem(item.id)}
                       aria-label={`Remove ${item.name}`}
                     >
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -237,7 +249,10 @@ export function CartView() {
               </thead>
               <tbody>
                 {items.map((item) => (
-                  <tr key={item.id}>
+                  <tr
+                    key={item.id}
+                    className={removingIds.includes(item.id) ? "cf-cart-row--removing" : ""}
+                  >
                     <td>
                       <div className="cf-cart-d-product">
                         <Link href={`/shop/${item.slug}`} className="cf-cart-d-thumb">
@@ -291,7 +306,7 @@ export function CartView() {
                       <button
                         type="button"
                         className="cf-cart-d-remove-btn"
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => handleRemoveItem(item.id)}
                         aria-label={`Remove ${item.name}`}
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

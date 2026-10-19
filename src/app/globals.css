@@ -153,13 +153,29 @@ html.light {
 .cart-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 9998;
   border: none;
   cursor: pointer;
   opacity: 1;
-  transition: opacity 0.25s ease;
+  animation: cfOverlayFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+@keyframes cfOverlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
 .cart-panel {
   position: fixed;
   top: 0;
@@ -169,13 +185,21 @@ html.light {
   max-width: 440px;
   background: #ffffff;
   z-index: 9999;
-  box-shadow: -4px 0 32px rgba(15, 23, 42, 0.16);
+  box-shadow: -8px 0 40px rgba(15, 23, 42, 0.18);
   border-left: 1px solid #e2e8f0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transform: translateX(0);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cfDrawerSlideIn 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+@keyframes cfDrawerSlideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .cart-panel__header {
@@ -272,6 +296,7 @@ html.light {
 .cart-panel__meter--unlocked .cart-panel__meter-badge {
   background: #dcfce7;
   color: #15803d;
+  animation: cfBadgeCelebrate 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .cart-panel__meter-track {
@@ -285,7 +310,25 @@ html.light {
   height: 100%;
   border-radius: 9999px;
   background: linear-gradient(90deg, #0081c9 0%, #0ea5e9 100%);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.cart-panel__meter-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: cfProgressShimmer 2.2s infinite ease-in-out;
 }
 
 .cart-panel__meter--unlocked .cart-panel__meter-bar {
@@ -308,11 +351,24 @@ html.light {
   border-bottom: 1px solid #f1f5f9;
   position: relative;
   background: #ffffff;
-  transition: background 0.15s ease;
+  max-height: 180px;
+  overflow: hidden;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cart-item-card:hover {
   background: #fcfcfd;
+}
+
+.cart-item-card--removing {
+  opacity: 0 !important;
+  transform: translateX(-40px) scale(0.96) !important;
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-bottom-color: transparent !important;
 }
 
 .cart-item-card__image {
@@ -2087,16 +2143,17 @@ html {
   border: 1px solid #e2e8f0 !important;
   z-index: 1060 !important;
   overflow: hidden !important;
-  transform: translateY(-8px);
+  transform: translateY(-8px) scale(0.985);
+  transform-origin: top left;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s 0.2s !important;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s 0.22s !important;
 }
 
 .departments--open .browse-dropdown__menu {
   opacity: 1 !important;
   visibility: visible !important;
-  transform: translateY(0) !important;
+  transform: translateY(0) scale(1) !important;
   transition-delay: 0s !important;
 }
 
@@ -3759,7 +3816,25 @@ html {
   height: 100%;
   border-radius: 9999px;
   background: linear-gradient(90deg, #0081c9 0%, #0ea5e9 100%);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.cf-shipping-meter__bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  animation: cfProgressShimmer 2.2s infinite ease-in-out;
 }
 
 .cf-shipping-meter--unlocked .cf-shipping-meter__bar {
@@ -4744,9 +4819,726 @@ html {
   padding: 10px 14px;
 }
 
+/* ==========================================================================
+   Smooth Micro-Interactions, Spring Physics & Transition Design System
+   ========================================================================== */
 
+/* 1. Header Cart Counter Bounce Animation */
+.indicator__counter--bump,
+.mobile-indicator__counter--bump {
+  animation: cfCartBadgeBump 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
 
+@keyframes cfCartBadgeBump {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.48) rotate(-10deg); }
+  65% { transform: scale(0.9) rotate(3deg); }
+  85% { transform: scale(1.08) rotate(-1deg); }
+  100% { transform: scale(1) rotate(0); }
+}
 
+/* 2. Product Detail Page: Tactile Add to Cart & State Morph */
+.cf-pdp-addtocart {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+}
 
+.cf-pdp-addtocart:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 129, 201, 0.35);
+}
 
+.cf-pdp-addtocart:active {
+  transform: scale(0.97) translateY(0);
+}
 
+.cf-pdp-addtocart--added {
+  background-color: #16a34a !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 4px 18px rgba(22, 163, 74, 0.38) !important;
+  animation: buttonSuccessPulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cf-pdp-addtocart__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cf-pdp-check {
+  animation: checkPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+  70% { transform: scale(1.25) rotate(4deg); }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes buttonSuccessPulse {
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+
+/* 3. Product Tabs Gliding Indicator & Crossfade Pane Entrance */
+.product-tabs__pane--active {
+  animation: cfTabFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes cfTabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-tabs__item a {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-tabs__item a:active {
+  transform: scale(0.96);
+}
+
+/* 4. Quantity Stepper Micro-Bump & Tactile Buttons */
+.input-number__add,
+.input-number__sub,
+.cf-stepper__btn,
+.cf-cart-qty-btn,
+.cf-cart-m-qty-btn {
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.input-number__add:active,
+.input-number__sub:active,
+.cf-stepper__btn:active:not(:disabled),
+.cf-cart-qty-btn:active:not(:disabled),
+.cf-cart-m-qty-btn:active:not(:disabled) {
+  transform: scale(0.85);
+  background: #e2e8f0 !important;
+}
+
+/* 5. Truck Fitment Cards & Chips Hover Feedback */
+.cf-fitment-card {
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cf-fitment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.cf-fitment-chip {
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease !important;
+}
+
+.cf-fitment-chip:hover {
+  transform: translateY(-1px);
+}
+
+/* 6. Shopping Cart Page: Smooth Item Removal Animations */
+.cf-cart-row--removing {
+  opacity: 0 !important;
+  transform: translateX(-35px) scale(0.98) !important;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cf-cart-m-item {
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  max-height: 180px;
+  overflow: hidden;
+}
+
+.cf-cart-m-item--removing {
+  opacity: 0 !important;
+  transform: translateX(-35px) scale(0.96) !important;
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  border-color: transparent !important;
+}
+
+/* 7. Catalog & Related Product Cards Hover Physics */
+.product-card {
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.1), 0 2px 8px -1px rgba(15, 23, 42, 0.04) !important;
+}
+
+.product-card .image__tag {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card:hover .image__tag {
+  transform: scale(1.05);
+}
+
+.product-card__action {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card__action:hover {
+  transform: scale(1.12);
+  color: #0081c9 !important;
+}
+
+.product-card__action:active {
+  transform: scale(0.92);
+}
+
+.product-card__addtocart-icon {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.product-card__addtocart-icon:hover {
+  transform: scale(1.08);
+}
+
+.product-card__addtocart-icon:active {
+  transform: scale(0.92);
+}
+
+.product-card__addtocart-icon--added {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  animation: buttonSuccessPulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.product-card__check-icon {
+  animation: checkPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 8. Order Summary Checkout Button Sheen & Active State */
+.cf-summary-checkout-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cf-summary-checkout-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.22),
+    transparent
+  );
+  transform: rotate(25deg);
+  transition: none;
+  pointer-events: none;
+}
+
+.cf-summary-checkout-btn:hover:not(:disabled)::after {
+  left: 140%;
+  transition: left 0.75s ease-in-out;
+}
+
+.cf-summary-checkout-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 9. Universal Focus Visible Outline Ring */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid #0081c9 !important;
+  outline-offset: 2px !important;
+}
+
+/* 10. Accessibility: Full Reduced Motion Compliance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   11. Redesigned Product Card Architecture (.cf-product-card)
+   ========================================================================== */
+
+/* Neutralize legacy Redparts overlay artifacts */
+.product-card.cf-product-card::before,
+.product-card.cf-product-card::after {
+  display: none !important;
+}
+
+.cf-product-card {
+  position: relative;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  height: 100% !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 14px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03) !important;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.28s ease !important;
+  overflow: hidden;
+}
+
+.cf-product-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 16px 32px -8px rgba(15, 23, 42, 0.1), 0 2px 8px -1px rgba(15, 23, 42, 0.04) !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Staged Product Image */
+.cf-card-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #f8fafc;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  margin-bottom: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  transition: background-color 0.25s ease;
+}
+
+.cf-product-card:hover .cf-card-stage {
+  background: #f1f5f9;
+}
+
+.cf-card-stage__link {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cf-card-stage__img {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.cf-product-card:hover .cf-card-stage__img {
+  transform: scale(1.05);
+}
+
+/* Promo / Discount Badges */
+.cf-card-badge-wrap {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+}
+
+.cf-card-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.cf-card-badge--new {
+  background: #0081c9;
+  color: #ffffff;
+}
+
+.cf-card-badge--hot {
+  background: #f59e0b;
+  color: #ffffff;
+}
+
+.cf-card-badge--sale {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Glassmorphic Quickview Button */
+.cf-card-quickview {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cf-card-quickview:hover {
+  background: #0081c9;
+  color: #ffffff;
+  border-color: #0081c9;
+  transform: scale(1.1);
+  box-shadow: 0 4px 10px rgba(0, 129, 201, 0.3);
+}
+
+.cf-card-quickview:active {
+  transform: scale(0.92);
+}
+
+/* Vehicle Fitment Badge */
+.cf-card-fitment {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: rgba(236, 253, 245, 0.95);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #a7f3d0;
+  border-radius: 6px;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Card Body & Information */
+.cf-card-body {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.cf-card-category-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.cf-card-category {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #0081c9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-card-sku-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.cf-card-sku {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-card-title {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  height: 40px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cf-card-title a {
+  color: #0f172a;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.cf-card-title a:hover {
+  color: #0081c9;
+}
+
+.cf-card-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.45;
+  margin: 0 0 10px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cf-card-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #16a34a;
+}
+
+.cf-card-stock__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #16a34a;
+  box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+  animation: stockPulse 2s infinite;
+}
+
+@keyframes stockPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0);
+  }
+}
+
+/* Card Footer: Price & CTA */
+.cf-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.cf-card-price-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cf-card-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cf-card-price-current {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.cf-card-price-old {
+  font-size: 12px;
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+/* Tactile Add to Cart Button */
+.cf-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 14px;
+  background: #0081c9;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cf-card-btn:hover {
+  background: #006ba8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 129, 201, 0.3);
+}
+
+.cf-card-btn:active {
+  transform: scale(0.94);
+}
+
+.cf-card-btn--added {
+  background: #16a34a !important;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3) !important;
+  animation: buttonSuccessPulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.cf-card-btn__icon--check {
+  animation: checkPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Horizontal / List View Layout */
+.cf-product-card--list {
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 20px !important;
+  padding: 16px 20px !important;
+}
+
+.cf-product-card--list .cf-card-stage {
+  width: 160px;
+  min-width: 160px;
+  margin-bottom: 0;
+}
+
+.cf-product-card--list .cf-card-body {
+  flex: 1;
+}
+
+.cf-product-card--list .cf-card-title {
+  height: auto;
+  -webkit-line-clamp: 1;
+  font-size: 17px;
+}
+
+.cf-product-card--list .cf-card-footer {
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  border-top: none;
+  border-left: 1px solid #f1f5f9;
+  padding-top: 0;
+  padding-left: 20px;
+  min-width: 140px;
+  gap: 12px;
+}
+
+/* Mobile Viewport Optimization (< 576px) */
+@media (max-width: 576px) {
+  .cf-product-card {
+    border-radius: 14px !important;
+    padding: 10px !important;
+  }
+
+  .cf-card-stage {
+    padding: 8px;
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+
+  .cf-card-title {
+    font-size: 13px;
+    height: 36px;
+    margin-bottom: 6px;
+    line-height: 1.35;
+  }
+
+  .cf-card-category {
+    font-size: 10px;
+  }
+
+  .cf-card-sku-row {
+    margin-bottom: 8px;
+  }
+
+  .cf-card-sku {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  .cf-card-price-current {
+    font-size: 15.5px;
+  }
+
+  .cf-card-price-old {
+    font-size: 11px;
+  }
+
+  .cf-card-stock {
+    font-size: 10px;
+  }
+
+  .cf-card-btn {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 12px;
+    border-radius: 7px;
+  }
+
+  .cf-card-quickview {
+    width: 28px;
+    height: 28px;
+  }
+
+  .cf-product-card--list {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .cf-product-card--list .cf-card-stage {
+    width: 100%;
+    min-width: auto;
+    margin-bottom: 12px;
+  }
+
+  .cf-product-card--list .cf-card-footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-left: none;
+    border-top: 1px solid #f1f5f9;
+    padding-left: 0;
+    padding-top: 10px;
+  }
+}

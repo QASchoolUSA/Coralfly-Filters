@@ -10,6 +10,23 @@ import { formatPrice } from "@/lib/format";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 import type { Product } from "@/sanity/types";
 
+function getCategoryLabel(product: Product): string {
+  if (product.category) {
+    return product.category.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+  if (product.productType) {
+    return product.productType.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+  const lower = (product.name || "").toLowerCase();
+  if (lower.includes("air filter")) return "Air Filters";
+  if (lower.includes("oil filter")) return "Oil Filters";
+  if (lower.includes("fuel filter")) return "Fuel Filters";
+  if (lower.includes("cabin filter")) return "Cabin Filters";
+  if (lower.includes("lamp") || lower.includes("light")) return "Lighting";
+  if (lower.includes("kit")) return "Service Kits";
+  return "Heavy Duty Filters";
+}
+
 export function ProductCard({
   product,
   layout = "grid",
@@ -25,7 +42,6 @@ export function ProductCard({
   const openQuickview = useQuickviewStore((state) => state.openQuickview);
 
   const { currentVehicle } = useVehicleStore();
-
   const [added, setAdded] = useState(false);
 
   const isCompatible =
@@ -41,120 +57,206 @@ export function ProductCard({
     e.stopPropagation();
     addItem(product, 1);
     setAdded(true);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("cart:item-added"));
+    }
     setTimeout(() => setAdded(false), 1500);
     openCart();
   };
 
-  const imageUrl =
-    product.images[0]?.url || PRODUCT_PLACEHOLDER_IMAGE;
+  const imageUrl = product.images[0]?.url || PRODUCT_PLACEHOLDER_IMAGE;
 
   const oldPrice =
     product.compareAtPrice && product.compareAtPrice > product.price
       ? product.compareAtPrice
       : product.price * 1.25;
 
+  const discountPercent =
+    oldPrice > product.price
+      ? Math.round(((oldPrice - product.price) / oldPrice) * 100)
+      : 0;
+
+  const categoryLabel = getCategoryLabel(product);
+  const sku = product.sku || "CF-" + product.slug.toUpperCase();
+
+  // Active Promo Badge: explicit badge prop takes priority, otherwise discount badge if >= 10%
+  const displayBadge =
+    badge || (discountPercent >= 10 ? `-${discountPercent}%` : null);
+
   return (
-    <div className={`product-card product-card--layout--${layout}`}>
-      {/* Action Buttons: Quickview */}
-      <div className="product-card__actions-list">
+    <div
+      className={`product-card cf-product-card cf-product-card--${layout} product-card--layout--${layout}`}
+    >
+      {/* 1. Staged Product Image Container */}
+      <div className="cf-card-stage">
+        {/* Floating Promo / Status Badge */}
+        {displayBadge && (
+          <div className="cf-card-badge-wrap">
+            <span
+              className={`cf-card-badge ${
+                displayBadge === "NEW"
+                  ? "cf-card-badge--new"
+                  : displayBadge === "HOT"
+                  ? "cf-card-badge--hot"
+                  : "cf-card-badge--sale"
+              }`}
+            >
+              {displayBadge}
+            </span>
+          </div>
+        )}
+
+        {/* Floating Quickview Button */}
         <button
-          className="product-card__action product-card__action--quickview"
+          className="cf-card-quickview"
           type="button"
-          aria-label="Quick view"
+          aria-label={`Quick view ${product.name}`}
+          title="Quick view"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             openQuickview(product);
           }}
         >
-          <svg width="16" height="16">
-            <path d="M14,15h-4v-2h3v-3h2v4C15,14.6,14.6,15,14,15z M13,3h-3V1h4c0.6,0,1,0.4,1,1v4h-2V3z M6,3H3v3H1V2c0-0.6,0.4-1,1-1h4V3z M3,13h3v2H2c-0.6,0-1-0.4-1-1v-4h2V13z" />
+          <svg
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
           </svg>
         </button>
-      </div>
 
-      {/* Product Image & Vehicle Fit Badge */}
-      <div className="product-card__image">
-        <div className="image image--type--product">
-          <Link href={`/shop/${product.slug}`} scroll={true} className="image__body" style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", display: "block" }}>
-            <Image
-              className="image__tag"
-              src={imageUrl}
-              alt={product.name}
-              fill
-              sizes="(max-width: 576px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-              style={{ objectFit: "contain" }}
-            />
-          </Link>
-        </div>
+        {/* Linked Product Image */}
+        <Link
+          href={`/shop/${product.slug}`}
+          scroll={true}
+          className="cf-card-stage__link"
+        >
+          <Image
+            className="cf-card-stage__img image__tag"
+            src={imageUrl}
+            alt={product.name}
+            fill
+            sizes="(max-width: 576px) 50vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+            style={{ objectFit: "contain" }}
+          />
+        </Link>
 
+        {/* Vehicle Fitment Compatibility Pill */}
         {currentVehicle && isCompatible && (
-          <div className="status-badge status-badge--style--success product-card__fit status-badge--has-icon status-badge--has-text">
-            <div className="status-badge__body">
-              <div className="status-badge__icon">
-                <svg width="13" height="13">
-                  <path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z" />
-                </svg>
-              </div>
-              <div className="status-badge__text">
-                Part Fit for {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
-              </div>
-            </div>
+          <div className="cf-card-fitment">
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>
+              Fits {currentVehicle.year} {currentVehicle.make}
+            </span>
           </div>
         )}
       </div>
 
-      {/* Product Info */}
-      <div className="product-card__info">
-        <div className="product-card__meta">
-          <span className="product-card__meta-title">SKU:</span>{" "}
-          {product.sku || "CF-" + product.slug.toUpperCase()}
+      {/* 2. Product Meta & Information */}
+      <div className="cf-card-body">
+        <div className="cf-card-category-row">
+          <span className="cf-card-category">{categoryLabel}</span>
         </div>
 
-        <div className="product-card__name">
-          <div>
-            {badge && (
-              <div className="product-card__badges">
-                <div className="tag-badge tag-badge--hot">{badge}</div>
-              </div>
-            )}
-            <Link href={`/shop/${product.slug}`} scroll={true}>{product.name}</Link>
-          </div>
-        </div>
+        <h3 className="cf-card-title">
+          <Link href={`/shop/${product.slug}`} scroll={true}>
+            {product.name}
+          </Link>
+        </h3>
 
         {layout === "list" && (
-          <div className="product-card__description" style={{ marginTop: 8, fontSize: 13, color: "#6c757d" }}>
-            {product.description || "Heavy-duty commercial grade filtration for extreme uptime and fleet performance."}
-          </div>
+          <p className="cf-card-desc">
+            {product.description ||
+              "Heavy-duty commercial grade filtration for extreme uptime and fleet performance."}
+          </p>
         )}
+
+        <div className="cf-card-sku-row">
+          <span className="cf-card-sku">SKU: {sku}</span>
+        </div>
       </div>
 
-      {/* Product Footer: Price & Add To Cart Button */}
-      <div className="product-card__footer">
-        <div className="product-card__prices">
-          <div className="product-card__price product-card__price--current">
-            {formatPrice(product.price, product.currency)}
+      {/* 3. Pricing & Call To Action */}
+      <div className="cf-card-footer">
+        <div className="cf-card-price-group">
+          <div className="cf-card-prices">
+            <span className="cf-card-price-current">
+              {formatPrice(product.price, product.currency)}
+            </span>
+            {oldPrice > product.price && (
+              <span className="cf-card-price-old">
+                {formatPrice(oldPrice, product.currency)}
+              </span>
+            )}
           </div>
-          <div className="product-card__price product-card__price--old">
-            {formatPrice(oldPrice, product.currency)}
+          <div className="cf-card-stock">
+            <span className="cf-card-stock__dot" />
+            <span>In Stock</span>
           </div>
         </div>
 
         <button
-          className="product-card__addtocart-icon"
+          className={`cf-card-btn ${added ? "cf-card-btn--added" : ""}`}
           type="button"
-          aria-label={added ? "Added to cart" : "Add to cart"}
+          aria-label={added ? "Added to cart" : `Add ${product.name} to cart`}
           onClick={handleAddToCart}
-          style={{
-            backgroundColor: added ? "#28a745" : undefined,
-            color: added ? "#fff" : undefined,
-          }}
         >
-          <svg width="20" height="20">
-            <circle cx="7" cy="17" r="2" />
-            <circle cx="15" cy="17" r="2" />
-            <path d="M20,4.4V5l-1.8,6.3c-0.1,0.4-0.5,0.7-1,0.7H6.7c-0.4,0-0.8-0.3-1-0.7L3.3,3.9C3.1,3.3,2.6,3,2.1,3H0.4C0.2,3,0,2.8,0,2.6V1.4C0,1.2,0.2,1,0.4,1h2.5c1,0,1.8,0.6,2.1,1.6L5.1,3l2.3,6.8c0,0.1,0.2,0.2,0.3,0.2h8.6c0.1,0,0.3-0.1,0.3-0.2l1.3-4.4C17.9,5.2,17.7,5,17.5,5H9.4C9.2,5,9,4.8,9,4.6V3.4C9,3.2,9.2,3,9.4,3h9.2C19.4,3,20,3.6,20,4.4z" />
-          </svg>
+          {added ? (
+            <>
+              <svg
+                className="cf-card-btn__icon cf-card-btn__icon--check"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              <span className="cf-card-btn__label">Added</span>
+            </>
+          ) : (
+            <>
+              <svg
+                className="cf-card-btn__icon"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="9" cy="21" r="1" />
+                <circle cx="20" cy="21" r="1" />
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+              </svg>
+              <span className="cf-card-btn__label">Add</span>
+            </>
+          )}
         </button>
       </div>
     </div>

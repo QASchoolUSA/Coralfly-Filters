@@ -21,9 +21,9 @@ export function ProductGrid({
   }
 
   return (
-    <div className="row">
+    <div className="row g-2 g-sm-3 g-md-4">
       {products.map((product, index) => (
-        <div key={product._id} className="col-12 col-sm-6 col-md-4 col-xl-3 mb-4">
+        <div key={product._id} className="col-6 col-md-4 col-xl-3 mb-3 mb-md-4">
           <ProductCard product={product} index={index} layout="grid" />
         </div>
       ))}
