@@ -6284,12 +6284,14 @@ html.dark .header {
   border-bottom: 1px solid #1e293b !important;
 }
 
-html.dark .header__topbar-start-bg {
-  background: #0a1628 !important;
+html.dark .header__topbar-start-bg,
+html.dark .header__topbar-end-bg {
+  background: transparent !important;
 }
 
-html.dark .header__topbar-end-bg {
-  background: #070b12 !important;
+html.dark .header__topbar-end-bg:before,
+html.dark .topbar--spaceship-end {
+  background: #131b2a !important;
 }
 
 html.dark .logo__slogan {
