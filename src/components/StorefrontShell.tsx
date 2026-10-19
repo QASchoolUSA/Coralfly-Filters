@@ -1,7 +1,8 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import type { ReactNode } from "react";
+import { useThemeStore } from "@/lib/theme-store";
 import { CartDrawer } from "@/components/CartDrawer";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -10,6 +11,10 @@ import { VehiclePickerModal } from "@/components/VehiclePickerModal";
 import { ScrollToTop } from "@/components/ScrollToTop";
 
 export function StorefrontShell({ children }: { children: ReactNode }) {
+  useEffect(() => {
+    useThemeStore.getState().initTheme();
+  }, []);
+
   return (
     <div className="site">
       <Suspense fallback={null}>

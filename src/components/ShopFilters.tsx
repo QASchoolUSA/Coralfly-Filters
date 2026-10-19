@@ -569,7 +569,7 @@ export function ShopFilters({ products, categories }: Props) {
                 </div>
 
                 {/* Desktop View Options Control Bar (Visible on desktop >= 992px) */}
-                <div className="view-options d-none d-lg-flex" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, marginBottom: 24 }}>
+                <div className="view-options d-none d-lg-flex" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", borderRadius: 4, marginBottom: 24 }}>
                   {/* Legend / Counters */}
                   <div className="view-options__legend" style={{ fontSize: 13, color: "#6c757d" }}>
                     Showing {sortedProducts.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}–

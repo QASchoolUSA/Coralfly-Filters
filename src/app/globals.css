@@ -5968,3 +5968,1410 @@ input:focus-visible {
     font-size: 11px;
   }
 }
+
+/* ==========================================================================
+   Obsidian Performance Dark Theme System & Theme Toggle
+   ========================================================================== */
+
+/* Logo Dual Rendering & Instant CSS Switching */
+.cf-logo--dark {
+  display: none !important;
+}
+.cf-logo--light {
+  display: block !important;
+}
+
+html.dark .cf-logo--dark {
+  display: block !important;
+}
+html.dark .cf-logo--light {
+  display: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   Theme Toggle Buttons (Desktop Pill & Mobile Header Icon)
+   -------------------------------------------------------------------------- */
+.cf-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  padding: 3px 9px 3px 3px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  user-select: none;
+  line-height: 1;
+}
+
+.cf-theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-1px);
+}
+
+.cf-theme-toggle__track {
+  display: inline-flex;
+  align-items: center;
+  width: 28px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 9999px;
+  padding: 2px;
+  transition: background-color 0.2s ease;
+}
+
+.cf-theme-toggle__thumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, color 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.cf-theme-toggle__thumb--dark {
+  transform: translateX(10px);
+  background: #1aa4f0;
+  color: #ffffff;
+}
+
+.cf-theme-toggle__label {
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.cf-theme-toggle--mobile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: #262626;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.cf-theme-toggle--mobile:active {
+  transform: scale(0.9);
+}
+
+.cf-theme-toggle__icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cf-theme-toggle__svg {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.cf-theme-toggle--mobile:hover .cf-theme-toggle__svg {
+  transform: rotate(20deg);
+}
+
+html.dark .cf-theme-toggle--mobile {
+  color: #f8fafc;
+}
+
+html.dark .cf-theme-toggle--mobile:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* --------------------------------------------------------------------------
+   html.dark Global Surface & Elevation Rules
+   -------------------------------------------------------------------------- */
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0b0f17 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .site {
+  background-color: #0b0f17 !important;
+}
+
+html.dark .site__body {
+  background-color: #0b0f17 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Desktop & Mobile Headers in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .header {
+  background-color: #0d131f !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .header__topbar-start-bg {
+  background: #0a1628 !important;
+}
+
+html.dark .header__topbar-end-bg {
+  background: #070b12 !important;
+}
+
+html.dark .logo__slogan {
+  color: #94a3b8 !important;
+}
+
+html.dark .nav-panel {
+  background: #0d131f !important;
+  border-top: 1px solid #1e293b !important;
+}
+
+html.dark .main-menu__link {
+  color: #e2e8f0 !important;
+}
+
+html.dark .main-menu__link:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .indicator__button {
+  color: #e2e8f0 !important;
+}
+
+html.dark .indicator__icon {
+  fill: #e2e8f0 !important;
+}
+
+html.dark .indicator__title {
+  color: #94a3b8 !important;
+}
+
+html.dark .indicator__value {
+  color: #f8fafc !important;
+}
+
+/* Slanted Desktop Search Bar */
+html.dark .search__body {
+  background: #131b2a !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .search__input {
+  background: transparent !important;
+  color: #f8fafc !important;
+}
+
+html.dark .search__input::placeholder {
+  color: #64748b !important;
+}
+
+html.dark .search__button {
+  color: #94a3b8 !important;
+}
+
+html.dark .search__button:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .search__vehicle-picker-btn {
+  background: #172033 !important;
+  border-right-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .search__shadow {
+  display: none !important;
+}
+
+/* Mobile Header */
+html.dark .mobile-header {
+  background: #0d131f !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .mobile-header__menu-button svg {
+  fill: #f8fafc !important;
+}
+
+html.dark .mobile-indicator__button {
+  color: #f8fafc !important;
+}
+
+html.dark .mobile-indicator__icon svg {
+  fill: #f8fafc !important;
+}
+
+html.dark .cf-mobile-search {
+  background: #131b2a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-mobile-search__input {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-mobile-search__input::placeholder {
+  color: #64748b !important;
+}
+
+html.dark .cf-mobile-search__vehicle-btn {
+  background: #172033 !important;
+  border-right-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Product Cards & Grid in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .card,
+html.dark .product-card {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .product-card:hover {
+  border-color: #1aa4f0 !important;
+  box-shadow: 0 12px 32px -8px rgba(0, 129, 201, 0.32) !important;
+}
+
+html.dark .product-card__image {
+  background-color: #172033 !important;
+}
+
+html.dark .product-card__name a {
+  color: #f8fafc !important;
+}
+
+html.dark .product-card__name a:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .product-card__prices {
+  color: #38bdf8 !important;
+}
+
+html.dark .product-card__current-price {
+  color: #38bdf8 !important;
+}
+
+html.dark .product-card__old-price {
+  color: #64748b !important;
+}
+
+html.dark .product-card__meta,
+html.dark .product-card__sku {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-card-fitment-badge {
+  background: #172033 !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-card-fitment-badge--matched {
+  background: rgba(5, 150, 105, 0.22) !important;
+  color: #34d399 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Sidebar Filters in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .widget-filters {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .widget-filters__header {
+  border-bottom-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .widget-filters__header h4 {
+  color: #f8fafc !important;
+}
+
+html.dark .widget-filters__item {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .widget-filters__item div {
+  color: #e2e8f0;
+}
+
+html.dark .widget-filters__item label {
+  color: #cbd5e1 !important;
+}
+
+html.dark .widget-filters__item button {
+  color: #cbd5e1;
+}
+
+html.dark .widget-filters__item button:hover {
+  color: #38bdf8;
+}
+
+/* --------------------------------------------------------------------------
+   Breadcrumbs & Titles in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .block-header__title {
+  color: #f8fafc !important;
+}
+
+html.dark .breadcrumb__item-link {
+  color: #94a3b8 !important;
+}
+
+html.dark .breadcrumb__item--current .breadcrumb__item-link {
+  color: #f8fafc !important;
+}
+
+html.dark .breadcrumb__item:after {
+  color: #475569 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Product Detail Page (PDP) in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .product,
+html.dark .product__content {
+  background: #111827 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product__name,
+html.dark .product-detail-name {
+  color: #f8fafc !important;
+}
+
+html.dark .product-gallery__featured {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product-gallery__carousel-item {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product-gallery__carousel-item--active {
+  border-color: #1aa4f0 !important;
+}
+
+html.dark .product__prices {
+  color: #38bdf8 !important;
+}
+
+html.dark .product-tabs {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product-tabs__item {
+  color: #94a3b8 !important;
+}
+
+html.dark .product-tabs__item--active {
+  color: #38bdf8 !important;
+  border-bottom-color: #38bdf8 !important;
+}
+
+html.dark .spec-table,
+html.dark .spec-row {
+  background: #111827 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .spec-row:nth-child(even) {
+  background: #172033 !important;
+}
+
+html.dark .spec-label {
+  color: #94a3b8 !important;
+}
+
+html.dark .spec-value {
+  color: #f8fafc !important;
+}
+
+html.dark .product__header.cf-pdp-header,
+html.dark .cf-pdp-header-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  box-shadow: none !important;
+}
+
+html.dark .product__header.cf-pdp-header .product__title,
+html.dark .product__header.cf-pdp-header .cf-pdp-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-pdp-badge--sku {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-rig-banner--unselected {
+  background: #131c2e !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-rig-banner--unselected .cf-rig-banner__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-rig-banner--unselected .cf-rig-banner__desc {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-rig-banner--compatible {
+  background: #06281b !important;
+  border-color: #059669 !important;
+}
+
+html.dark .cf-rig-banner--incompatible {
+  background: #2a1215 !important;
+  border-color: #dc2626 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile Bottom Sheet, Modals & Drawers in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .cf-sheet-container,
+html.dark .modal-content,
+html.dark .vehicle-picker {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-sheet-header {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-sheet-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sheet-subtitle {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-sheet-close-btn {
+  background: #172033 !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-sheet-vehicle-card {
+  background: #131b2a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-sheet-vehicle-val {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sheet-cat-card {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sheet-cat-name {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sheet-cat-desc {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-sheet-cat-arrow {
+  color: #64748b !important;
+}
+
+/* Cart Drawer */
+html.dark .cart-drawer,
+html.dark .cf-cart-drawer {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-left-color: #1e293b !important;
+}
+
+html.dark .cart-drawer__header {
+  border-bottom-color: #1e293b !important;
+  background: #0f172a !important;
+}
+
+html.dark .cart-drawer__item {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cart-drawer__footer {
+  background: #0a0e17 !important;
+  border-top-color: #1e293b !important;
+}
+
+/* Mobile Tab Bar */
+html.dark .cf-mobile-tabbar {
+  background: rgba(13, 19, 31, 0.94) !important;
+  border-top-color: #1e293b !important;
+}
+
+html.dark .cf-mobile-tabbar__label {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-mobile-tabbar__tab--active .cf-mobile-tabbar__label {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-mobile-tabbar__tab--active svg {
+  stroke: #38bdf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Footer in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .site-footer {
+  background: #070b12 !important;
+  border-top: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .footer-contacts__title,
+html.dark .footer-links__title {
+  color: #f8fafc !important;
+}
+
+html.dark .footer-contacts__text,
+html.dark .footer-links__link {
+  color: #94a3b8 !important;
+}
+
+html.dark .footer-links__link:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .decor--type--bottom .decor__center {
+  fill: #070b12 !important;
+}
+
+html.dark .decor--type--bottom .decor__start,
+html.dark .decor--type--bottom .decor__end {
+  background: #070b12 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Dropdowns, Browse Mega-Menu & Search Suggestions
+   -------------------------------------------------------------------------- */
+html.dark .browse-dropdown {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.6) !important;
+}
+
+html.dark .browse-dropdown__sidebar {
+  background: #0b0f17 !important;
+  border-right-color: #1e293b !important;
+}
+
+html.dark .browse-dropdown__item {
+  color: #cbd5e1 !important;
+}
+
+html.dark .browse-dropdown__item:hover,
+html.dark .browse-dropdown__item--active {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .browse-dropdown__panel {
+  background: #0f172a !important;
+}
+
+html.dark .browse-dropdown__panel-title {
+  color: #f8fafc !important;
+}
+
+html.dark .browse-dropdown__panel-desc {
+  color: #94a3b8 !important;
+}
+
+html.dark .browse-dropdown__col-title {
+  color: #38bdf8 !important;
+}
+
+html.dark .browse-dropdown__link {
+  color: #cbd5e1 !important;
+}
+
+html.dark .browse-dropdown__link:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .browse-dropdown__footer {
+  background: #070b12 !important;
+  border-top-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .search-suggestions {
+  background: #0f172a !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .search-suggestions a {
+  background: #0f172a !important;
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .search-suggestions a:hover {
+  background: #172033 !important;
+}
+
+html.dark .search-suggestions div {
+  color: #f8fafc !important;
+}
+
+/* Active Chips & Shop Controls */
+html.dark .cf-shop-chip {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-shop-mobile-btn {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-shop-make-pill {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+
+html.dark .cf-shop-make-pill--active {
+  background: #1aa4f0 !important;
+  color: #ffffff !important;
+}
+
+/* Tables & Forms */
+html.dark table {
+  color: #f8fafc !important;
+}
+
+html.dark table th {
+  background: #172033 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+html.dark table td {
+  border-color: #1e293b !important;
+}
+
+html.dark input[type="text"],
+html.dark input[type="search"],
+html.dark input[type="email"],
+html.dark select,
+html.dark textarea {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark input:focus,
+html.dark select:focus,
+html.dark textarea:focus {
+  border-color: #1aa4f0 !important;
+  box-shadow: 0 0 0 3px rgba(26, 164, 240, 0.22) !important;
+}
+
+/* Pagination in Dark Mode */
+html.dark .page-link {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .page-item.active .page-link {
+  background-color: #0081c9 !important;
+  border-color: #0081c9 !important;
+  color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   Targeted High-Specificity Dark Theme Overrides
+   -------------------------------------------------------------------------- */
+
+/* Custom Product Cards (.cf-product-card) */
+html.dark .cf-product-card,
+html.dark .product-card {
+  background-color: #111827 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cf-product-card:hover,
+html.dark .product-card:hover {
+  border-color: #1aa4f0 !important;
+  box-shadow: 0 12px 32px -8px rgba(0, 129, 201, 0.35) !important;
+}
+
+html.dark .cf-card-stage {
+  background-color: #172033 !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .cf-card-title a,
+html.dark .product-card__name a {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-card-title a:hover,
+html.dark .product-card__name a:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-card-price-current,
+html.dark .product-card__prices {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-card-price-old,
+html.dark .product-card__old-price {
+  color: #64748b !important;
+}
+
+html.dark .cf-card-sku {
+  background: #172033 !important;
+  color: #94a3b8 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cf-card-category {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-card-quickview {
+  background: #111827 !important;
+  color: #f8fafc !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cf-card-quickview:hover {
+  background: #1aa4f0 !important;
+  color: #ffffff !important;
+  border-color: #1aa4f0 !important;
+}
+
+html.dark .cf-card-stock {
+  color: #10b981 !important;
+}
+
+/* PDP Panels & Cards (.product--layout--full .product__card) */
+html.dark .product--layout--full .product__card,
+html.dark .product__card,
+html.dark .product__card--one,
+html.dark .product__card--two {
+  background-color: #111827 !important;
+  box-shadow: none !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .product__info {
+  background-color: transparent !important;
+}
+
+html.dark .product__info-card {
+  background-color: #111827 !important;
+  border: 1px solid #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-gallery-stage {
+  background: #172033 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cf-gallery-thumb-item {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-gallery-thumb-item--active {
+  border-color: #1aa4f0 !important;
+  box-shadow: 0 0 0 2px rgba(26, 164, 240, 0.3) !important;
+}
+
+html.dark .cf-gallery-zoom-btn {
+  background: #111827 !important;
+  color: #f8fafc !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .cf-gallery-nav-btn {
+  background: rgba(17, 24, 39, 0.88) !important;
+  color: #f8fafc !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .product__title,
+html.dark .cf-pdp-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-pdp-sku-chip {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-pdp-sku-chip__value {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-pdp-category-chip {
+  color: #38bdf8 !important;
+  background: rgba(56, 189, 248, 0.12) !important;
+  border-color: rgba(56, 189, 248, 0.25) !important;
+}
+
+html.dark .product__price--current {
+  color: #38bdf8 !important;
+}
+
+html.dark .product__price--old {
+  color: #64748b !important;
+}
+
+html.dark .product__meta th {
+  color: #94a3b8 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product__meta td {
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product__shop-features {
+  background-color: #111827 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .shop-features__item-title {
+  color: #f8fafc !important;
+}
+
+html.dark .shop-features__item-subtitle {
+  color: #94a3b8 !important;
+}
+
+html.dark .shop-features__divider {
+  background: #1e293b !important;
+}
+
+html.dark .product__tags a {
+  background: #172033 !important;
+  color: #cbd5e1 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .product__tags a:hover {
+  color: #38bdf8 !important;
+  border-color: #38bdf8 !important;
+}
+
+html.dark .product__features-title {
+  color: #f8fafc !important;
+}
+
+html.dark .product__features li {
+  color: #94a3b8 !important;
+}
+
+html.dark .product__features li span {
+  color: #f8fafc !important;
+}
+
+html.dark .product__excerpt {
+  color: #cbd5e1 !important;
+}
+
+html.dark .input-number__input {
+  background: #172033 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .input-number__add,
+html.dark .input-number__sub {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Mobile Header Hamburger Button & Container */
+html.dark .site__mobile-header {
+  background: #0d131f !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .mobile-header__body {
+  background: #0d131f !important;
+}
+
+html.dark .mobile-header__menu-button {
+  background: transparent !important;
+  color: #f8fafc !important;
+}
+
+html.dark .mobile-header__menu-button svg path {
+  fill: #f8fafc !important;
+}
+
+/* Home Directories & Grid Cards */
+html.dark .home-directory-card {
+  background: #111827 !important;
+  border: 1px solid #1e293b !important;
+}
+
+html.dark .home-directory-card__title {
+  color: #f8fafc !important;
+}
+
+html.dark .home-directory-card__subtitle {
+  color: #94a3b8 !important;
+}
+
+html.dark .home-directory-card__icon {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .home-directory-card__option-link {
+  color: #cbd5e1 !important;
+  border-top-color: #1e293b !important;
+}
+
+html.dark .home-directory-card__option-link:hover {
+  color: #38bdf8 !important;
+  background: rgba(26, 164, 240, 0.08) !important;
+}
+
+html.dark .home-directory-card__header {
+  background: #172033 !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+html.dark .home-directory-card__badge {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .home-directory-card__footer {
+  background: #0d131f !important;
+  border-top: 1px solid #1e293b !important;
+}
+
+html.dark .home-directory-card__cta {
+  background: #172033 !important;
+  border: 1px solid #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .home-directory-card__cta:hover {
+  background: #1aa4f0 !important;
+  color: #ffffff !important;
+  border-color: #1aa4f0 !important;
+}
+
+html.dark .home-directory-card:hover .home-directory-card__icon {
+  background: rgba(26, 164, 240, 0.2) !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .section-header__title {
+  color: #f8fafc !important;
+}
+
+html.dark .section-header__divider {
+  background: #1e293b !important;
+}
+
+/* Sidebar Filter Items in Dark Mode */
+html.dark .widget-filters__item button {
+  color: #cbd5e1 !important;
+}
+
+html.dark .widget-filters__item button[style*="font-weight: 700"],
+html.dark .widget-filters__item button[style*="fontWeight: 700"] {
+  color: #38bdf8 !important;
+}
+
+html.dark .widget-filters__item label {
+  color: #cbd5e1 !important;
+}
+
+/* Redparts Decor Cutouts & Finder Banner in Dark Mode */
+html.dark .decor__center,
+html.dark .decor__end,
+html.dark .decor__start {
+  background: #0b0f19 !important;
+}
+
+html.dark .site-footer__decor .decor__center,
+html.dark .site-footer__decor .decor__end,
+html.dark .site-footer__decor .decor__start {
+  background: #070b12 !important;
+}
+
+html.dark .block-finder__decor .decor__center,
+html.dark .block-finder__decor .decor__end,
+html.dark .block-finder__decor .decor__start {
+  background: #0b0f19 !important;
+}
+
+html.dark .block-finder__form-control--select select {
+  background-color: #111827 !important;
+  color: #f8fafc !important;
+  border: 1px solid #1e293b !important;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 5 10'%3E%3Cpath fill='%2394a3b8' d='M4.503 4H.497c-.403 0-.639-.508-.408-.878L2.095.233a.469.469 0 0 1 .816 0l2 2.889c.231.37-.005.878-.408.878zM.497 6h4.006c.403 0 .639.504.408.871L2.905 9.737a.47.47 0 0 1-.816 0l-2-2.866C-.142 6.504.094 6 .497 6z'/%3E%3C/svg%3E") !important;
+}
+
+html.dark .block-finder__form-control--select select:disabled {
+  background-color: #0d131f !important;
+  color: #64748b !important;
+  opacity: 0.65;
+}
+
+html.dark .block-finder__form-control--button:disabled {
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
+  color: #64748b !important;
+  cursor: not-allowed;
+}
+
+/* Post Cards & Technical Guides */
+html.dark .post-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .post-card__name a {
+  color: #f8fafc !important;
+}
+
+html.dark .post-card__name a:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .post-card__date {
+  color: #94a3b8 !important;
+}
+
+/* Mobile Categories Sheet Truck Make Cards & Shortcuts */
+html.dark .cf-sheet-make-card,
+html.dark .cf-sheet-shortcut-item {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sheet-make-card:hover,
+html.dark .cf-sheet-make-card:active,
+html.dark .cf-sheet-shortcut-item:hover,
+html.dark .cf-sheet-shortcut-item:active {
+  background: rgba(26, 164, 240, 0.12) !important;
+  border-color: #1aa4f0 !important;
+}
+
+html.dark .cf-sheet-make-name {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-sheet-make-engines {
+  color: #94a3b8 !important;
+}
+
+/* Cart Page in Dark Mode */
+html.dark .cf-shipping-meter {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-shipping-meter--unlocked {
+  background: rgba(16, 185, 129, 0.08) !important;
+  border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+html.dark .cf-shipping-meter__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-shipping-meter__badge {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-shipping-meter__track {
+  background: #1e293b !important;
+}
+
+html.dark .cf-cart-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-cart-card__header {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-cart-card__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-cart-card__count {
+  background: #172033 !important;
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-cart-card__footer {
+  background: #0d131f !important;
+  border-top-color: #1e293b !important;
+}
+
+html.dark .cf-cart-back-link {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-cart-m-item {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-cart-m-item:hover {
+  background: rgba(26, 164, 240, 0.04) !important;
+}
+
+html.dark .cf-cart-m-thumb {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-cart-m-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-cart-m-title:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-cart-m-sku {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-cart-m-unit-price {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-cart-m-total {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-cart-d-table th {
+  background: #0d131f !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-cart-d-table td {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-cart-d-thumb {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-cart-d-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-cart-d-title:hover {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-cart-d-sku {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-cart-d-price {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-cart-d-total {
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-summary-card {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-summary-card__header {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-summary-card__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-summary-row {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-summary-divider {
+  background: #1e293b !important;
+}
+
+html.dark .cf-summary-total__label,
+html.dark .cf-summary-total__val {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-promo-input {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-promo-input:focus {
+  border-color: #1aa4f0 !important;
+  background: #111827 !important;
+}
+
+html.dark .cf-cart-empty {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-cart-empty__title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-cart-empty__desc {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-cart-empty__icon {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+/* Shop Desktop View Options Bar & Pagination */
+.view-options {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+html.dark .view-options {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .view-options__legend {
+  color: #94a3b8 !important;
+}
+
+html.dark .view-options__select label {
+  color: #94a3b8 !important;
+}
+
+html.dark .view-options__select select {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .btn-light {
+  background-color: #172033 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .btn-light:hover:not(:disabled) {
+  background-color: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .btn-light:disabled {
+  background-color: #0d131f !important;
+  border-color: #1e293b !important;
+  color: #64748b !important;
+}
+
+/* Mobile Filter & Sort Drawer in Dark Mode */
+html.dark .cf-shop-drawer-container {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-shop-drawer-header {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-shop-drawer-title {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-shop-drawer-tabs {
+  background: #131b2a !important;
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-shop-drawer-tab {
+  color: #94a3b8 !important;
+}
+
+html.dark .cf-shop-drawer-tab--active {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .cf-shop-drawer-section {
+  border-bottom-color: #1e293b !important;
+}
+
+html.dark .cf-shop-drawer-footer {
+  background: #0d131f !important;
+  border-top-color: #1e293b !important;
+}
+
+html.dark .cf-shop-drawer-btn--reset {
+  background: #172033 !important;
+  border-color: #1e293b !important;
+  color: #cbd5e1 !important;
+}
+
+
+
+

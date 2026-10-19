@@ -567,7 +567,7 @@ export function HomeClient({
           <div className="row">
             {posts.map((post) => (
               <div key={post.id} className="col-12 col-md-4 mb-4">
-                <div className="post-card post-card--layout--grid" style={{ background: "#fff", border: "1px solid #ebebeb", borderRadius: 3, overflow: "hidden" }}>
+                <div className="post-card post-card--layout--grid" style={{ borderRadius: 6, overflow: "hidden" }}>
                   <div className="post-card__image" style={{ position: "relative", width: "100%", height: 210 }}>
                     <Link href={`/guides/${post.slug}`} style={{ display: "block", position: "relative", width: "100%", height: "100%" }}>
                       <Image

@@ -10,6 +10,7 @@ import { formatPrice } from "@/lib/format";
 import { MobileTabBar } from "@/components/MobileTabBar";
 import { MobileCategoriesSheet } from "@/components/MobileCategoriesSheet";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type SearchResult = {
   id: string;
@@ -674,12 +675,23 @@ export function Header() {
                   alt="CORALFLY"
                   width={165}
                   height={50}
+                  className="cf-logo cf-logo--light"
+                  style={{ objectFit: "contain", width: "auto", height: "auto" }}
+                  priority
+                />
+                <Image
+                  src="/brand/logo-dark.png"
+                  alt="CORALFLY"
+                  width={165}
+                  height={50}
+                  className="cf-logo cf-logo--dark"
                   style={{ objectFit: "contain", width: "auto", height: "auto" }}
                   priority
                 />
               </Link>
 
               <div className="mobile-header__indicators">
+                <ThemeToggle variant="mobile-header" />
                 <div className="mobile-indicator">
                   <button type="button" className="mobile-indicator__button" onClick={openCart} aria-label="Cart">
                     <span className="mobile-indicator__icon">
@@ -916,6 +928,9 @@ export function Header() {
               <div className="topbar__item-text" style={{ color: "#e8f4fb", fontSize: 13, fontWeight: 500 }}>
                 Free Shipping on Orders $75+
               </div>
+              <div className="topbar__item-text" style={{ marginLeft: 16 }}>
+                <ThemeToggle variant="desktop" />
+              </div>
             </div>
           </div>
 
@@ -929,6 +944,16 @@ export function Header() {
                   alt="CORALFLY Filters"
                   width={185}
                   height={50}
+                  className="cf-logo cf-logo--light"
+                  style={{ objectFit: "contain", height: "auto" }}
+                  priority
+                />
+                <Image
+                  src="/brand/logo-dark.png"
+                  alt="CORALFLY Filters"
+                  width={185}
+                  height={50}
+                  className="cf-logo cf-logo--dark"
                   style={{ objectFit: "contain", height: "auto" }}
                   priority
                 />
