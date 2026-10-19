@@ -188,6 +188,23 @@ export function ProductDetailClient({
     }
   };
 
+  const categoryLabel = useMemo(() => {
+    if (product.category) {
+      return product.category.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+    if (product.productType) {
+      return product.productType.replace(/[-_]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+    const lower = (product.name || "").toLowerCase();
+    if (lower.includes("air filter")) return "Heavy Duty Air Filter";
+    if (lower.includes("oil filter")) return "Heavy Duty Oil Filter";
+    if (lower.includes("fuel filter")) return "Heavy Duty Fuel Filter";
+    if (lower.includes("cabin filter")) return "Cabin Air Filter";
+    if (lower.includes("lamp") || lower.includes("light")) return "Commercial Lighting";
+    if (lower.includes("kit")) return "Heavy Duty Service Kit";
+    return "Heavy Duty Filter";
+  }, [product.category, product.productType, product.name]);
+
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -219,43 +236,39 @@ export function ProductDetailClient({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      {/* 1. Breadcrumb Header */}
-      <div className="block-header block-header--has-breadcrumb">
+      {/* 1. Modern Inline Breadcrumb Header */}
+      <div className="cf-pdp-breadcrumb-wrapper">
         <div className="container">
-          <div className="block-header__body">
-            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
-              <ol className="breadcrumb__list">
-                <li className="breadcrumb__spaceship-safe-area" role="presentation" />
-                <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--first">
-                  <Link href="/" className="breadcrumb__item-link">
-                    Home
-                  </Link>
-                </li>
-                <li className="breadcrumb__item breadcrumb__item--parent">
-                  <Link href="/shop" className="breadcrumb__item-link">
-                    Shop
-                  </Link>
-                </li>
-                {product.category && (
-                  <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--category-crumb">
-                    <Link
-                      href={`/shop?category=${encodeURIComponent(product.category)}`}
-                      className="breadcrumb__item-link"
-                    >
-                      {product.category}
-                    </Link>
-                  </li>
-                )}
-                <li
-                  className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last breadcrumb__item--product-name"
-                  aria-current="page"
+          <nav className="cf-pdp-breadcrumb" aria-label="breadcrumb">
+            <Link href="/" className="cf-pdp-breadcrumb__link">
+              Home
+            </Link>
+            <span className="cf-pdp-breadcrumb__sep" aria-hidden="true">
+              ›
+            </span>
+            <Link href="/shop" className="cf-pdp-breadcrumb__link">
+              Shop
+            </Link>
+            {product.category && (
+              <>
+                <span className="cf-pdp-breadcrumb__sep" aria-hidden="true">
+                  ›
+                </span>
+                <Link
+                  href={`/shop?category=${encodeURIComponent(product.category)}`}
+                  className="cf-pdp-breadcrumb__link cf-pdp-breadcrumb__link--category"
                 >
-                  <span className="breadcrumb__item-link">{product.name}</span>
-                </li>
-                <li className="breadcrumb__title-safe-area" role="presentation" />
-              </ol>
-            </nav>
-          </div>
+                  {categoryLabel}
+                </Link>
+              </>
+            )}
+            <span className="cf-pdp-breadcrumb__sep cf-pdp-breadcrumb__sep--product" aria-hidden="true">
+              ›
+            </span>
+            <span className="cf-pdp-breadcrumb__current" aria-current="page">
+              {product.name}
+            </span>
+          </nav>
         </div>
       </div>
 
@@ -442,78 +455,169 @@ export function ProductDetailClient({
                   </div>
 
                   {/* 2.2 Product Header */}
-                  <div className="product__header">
-                    <h1 className="product__title">{product.name}</h1>
-                    <div className="product__subtitle">
-                      {/* Vehicle Fit Status Badge */}
+                  <div className="product__header cf-pdp-header">
+                    {/* Category & Part Number Micro-Pills */}
+                    <div className="cf-pdp-meta-row">
+                      <span className="cf-pdp-category-chip">{categoryLabel}</span>
                       <div
-                        className={`status-badge status-badge--style--${
-                          !currentVehicle ? "neutral" : isCompatible ? "success" : "warning"
-                        } product__fit status-badge--has-icon status-badge--has-text`}
+                        className="cf-pdp-sku-chip"
+                        title="Click to copy SKU"
+                        onClick={handleCopySku}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            handleCopySku();
+                          }
+                        }}
                       >
-                        <div className="status-badge__body">
-                          <div className="status-badge__icon">
-                            {!currentVehicle ? (
-                              <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
-                                <path d="M6.6,2c2,0,4.8,0,6.8,0c1,0,2.9,0.8,3.6,2.2C17.7,5.7,17.9,7,18.4,7C20,7,20,8,20,8v1h-1v7.5c0,0.8-0.7,1.5-1.5,1.5h-1c-0.8,0-1.5-0.7-1.5-1.5V16H5v0.5C5,17.3,4.3,18,3.5,18h-1C1.7,18,1,17.3,1,16.5V16V9H0V8c0,0,0.1-1,1.6-1C2.1,7,2.3,5.7,3,4.2C3.7,2.8,5.6,2,6.6,2z M13.3,4H6.7c-0.8,0-1.4,0-2,0.7c-0.5,0.6-0.8,1.5-1,2C3.6,7.1,3.5,7.9,3.7,8C4.5,8.4,6.1,9,10,9c4,0,5.4-0.6,6.3-1c0.2-0.1,0.2-0.8,0-1.2c-0.2-0.4-0.5-1.5-1-2C14.7,4,14.1,4,13.3,4z" />
-                              </svg>
-                            ) : isCompatible ? (
-                              <svg width="13" height="13" viewBox="0 0 13 13">
-                                <path d="M12,4.4L5.5,11L1,6.5l1.4-1.4l3.1,3.1L10.6,3L12,4.4z" />
-                              </svg>
-                            ) : (
-                              <svg width="13" height="13" viewBox="0 0 13 13" fill="currentColor">
-                                <path d="M6.5 1L1 11h11L6.5 1zm0 3.5c.3 0 .5.2.5.5v2.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V5c0-.3.2-.5.5-.5zm0 5c-.4 0-.7-.3-.7-.7s.3-.7.7-.7.7.3.7.7-.3.7-.7.7z" />
-                              </svg>
-                            )}
-                          </div>
-                          <div className="status-badge__text">
-                            {currentVehicle ? (
-                              isCompatible ? (
-                                `Part Fits ${currentVehicle.year} ${currentVehicle.make} ${currentVehicle.model}`
-                              ) : (
-                                `May Not Fit ${currentVehicle.year} ${currentVehicle.make}`
-                              )
-                            ) : (
-                              "Select Rig to Confirm Fitment"
-                            )}
-                          </div>
-                        </div>
+                        <span className="cf-pdp-sku-chip__label">SKU:</span>
+                        <span className="cf-pdp-sku-chip__value">{productSku}</span>
+                        {copiedSku ? (
+                          <span className="cf-pdp-sku-chip__copied">Copied!</span>
+                        ) : null}
                       </div>
+                    </div>
 
-                      <div style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                        <button
-                          type="button"
+                    <h1 className="product__title cf-pdp-title">{product.name}</h1>
+
+                    {/* Interactive Rig Fitment Banner */}
+                    <div className="cf-pdp-rig-section">
+                      {!currentVehicle ? (
+                        /* State A: Unselected Rig */
+                        <div
+                          className="cf-rig-banner cf-rig-banner--unselected"
+                          role="button"
+                          tabIndex={0}
                           onClick={openPicker}
-                          className="btn btn-sm btn-link"
-                          style={{
-                            padding: "0 0 0 8px",
-                            fontSize: 12,
-                            color: "#0081c9",
-                            fontWeight: 600,
-                            textDecoration: "none",
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              openPicker();
+                            }
                           }}
                         >
-                          {currentVehicle ? "Change Rig" : "Select Rig"}
-                        </button>
-                        {currentVehicle && (
+                          <div className="cf-rig-banner__left">
+                            <div className="cf-rig-banner__icon cf-rig-banner__icon--truck">
+                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <rect x="1" y="3" width="15" height="13" />
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                                <circle cx="5.5" cy="18.5" r="2.5" />
+                                <circle cx="18.5" cy="18.5" r="2.5" />
+                              </svg>
+                            </div>
+                            <div className="cf-rig-banner__content">
+                              <div className="cf-rig-banner__title">Check Fit for Your Semi Truck</div>
+                              <div className="cf-rig-banner__desc">Select year, make & model to verify fitment</div>
+                            </div>
+                          </div>
                           <button
                             type="button"
-                            onClick={clearCurrentVehicle}
-                            className="btn btn-sm btn-link"
-                            title="Clear selected rig"
-                            style={{
-                              padding: "0 4px",
-                              fontSize: 12,
-                              color: "#6c757d",
-                              fontWeight: 500,
-                              textDecoration: "none",
+                            className="cf-rig-banner__btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              openPicker();
                             }}
                           >
-                            · Clear
+                            <span>Select Rig</span>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="9 18 15 12 9 6" />
+                            </svg>
                           </button>
-                        )}
-                      </div>
+                        </div>
+                      ) : isCompatible ? (
+                        /* State B: Compatible Rig Selected */
+                        <div className="cf-rig-banner cf-rig-banner--compatible">
+                          <div
+                            className="cf-rig-banner__left"
+                            role="button"
+                            tabIndex={0}
+                            onClick={openPicker}
+                            title="Click to change vehicle"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                openPicker();
+                              }
+                            }}
+                          >
+                            <div className="cf-rig-banner__icon cf-rig-banner__icon--success">
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12" />
+                              </svg>
+                            </div>
+                            <div className="cf-rig-banner__content">
+                              <div className="cf-rig-banner__status cf-rig-banner__status--success">
+                                Guaranteed Fit
+                              </div>
+                              <div className="cf-rig-banner__vehicle">
+                                {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="cf-rig-banner__actions">
+                            <button
+                              type="button"
+                              className="cf-rig-banner__action-btn"
+                              onClick={openPicker}
+                            >
+                              Change
+                            </button>
+                            <span className="cf-rig-banner__action-sep">·</span>
+                            <button
+                              type="button"
+                              className="cf-rig-banner__action-btn cf-rig-banner__action-btn--clear"
+                              onClick={clearCurrentVehicle}
+                              title="Clear vehicle"
+                            >
+                              Clear
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        /* State C: Incompatible Rig Warning */
+                        <div className="cf-rig-banner cf-rig-banner--incompatible">
+                          <div
+                            className="cf-rig-banner__left"
+                            role="button"
+                            tabIndex={0}
+                            onClick={openPicker}
+                            title="Click to change vehicle"
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" || e.key === " ") {
+                                e.preventDefault();
+                                openPicker();
+                              }
+                            }}
+                          >
+                            <div className="cf-rig-banner__icon cf-rig-banner__icon--warning">
+                              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                                <line x1="12" y1="9" x2="12" y2="13" />
+                                <line x1="12" y1="17" x2="12.01" y2="17" />
+                              </svg>
+                            </div>
+                            <div className="cf-rig-banner__content">
+                              <div className="cf-rig-banner__status cf-rig-banner__status--warning">
+                                May Not Fit Selected Rig
+                              </div>
+                              <div className="cf-rig-banner__vehicle">
+                                {currentVehicle.year} {currentVehicle.make} {currentVehicle.model}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="cf-rig-banner__actions">
+                            <button
+                              type="button"
+                              className="cf-rig-banner__action-btn"
+                              onClick={openPicker}
+                            >
+                              Change Rig
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
