@@ -366,7 +366,31 @@ export function ShopFilters({ products, categories }: Props) {
                       <div style={{ fontSize: 13, fontWeight: 700, textTransform: "uppercase", color: "#333", marginBottom: 10 }}>
                         Truck Make
                       </div>
-                      <div style={{ maxHeight: 180, overflowY: "auto" }}>
+                      <div className="widget-filters__makes-list">
+                        <label
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            fontSize: 14,
+                            color: selectedMake === "all" ? "#0081c9" : "#495057",
+                            fontWeight: selectedMake === "all" ? 600 : 400,
+                            marginBottom: 8,
+                            cursor: "pointer",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <input
+                              type="radio"
+                              name="truckMake"
+                              checked={selectedMake === "all"}
+                              onChange={() => handleMakeSelect("all")}
+                              style={{ accentColor: "#0081c9" }}
+                            />
+                            <span>All Makes</span>
+                          </div>
+                          <span style={{ color: "#999", fontSize: 12 }}>({products.length})</span>
+                        </label>
                         {availableMakes.map((m) => {
                           const isChecked = selectedMake.toLowerCase() === m.toLowerCase();
                           const count = products.filter((p) => p.compatibleMakes?.some((cm) => cm.toLowerCase() === m.toLowerCase())).length;
@@ -378,7 +402,8 @@ export function ShopFilters({ products, categories }: Props) {
                                 alignItems: "center",
                                 justifyContent: "space-between",
                                 fontSize: 14,
-                                color: "#495057",
+                                color: isChecked ? "#0081c9" : "#495057",
+                                fontWeight: isChecked ? 600 : 400,
                                 marginBottom: 8,
                                 cursor: "pointer",
                               }}
