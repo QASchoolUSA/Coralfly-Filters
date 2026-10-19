@@ -236,39 +236,43 @@ export function ProductDetailClient({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      {/* 1. Modern Inline Breadcrumb Header */}
-      <div className="cf-pdp-breadcrumb-wrapper">
+      {/* 1. Breadcrumb Header */}
+      <div className="block-header block-header--has-breadcrumb cf-pdp-block-header">
         <div className="container">
-          <nav className="cf-pdp-breadcrumb" aria-label="breadcrumb">
-            <Link href="/" className="cf-pdp-breadcrumb__link">
-              Home
-            </Link>
-            <span className="cf-pdp-breadcrumb__sep" aria-hidden="true">
-              ›
-            </span>
-            <Link href="/shop" className="cf-pdp-breadcrumb__link">
-              Shop
-            </Link>
-            {product.category && (
-              <>
-                <span className="cf-pdp-breadcrumb__sep" aria-hidden="true">
-                  ›
-                </span>
-                <Link
-                  href={`/shop?category=${encodeURIComponent(product.category)}`}
-                  className="cf-pdp-breadcrumb__link cf-pdp-breadcrumb__link--category"
+          <div className="block-header__body">
+            <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
+              <ol className="breadcrumb__list">
+                <li className="breadcrumb__spaceship-safe-area" role="presentation" />
+                <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--first">
+                  <Link href="/" className="breadcrumb__item-link">
+                    Home
+                  </Link>
+                </li>
+                <li className="breadcrumb__item breadcrumb__item--parent">
+                  <Link href="/shop" className="breadcrumb__item-link">
+                    Shop
+                  </Link>
+                </li>
+                {product.category && (
+                  <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--category-crumb">
+                    <Link
+                      href={`/shop?category=${encodeURIComponent(product.category)}`}
+                      className="breadcrumb__item-link"
+                    >
+                      {categoryLabel}
+                    </Link>
+                  </li>
+                )}
+                <li
+                  className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last breadcrumb__item--product-name"
+                  aria-current="page"
                 >
-                  {categoryLabel}
-                </Link>
-              </>
-            )}
-            <span className="cf-pdp-breadcrumb__sep cf-pdp-breadcrumb__sep--product" aria-hidden="true">
-              ›
-            </span>
-            <span className="cf-pdp-breadcrumb__current" aria-current="page">
-              {product.name}
-            </span>
-          </nav>
+                  <span className="breadcrumb__item-link">{product.name}</span>
+                </li>
+                <li className="breadcrumb__title-safe-area" role="presentation" />
+              </ol>
+            </nav>
+          </div>
         </div>
       </div>
 

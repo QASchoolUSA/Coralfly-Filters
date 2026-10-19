@@ -5549,86 +5549,129 @@ input:focus-visible {
    12. Modern Mobile & Desktop PDP Header, Breadcrumbs & Rig Fitment Banner
    ========================================================================== */
 
-/* Neutralize legacy Redparts skewed breadcrumb polygon artifacts */
+/* Neutralize legacy Redparts skewed breadcrumb polygon artifacts & spaceship safe areas */
 .breadcrumb__item-link::before,
-.breadcrumb__item-link::after {
+.breadcrumb__item-link::after,
+.cf-pdp-block-header .breadcrumb__spaceship-safe-area,
+.cf-pdp-block-header .breadcrumb__title-safe-area {
   display: none !important;
 }
 
-/* Modern Inline Breadcrumbs */
-.cf-pdp-breadcrumb-wrapper {
-  padding: 12px 0 8px 0;
+/* Modern Minimalist PDP Breadcrumbs with clearance below desktop header */
+.block-header--has-breadcrumb.cf-pdp-block-header {
+  margin-bottom: 0;
+  padding-top: 30px !important;
+  padding-bottom: 16px !important;
 }
 
-.cf-pdp-breadcrumb {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 7px;
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: #64748b;
+.cf-pdp-block-header .block-header__breadcrumb {
+  padding: 0 !important;
 }
 
-.cf-pdp-breadcrumb__link {
-  color: #64748b;
-  text-decoration: none;
-  font-weight: 500;
+.cf-pdp-block-header .breadcrumb__list {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0 !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.cf-pdp-block-header .breadcrumb__item {
+  float: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  font-size: 13px !important;
+  line-height: 1.4 !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+.cf-pdp-block-header .breadcrumb__item-link {
+  color: #64748b !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  height: auto !important;
+  padding: 0 2px !important;
+  background: transparent !important;
   transition: color 0.15s ease;
 }
 
-.cf-pdp-breadcrumb__link:hover {
-  color: #0081c9;
+.cf-pdp-block-header .breadcrumb__item-link:hover {
+  color: #0081c9 !important;
 }
 
-.cf-pdp-breadcrumb__sep {
+.cf-pdp-block-header .breadcrumb__item:not(.breadcrumb__item--last)::after {
+  content: "›";
+  margin: 0 8px;
   color: #94a3b8;
   font-size: 13px;
-  user-select: none;
   font-weight: 400;
+  user-select: none;
 }
 
-.cf-pdp-breadcrumb__current {
-  color: #0f172a;
-  font-weight: 600;
+.cf-pdp-block-header .breadcrumb__item--current .breadcrumb__item-link {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  max-width: 520px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 340px;
+  display: inline-block;
 }
 
-@media (max-width: 576px) {
-  .cf-pdp-breadcrumb-wrapper {
-    padding: 8px 0 6px 0;
+/* On mobile, make breadcrumbs compact & hide long product name */
+@media (max-width: 767.98px) {
+  .block-header--has-breadcrumb.cf-pdp-block-header {
+    padding-top: 10px !important;
+    padding-bottom: 8px !important;
   }
-
-  .cf-pdp-breadcrumb__sep--product,
-  .cf-pdp-breadcrumb__current {
+  .cf-pdp-block-header .breadcrumb__item--product-name {
     display: none !important;
   }
-
-  .cf-pdp-breadcrumb {
-    font-size: 11.5px;
-    gap: 5px;
+  .cf-pdp-block-header .breadcrumb__item {
+    font-size: 11.5px !important;
+  }
+  .cf-pdp-block-header .breadcrumb__item:not(.breadcrumb__item--last)::after {
+    margin: 0 5px !important;
+    font-size: 12px !important;
   }
 }
 
-/* Modern PDP Header Card Container */
+/* Modern PDP Header: Scoped for Mobile vs Desktop */
 .product__header.cf-pdp-header {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 16px !important;
-  padding: 20px 24px !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03) !important;
   display: flex;
   flex-direction: column;
 }
 
-@media (max-width: 768px) {
+/* Desktop (>= 768px): Seamless integration without awkward boxed border */
+@media (min-width: 768px) {
   .product__header.cf-pdp-header {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 32px 36px 0 36px !important;
+    margin: 0 !important;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+  .product__header.cf-pdp-header {
+    padding: 24px 28px 0 28px !important;
+  }
+}
+
+/* Mobile (< 768px): Polished tactile card container */
+@media (max-width: 767.98px) {
+  .product__header.cf-pdp-header {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
     border-radius: 14px !important;
     padding: 14px 14px 16px !important;
     margin-bottom: 0 !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03) !important;
   }
 }
 
