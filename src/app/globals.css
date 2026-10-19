@@ -6303,18 +6303,35 @@ html.dark .nav-panel {
 
 html.dark .main-menu__link {
   color: #e2e8f0 !important;
+  transition: color 0.15s ease, background-color 0.15s ease !important;
 }
 
 html.dark .main-menu__link:hover {
   color: #38bdf8 !important;
+  background-color: #172033 !important;
 }
 
 html.dark .indicator__button {
   color: #e2e8f0 !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+html.dark .indicator:hover .indicator__button,
+html.dark .indicator--open .indicator__button,
+html.dark .indicator__button:hover {
+  background: #172033 !important;
+  border-radius: 6px !important;
 }
 
 html.dark .indicator__icon {
   fill: #e2e8f0 !important;
+  transition: fill 0.15s ease, color 0.15s ease !important;
+}
+
+html.dark .indicator:hover .indicator__icon svg,
+html.dark .indicator--open .indicator__icon svg,
+html.dark .indicator__button:hover .indicator__icon svg {
+  fill: #38bdf8 !important;
 }
 
 html.dark .indicator__title {
@@ -8487,6 +8504,305 @@ html.dark .cf-sidebar-select-vehicle-btn:hover {
 html.dark .search__button--vehicle-selected {
   color: #38bdf8 !important;
 }
+
+/* ==========================================================================
+   Obsidian Performance Dark Theme: Universal Hover Elevation System
+   Eliminates all hardcoded legacy light hover artifacts (#f2f2f2, #f0f0f0, etc.)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Desktop Header Indicators (Shopping Cart, Garage, Favorites)
+   -------------------------------------------------------------------------- */
+html.dark .indicator:hover .indicator__button,
+html.dark .indicator--open .indicator__button,
+html.dark .indicator__button:hover {
+  background: #172033 !important;
+  border-radius: 6px !important;
+}
+
+html.dark .indicator:hover .indicator__icon svg,
+html.dark .indicator--open .indicator__icon svg,
+html.dark .indicator__button:hover .indicator__icon svg {
+  fill: #38bdf8 !important;
+}
+
+html.dark .indicator:hover .indicator__title,
+html.dark .indicator--open .indicator__title,
+html.dark .indicator__button:hover .indicator__title {
+  color: #94a3b8 !important;
+}
+
+html.dark .indicator:hover .indicator__value,
+html.dark .indicator--open .indicator__value,
+html.dark .indicator__button:hover .indicator__value {
+  color: #f8fafc !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Main Menu Navigation & Dropdowns
+   -------------------------------------------------------------------------- */
+html.dark .main-menu .main-menu__item:hover .main-menu__link,
+html.dark .main-menu .main-menu__item.main-menu__item--hover .main-menu__link {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  border-radius: 4px !important;
+}
+
+html.dark .menu__item:hover > .menu__link {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .departments__item--hover .departments__item-link,
+html.dark .departments__item:hover .departments__item-link {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .topbar__menu-item:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .dropdown-item:focus,
+html.dark .dropdown-item:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .account-nav__item:hover a,
+html.dark .account-menu__user:hover,
+html.dark .account-menu__links a:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Search Autocomplete Suggestions & Dropcart
+   -------------------------------------------------------------------------- */
+html.dark .suggestions__category:hover,
+html.dark .suggestions__product:hover {
+  background-color: #172033 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .dropcart__item-remove:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+  border-radius: 4px !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Mobile Header & Offcanvas Menu
+   -------------------------------------------------------------------------- */
+html.dark .mobile-indicator:hover .mobile-indicator__button,
+html.dark .mobile-indicator__button:hover,
+html.dark .mobile-header__menu-button:hover {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+  border-radius: 6px !important;
+}
+
+html.dark .mobile-indicator:hover .mobile-indicator__icon svg,
+html.dark .mobile-indicator__button:hover .mobile-indicator__icon svg {
+  fill: #38bdf8 !important;
+}
+
+html.dark .mobile-menu__indicator:hover {
+  background: #172033 !important;
+}
+
+html.dark .mobile-menu__indicator:hover .mobile-menu__indicator-icon svg {
+  fill: #38bdf8 !important;
+}
+
+html.dark .mobile-menu__links > li > a:hover,
+html.dark .mobile-menu__links > li > button:hover {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .mobile-menu__contacts:hover {
+  background: #172033 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .mobile-menu__setting-button:hover {
+  background: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .mobile-menu__close:hover,
+html.dark .mobile-menu__panel-back:hover {
+  background-color: #172033 !important;
+  color: #f8fafc !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Buttons, Badges, Pagination & Filters
+   -------------------------------------------------------------------------- */
+html.dark .btn-secondary:hover,
+html.dark .btn-secondary.focus,
+html.dark .btn-secondary:focus,
+html.dark .btn-secondary:not(:disabled):not(.disabled):active,
+html.dark .btn-secondary:not(:disabled):not(.disabled).active {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .btn-light:hover,
+html.dark .btn-light.focus,
+html.dark .btn-light:focus,
+html.dark .btn-light:not(:disabled):not(.disabled):active,
+html.dark .btn-light:not(:disabled):not(.disabled).active {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .btn-muted:hover,
+html.dark .btn-muted.focus,
+html.dark .btn-muted:focus,
+html.dark .btn-muted:not(:disabled):not(.disabled):active,
+html.dark .btn-muted:not(:disabled):not(.disabled).active {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .btn-outline-light:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .button-toggle__button:hover {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .page-link:hover,
+html.dark .post__pagination-link:hover {
+  background-color: #1e293b !important;
+  color: #38bdf8 !important;
+  border-color: #38bdf8 !important;
+}
+
+html.dark .layout-switcher__button:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .filters-button:hover,
+html.dark .applied-filters__button:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .tags__list a:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  border-color: #38bdf8 !important;
+}
+
+html.dark .widget-search__button:hover,
+html.dark .widget-categories__expander:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .filter__title:focus,
+html.dark .filter__title:hover {
+  background-color: #172033 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .block-zone__tabs-button:not(.block-zone__tabs-button--active):hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .section-header__groups-button:hover:after {
+  background-color: #38bdf8 !important;
+}
+
+html.dark .list-group-item-action:focus,
+html.dark .list-group-item-action:hover {
+  background-color: #172033 !important;
+  color: #f8fafc !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. Product Cards, Gallery Zoom, Modals & Close Triggers
+   -------------------------------------------------------------------------- */
+html.dark .product-card .product-card__action:hover,
+html.dark .product-card .product-card__compare:hover,
+html.dark .product-card .product-card__wishlist:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  fill: #38bdf8 !important;
+}
+
+html.dark .product__actions-item--compare:hover,
+html.dark .product__actions-item--wishlist:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  fill: #38bdf8 !important;
+}
+
+html.dark .product-gallery__zoom:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+  fill: #38bdf8 !important;
+}
+
+html.dark .product-tabs__item a:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .quickview__see-details:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+html.dark .quickview__close:hover,
+html.dark .vehicle-picker-modal__close:hover,
+html.dark .sidebar--offcanvas--mobile .sidebar__close:hover,
+html.dark .sidebar--offcanvas--always .sidebar__close:hover,
+html.dark .vehicles-list__item-remove:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444 !important;
+}
+
+html.dark .payment-methods__item:hover,
+html.dark .payment-methods__item--active:hover {
+  background-color: #172033 !important;
+  border-color: #38bdf8 !important;
+}
+
+html.dark .post-navigation__item:hover {
+  background-color: #172033 !important;
+  color: #38bdf8 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Data Tables & Breadcrumbs
+   -------------------------------------------------------------------------- */
+html.dark .card-table tbody tr:hover > *,
+html.dark .card-table tfoot tr:hover > *,
+html.dark .analogs-table tbody tr:hover td,
+html.dark .analogs-table tbody tr:hover th {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+html.dark .breadcrumb__item--parent .breadcrumb__item-link:hover:after,
+html.dark .breadcrumb__item--parent .breadcrumb__item-link:hover:before {
+  background-color: #1e293b !important;
+}
+
 
 
 
