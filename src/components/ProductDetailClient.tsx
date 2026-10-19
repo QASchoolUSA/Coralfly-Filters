@@ -236,25 +236,33 @@ export function ProductDetailClient({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
       />
-      {/* 1. Breadcrumb Header */}
+      {/* 1. Breadcrumb Header: Up to Category */}
       <div className="block-header block-header--has-breadcrumb cf-pdp-block-header">
         <div className="container">
           <div className="block-header__body">
             <nav className="breadcrumb block-header__breadcrumb" aria-label="breadcrumb">
               <ol className="breadcrumb__list">
-                <li className="breadcrumb__spaceship-safe-area" role="presentation" />
                 <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--first">
                   <Link href="/" className="breadcrumb__item-link">
                     Home
                   </Link>
                 </li>
-                <li className="breadcrumb__item breadcrumb__item--parent">
+                <li
+                  className={`breadcrumb__item ${
+                    product.category
+                      ? "breadcrumb__item--parent"
+                      : "breadcrumb__item--current breadcrumb__item--last"
+                  }`}
+                >
                   <Link href="/shop" className="breadcrumb__item-link">
                     Shop
                   </Link>
                 </li>
                 {product.category && (
-                  <li className="breadcrumb__item breadcrumb__item--parent breadcrumb__item--category-crumb">
+                  <li
+                    className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last breadcrumb__item--category-crumb"
+                    aria-current="page"
+                  >
                     <Link
                       href={`/shop?category=${encodeURIComponent(product.category)}`}
                       className="breadcrumb__item-link"
@@ -263,13 +271,6 @@ export function ProductDetailClient({
                     </Link>
                   </li>
                 )}
-                <li
-                  className="breadcrumb__item breadcrumb__item--current breadcrumb__item--last breadcrumb__item--product-name"
-                  aria-current="page"
-                >
-                  <span className="breadcrumb__item-link">{product.name}</span>
-                </li>
-                <li className="breadcrumb__title-safe-area" role="presentation" />
               </ol>
             </nav>
           </div>
