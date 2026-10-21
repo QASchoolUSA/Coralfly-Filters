@@ -8805,6 +8805,35 @@ html.dark .breadcrumb__item--parent .breadcrumb__item-link:hover:before {
   background-color: #1e293b !important;
 }
 
+/* --------------------------------------------------------------------------
+   Checkout View in Dark Mode
+   -------------------------------------------------------------------------- */
+html.dark .cf-checkout-card {
+  background-color: #111827 !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html.dark .cf-checkout-title,
+html.dark .cf-checkout-text-primary {
+  color: #f8fafc !important;
+}
+
+html.dark .cf-checkout-method {
+  background: #111827 !important;
+  border-color: #1e293b !important;
+}
+
+html.dark .cf-checkout-method--selected {
+  background: #172033 !important;
+  border-color: #38bdf8 !important;
+}
+
+html.dark .cf-checkout-divider,
+html.dark .cf-checkout-item-row {
+  border-color: #1e293b !important;
+}
+
 
 
 

@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Delivery Information",
   description:
-    "CORALFLY commercial shipping and delivery details, same-day cutoff times, free shipping thresholds, and freight handling.",
+    "CORALFLY commercial shipping and delivery details, transparent per-item delivery rates, same-day cutoff times, and fleet handling.",
 };
 
 export default function DeliveryPage() {
@@ -37,9 +37,9 @@ export default function DeliveryPage() {
           <div className="col-12 col-md-4 mb-3 mb-md-0">
             <div className="card h-100 p-4" style={{ border: "1px solid #ebebeb", borderRadius: 4, background: "#fff" }}>
               <div style={{ fontSize: 28, color: "#0081c9", marginBottom: 12 }}>🚚</div>
-              <h4 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Free Shipping on $75+</h4>
+              <h4 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>Per-Item Delivery Rates</h4>
               <p style={{ color: "#6c757d", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-                All domestic orders with a subtotal of $75 or greater automatically receive free standard ground delivery.
+                Transparent per-piece shipping: <strong>$10/pc</strong> Air Filters, <strong>$5/pc</strong> Oil & Fuel Separators, <strong>$3/pc</strong> Cabin Filters.
               </p>
             </div>
           </div>
@@ -90,7 +90,19 @@ export default function DeliveryPage() {
           </ul>
 
           <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1a1d21", marginTop: 24, marginBottom: 12 }}>
-            2. Fleet & Pallet Freight Delivery
+            2. Recurring Fleet Deliveries & Contracted Accounts
+          </h3>
+          <p style={{ marginBottom: 16 }}>
+            Standard orders calculate shipping per piece based on filter category ($10 Air, $5 Oil/Fuel, $3 Cabin). 
+            However, for commercial fleets, repair shops, and wholesale accounts with high-frequency, regular order schedules, 
+            our logistics team offers custom contracted delivery pricing and free shipping agreements based on volume commitments.
+          </p>
+          <p style={{ marginBottom: 24 }}>
+            To establish a recurring delivery route or discuss volume account freight terms, please call our logistics team at <a href="tel:+14077681488" style={{ color: "#0081c9", fontWeight: 600 }}>(407) 768-1488</a>.
+          </p>
+
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1a1d21", marginTop: 24, marginBottom: 12 }}>
+            3. Fleet & Pallet Freight Delivery
           </h3>
           <p style={{ marginBottom: 16 }}>
             For orders containing bulk cartons or total shipping weights exceeding 150 lbs, our team automatically assigns LTL commercial 
@@ -98,7 +110,7 @@ export default function DeliveryPage() {
           </p>
 
           <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1a1d21", marginTop: 24, marginBottom: 12 }}>
-            3. Package Inspection & Damaged Shipments
+            4. Package Inspection & Damaged Shipments
           </h3>
           <p style={{ marginBottom: 24 }}>
             Please inspect all cartons upon arrival. If damage occurs during transit, document the outer carton condition and contact 

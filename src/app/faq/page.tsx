@@ -12,8 +12,8 @@ const FAQ_SECTIONS = [
         a: "All in-stock orders placed Monday through Friday before 2:00 PM EST are picked, packed, and handed over to freight or parcel carriers (UPS, FedEx) the very same day.",
       },
       {
-        q: "How does the free shipping threshold work?",
-        a: "Every domestic US order with a subtotal of $75.00 or greater automatically qualifies for free standard ground shipping at checkout. No promo code needed.",
+        q: "How is delivery and shipping calculated?",
+        a: "Shipping is calculated per item based on filtration category: Air Filters ($10/pc), Oil Filters & Fuel Separators ($5/pc), and Cabin Air Filters ($3/pc). Free shipping or custom contracted delivery terms are offered exclusively to recurring commercial fleet clients upon arrangement with our logistics team.",
       },
       {
         q: "Do you ship bulk pallet quantities to commercial fleet terminals?",

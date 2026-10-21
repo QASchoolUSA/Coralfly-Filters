@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { toStripeUnitAmount } from "@/lib/format";
+import { calculateCartShipping } from "@/lib/shipping";
 import type { CartItem } from "@/sanity/types";
 
 type CheckoutBody = {
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
   }
 
   const stripe = new Stripe(secret);
+  const totalShipping = calculateCartShipping(items);
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -70,6 +72,26 @@ export async function POST(request: Request) {
           },
         },
       })),
+      ...(totalShipping > 0
+        ? {
+            shipping_options: [
+              {
+                shipping_rate_data: {
+                  type: "fixed_amount",
+                  fixed_amount: {
+                    amount: Math.round(totalShipping * 100),
+                    currency: "usd",
+                  },
+                  display_name: "Standard Commercial Delivery",
+                  delivery_estimate: {
+                    minimum: { unit: "business_day", value: 1 },
+                    maximum: { unit: "business_day", value: 4 },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
       success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/checkout/cancel`,
       metadata: {

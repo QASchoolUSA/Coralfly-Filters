@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format";
+import { calculateCartShipping } from "@/lib/shipping";
 import { useCartStore } from "@/lib/cart-store";
 import { useCartItems } from "@/lib/use-cart";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
@@ -29,9 +30,7 @@ export function CartDrawer() {
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const shippingAmount = subtotal >= 75 || subtotal === 0 ? 0 : 12;
-  const progressPercent = Math.min(100, Math.round((subtotal / 75) * 100));
-  const amountToFreeShipping = Math.max(0, 75 - subtotal);
+  const shippingAmount = calculateCartShipping(items);
   const currency = items[0]?.currency || "usd";
 
   // Close on Escape key and lock body scroll
@@ -134,29 +133,6 @@ export function CartDrawer() {
           </div>
         ) : (
           <>
-            {/* Free Shipping Progress Meter */}
-            <div className={`cart-panel__meter ${subtotal >= 75 ? "cart-panel__meter--unlocked" : ""}`}>
-              <div className="cart-panel__meter-header">
-                <span className="cart-panel__meter-title">
-                  {subtotal >= 75 ? "🎉" : "🚚"}{" "}
-                  {subtotal >= 75 ? (
-                    <span><strong>FREE Standard Shipping</strong> Unlocked!</span>
-                  ) : (
-                    <span>Add <strong>${amountToFreeShipping.toFixed(2)}</strong> for Free Shipping</span>
-                  )}
-                </span>
-                <span className="cart-panel__meter-badge">
-                  {subtotal >= 75 ? "UNLOCKED" : `${progressPercent}%`}
-                </span>
-              </div>
-              <div className="cart-panel__meter-track">
-                <div
-                  className="cart-panel__meter-bar"
-                  style={{ width: `${progressPercent}%` }}
-                />
-              </div>
-            </div>
-
             {/* Scrollable Items List */}
             <div className="cart-panel__items">
               {items.map((item) => (
@@ -254,11 +230,7 @@ export function CartDrawer() {
                 </div>
                 <div className="cart-panel__row">
                   <span>Shipping</span>
-                  {shippingAmount === 0 ? (
-                    <span className="cart-panel__free-badge">FREE</span>
-                  ) : (
-                    <span>{formatPrice(shippingAmount, currency)}</span>
-                  )}
+                  <span>{formatPrice(shippingAmount, currency)}</span>
                 </div>
                 <div className="cart-panel__row cart-panel__row--total">
                   <span>Estimated Total</span>

@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { useCartStore } from "@/lib/cart-store";
 import { useVehicleStore } from "@/lib/vehicle-store";
 import { formatPrice } from "@/lib/format";
+import { getItemShippingRate } from "@/lib/shipping";
 import { getEnhancedGalleryImages } from "@/lib/product-gallery";
 import { ProductDescription } from "@/components/ProductDescription";
 import type { Product } from "@/sanity/types";
@@ -60,6 +61,7 @@ export function ProductDetailClient({
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState<"specs" | "fitment">("specs");
   const [added, setAdded] = useState(false);
+  const shippingInfo = getItemShippingRate(product);
 
   // Gallery multi-angle dataset & Lightbox modal state
   const galleryImages = useMemo(() => getEnhancedGalleryImages(product), [product]);
@@ -740,7 +742,12 @@ export function ProductDetailClient({
                               </tr>
                               <tr>
                                 <th>Delivery</th>
-                                <td>Ships Same Business Day</td>
+                                <td>
+                                  Ships Same Business Day
+                                  <span style={{ display: "block", fontSize: 12, color: "#6c757d", marginTop: 2 }}>
+                                    ${shippingInfo.rate}.00/pc standard shipping
+                                  </span>
+                                </td>
                               </tr>
                             </tbody>
                           </table>
@@ -839,8 +846,8 @@ export function ProductDetailClient({
                             </svg>
                           </div>
                           <div className="shop-features__item-info">
-                            <div className="shop-features__item-title">Free Commercial Freight</div>
-                            <div className="shop-features__item-subtitle">On bulk fleet orders over $150</div>
+                            <div className="shop-features__item-title">Commercial Freight</div>
+                            <div className="shop-features__item-subtitle">Direct dispatch · Fleet pricing</div>
                           </div>
                         </li>
                         <li className="shop-features__divider" role="presentation" />

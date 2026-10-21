@@ -53,7 +53,8 @@ export default function TermsPage() {
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>4. Shipping & Delivery</h2>
           <p style={{ marginBottom: 20 }}>
             Orders placed prior to 2:00 PM EST on standard business days are processed for same-day dispatch.
-            Orders of $75 or more qualify for free standard ground shipping across the contiguous United States.
+            Standard delivery is calculated per item based on filtration category (Air Filters: $10/ea; Oil & Fuel Filters: $5/ea; Cabin Filters: $3/ea).
+            Contracted delivery terms and free freight options are negotiated exclusively for recurring commercial fleet accounts.
           </p>
 
           <h2 style={{ fontSize: 20, fontWeight: 700, color: "#1a1d21", marginBottom: 12 }}>5. Returns & Warranty</h2>

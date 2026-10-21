@@ -29,16 +29,16 @@ export function Hero({ featuredImage, featuredAlt }: { featuredImage?: ProductIm
           <p className="hero-subheading">OEM-quality filtration solutions to keep your fleet running at peak performance. Shop oil, air, fuel, and cabin filters with clear pricing and secure checkout.</p>
           <div className="hero-actions"><Link href="/shop" className="btn btn-primary btn-lg hero-cta-primary">Shop All Filters</Link></div>
           <div className="hero-trust-indicators">
-            <div className="trust-item"><CheckIcon /><span className="trust-text">Free shipping on orders $75+</span></div>
+            <div className="trust-item"><CheckIcon /><span className="trust-text">Direct Commercial Delivery</span></div>
             <div className="trust-item"><CheckIcon /><span className="trust-text">Secure Stripe checkout</span></div>
           </div>
         </div>
-        <aside className="hero-promo-card" aria-label="Shipping offer">
-          <div className="hero-promo-big-number">75<span>+</span></div>
-          <div className="hero-promo-badge">CORALFLY Online Store</div>
-          <h2 className="hero-promo-title">Free Shipping</h2>
-          <p className="hero-promo-desc">Spend <strong>$75 or more</strong> and shipping is on us. No code required.</p>
-          <div className="hero-promo-code-wrapper"><span className="hero-promo-code-label">Checkout, made simple</span><div className="hero-promo-code">SECURE PAY</div></div>
+        <aside className="hero-promo-card" aria-label="Commercial delivery">
+          <div className="hero-promo-big-number">DIRECT</div>
+          <div className="hero-promo-badge">CORALFLY Dispatch</div>
+          <h2 className="hero-promo-title">Commercial Shipping</h2>
+          <p className="hero-promo-desc">Warehouse-direct delivery. Dedicated contracted rates available for recurring fleet accounts.</p>
+          <div className="hero-promo-code-wrapper"><span className="hero-promo-code-label">Fleet, made simple</span><div className="hero-promo-code">FAST DISPATCH</div></div>
           <Link href="/shop" className="btn btn-primary hero-promo-cta">Shop Filters →</Link>
           <p className="hero-promo-fine">Same-day processing before 2pm</p>
         </aside>

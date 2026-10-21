@@ -47,6 +47,7 @@ export const useCartStore = create<CartState>()(
             image: product.images[0]?.url,
             quantity,
             sku: product.sku,
+            category: product.category,
           };
 
           return { items: [...state.items, next] };

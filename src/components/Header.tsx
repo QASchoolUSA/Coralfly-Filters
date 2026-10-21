@@ -11,6 +11,7 @@ import { MobileTabBar } from "@/components/MobileTabBar";
 import { MobileCategoriesSheet } from "@/components/MobileCategoriesSheet";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { calculateCartShipping } from "@/lib/shipping";
 
 type SearchResult = {
   id: string;
@@ -526,6 +527,7 @@ export function Header() {
   const { items: cartItems, openCart, removeItem: removeCartItem } = useCartStore();
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const cartSubtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  const cartShipping = calculateCartShipping(cartItems);
 
   const { currentVehicle, openPicker } = useVehicleStore();
 
@@ -926,7 +928,7 @@ export function Header() {
           <div className="header__topbar-end">
             <div className="topbar topbar--spaceship-end">
               <div className="topbar__item-text" style={{ color: "#e8f4fb", fontSize: 13, fontWeight: 500 }}>
-                Free Shipping on Orders $75+
+                Commercial Direct Delivery
               </div>
               <div className="topbar__item-text" style={{ marginLeft: 16 }}>
                 <ThemeToggle variant="desktop" />
@@ -1147,11 +1149,11 @@ export function Header() {
                             </tr>
                             <tr>
                               <th>Shipping</th>
-                              <td>{cartSubtotal >= 75 ? "FREE" : "$12.00"}</td>
+                              <td>{formatPrice(cartShipping, "usd")}</td>
                             </tr>
                             <tr>
                               <th>Total</th>
-                              <td>{formatPrice(cartSubtotal >= 75 ? cartSubtotal : cartSubtotal + 12, "usd")}</td>
+                              <td>{formatPrice(cartSubtotal + cartShipping, "usd")}</td>
                             </tr>
                           </tbody>
                         </table>

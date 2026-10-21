@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
+import { calculateCartShipping, getCartShippingBreakdown } from "@/lib/shipping";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function CartView() {
@@ -51,10 +52,9 @@ export function CartView() {
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discountAmount = (subtotal * discountPercent) / 100;
-  const shippingAmount = subtotal >= 75 || subtotal === 0 ? 0 : 12;
+  const shippingAmount = calculateCartShipping(items);
+  const shippingBreakdown = getCartShippingBreakdown(items);
   const grandTotal = Math.max(0, subtotal - discountAmount + shippingAmount);
-  const progressPercent = Math.min(100, Math.round((subtotal / 75) * 100));
-  const amountToFreeShipping = Math.max(0, 75 - subtotal);
   const totalItemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
@@ -102,35 +102,6 @@ export function CartView() {
 
   return (
     <div className="cf-cart-container">
-      {/* Free Shipping Progress Meter */}
-      <div className={`cf-shipping-meter ${subtotal >= 75 ? "cf-shipping-meter--unlocked" : ""}`}>
-        <div className="cf-shipping-meter__header">
-          <div className="cf-shipping-meter__title">
-            <span className="cf-shipping-meter__icon">
-              {subtotal >= 75 ? "🎉" : "🚚"}
-            </span>
-            {subtotal >= 75 ? (
-              <span>
-                Congratulations! You unlocked <strong>FREE Standard Shipping</strong>!
-              </span>
-            ) : (
-              <span>
-                Add <strong>${amountToFreeShipping.toFixed(2)}</strong> more to your order to unlock <strong>FREE Standard Shipping</strong>!
-              </span>
-            )}
-          </div>
-          <span className="cf-shipping-meter__badge">
-            {subtotal >= 75 ? "FREE SHIPPING UNLOCKED" : `${progressPercent}% COMPLETED`}
-          </span>
-        </div>
-        <div className="cf-shipping-meter__track">
-          <div
-            className="cf-shipping-meter__bar"
-            style={{ width: `${progressPercent}%` }}
-          />
-        </div>
-      </div>
-
       {/* Main Grid: Items Card + Summary Sidebar */}
       <div className="cf-cart-grid">
         {/* Left Side: Cart Items */}
@@ -383,15 +354,54 @@ export function CartView() {
             </div>
 
             <div className="cf-summary-row">
-              <span>Shipping</span>
-              <span>
-                {shippingAmount === 0 ? (
-                  <span className="cf-summary-row__free-badge">FREE</span>
-                ) : (
-                  formatPrice(shippingAmount, "usd")
-                )}
-              </span>
+              <span>Delivery / Shipping</span>
+              <span>{formatPrice(shippingAmount, "usd")}</span>
             </div>
+
+            {shippingBreakdown.length > 0 && (
+              <div
+                style={{
+                  margin: "8px 0 14px",
+                  padding: "10px 12px",
+                  background: "rgba(0, 129, 201, 0.05)",
+                  borderRadius: 6,
+                  border: "1px solid rgba(0, 129, 201, 0.15)",
+                  fontSize: 12,
+                }}
+              >
+                <div style={{ fontWeight: 600, color: "#0081c9", marginBottom: 4 }}>
+                  Itemized Delivery Rates:
+                </div>
+                {shippingBreakdown.map((tier) => (
+                  <div
+                    key={tier.category}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      color: "#64748b",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    <span>
+                      {tier.label} &times; {tier.totalQuantity}
+                    </span>
+                    <span>{formatPrice(tier.subtotalShipping, "usd")}</span>
+                  </div>
+                ))}
+                <div
+                  style={{
+                    color: "#64748b",
+                    marginTop: 6,
+                    paddingTop: 6,
+                    borderTop: "1px dashed rgba(0, 129, 201, 0.2)",
+                    fontSize: 11,
+                    fontStyle: "italic",
+                  }}
+                >
+                  Frequent & recurring fleet accounts: Contact dispatch for contracted rates.
+                </div>
+              </div>
+            )}
 
             {discountPercent > 0 && (
               <div className="cf-summary-row cf-summary-row--highlight">

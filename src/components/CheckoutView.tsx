@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCartStore } from "@/lib/cart-store";
 import { formatPrice } from "@/lib/format";
+import { calculateCartShipping, getCartShippingBreakdown } from "@/lib/shipping";
 import { PRODUCT_PLACEHOLDER_IMAGE } from "@/lib/product-gallery";
 
 export function CheckoutView() {
@@ -16,7 +17,8 @@ export function CheckoutView() {
   const [fleetSubmitted, setFleetSubmitted] = useState(false);
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal >= 75 || subtotal === 0 ? 0 : 12;
+  const shipping = calculateCartShipping(items);
+  const shippingBreakdown = getCartShippingBreakdown(items);
   const grandTotal = subtotal + shipping;
 
   const handleStripeCheckout = async () => {
@@ -87,11 +89,12 @@ export function CheckoutView() {
         <div className="row">
           {/* Left Column: Shipping & Payment Method */}
           <div className="col-12 col-lg-7 mb-4 mb-lg-0">
-            <div className="card mb-4" style={{ padding: 28, border: "1px solid #ebebeb", borderRadius: 4 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>1. Select Payment Method</h3>
+            <div className="card cf-checkout-card mb-4" style={{ padding: 28, border: "1px solid #ebebeb", borderRadius: 4 }}>
+              <h3 className="cf-checkout-title" style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>1. Select Payment Method</h3>
               
               <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
                 <label
+                  className={`cf-checkout-method ${paymentMethod === "stripe" ? "cf-checkout-method--selected" : ""}`}
                   style={{
                     display: "flex",
                     alignItems: "flex-start",
@@ -111,7 +114,7 @@ export function CheckoutView() {
                     style={{ marginTop: 4, accentColor: "#0081c9" }}
                   />
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: "#1a1d21" }}>
+                    <div className="cf-checkout-text-primary" style={{ fontWeight: 700, fontSize: 15, color: "#1a1d21" }}>
                       Credit Card / Apple Pay / Google Pay (Stripe Secure Checkout)
                     </div>
                     <div style={{ fontSize: 13, color: "#6c757d", marginTop: 4 }}>
@@ -121,6 +124,7 @@ export function CheckoutView() {
                 </label>
 
                 <label
+                  className={`cf-checkout-method ${paymentMethod === "fleet" ? "cf-checkout-method--selected" : ""}`}
                   style={{
                     display: "flex",
                     alignItems: "flex-start",
@@ -140,7 +144,7 @@ export function CheckoutView() {
                     style={{ marginTop: 4, accentColor: "#0081c9" }}
                   />
                   <div>
-                    <div style={{ fontWeight: 700, fontSize: 15, color: "#1a1d21" }}>
+                    <div className="cf-checkout-text-primary" style={{ fontWeight: 700, fontSize: 15, color: "#1a1d21" }}>
                       Fleet Account Purchase Order (Net 30 Terms)
                     </div>
                     <div style={{ fontSize: 13, color: "#6c757d", marginTop: 4 }}>
@@ -229,13 +233,14 @@ export function CheckoutView() {
 
           {/* Right Column: Order Summary */}
           <div className="col-12 col-lg-5">
-            <div className="card" style={{ padding: 28, border: "1px solid #ebebeb", borderRadius: 4 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Order Summary ({items.length} items)</h3>
+            <div className="card cf-checkout-card" style={{ padding: 28, border: "1px solid #ebebeb", borderRadius: 4 }}>
+              <h3 className="cf-checkout-title" style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Order Summary ({items.length} items)</h3>
               
               <div style={{ maxHeight: 320, overflowY: "auto", marginBottom: 20 }}>
                 {items.map((item) => (
                   <div
                     key={item.id}
+                    className="cf-checkout-item-row"
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -255,32 +260,38 @@ export function CheckoutView() {
                       />
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1d21", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <div className="cf-checkout-text-primary" style={{ fontSize: 13, fontWeight: 600, color: "#1a1d21", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {item.name}
                       </div>
                       <div style={{ fontSize: 12, color: "#6c757d" }}>
                         Qty: {item.quantity} × {formatPrice(item.price, item.currency)}
                       </div>
                     </div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1d21" }}>
+                    <div className="cf-checkout-text-primary" style={{ fontSize: 14, fontWeight: 700, color: "#1a1d21" }}>
                       {formatPrice(item.price * item.quantity, item.currency)}
                     </div>
                   </div>
                 ))}
               </div>
 
-              <div style={{ borderTop: "2px solid #ebebeb", paddingTop: 16, fontSize: 14 }}>
+              <div className="cf-checkout-divider" style={{ borderTop: "2px solid #ebebeb", paddingTop: 16, fontSize: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, color: "#6c757d" }}>
                   <span>Subtotal</span>
-                  <span style={{ fontWeight: 600, color: "#1a1d21" }}>{formatPrice(subtotal, items[0]?.currency)}</span>
+                  <span className="cf-checkout-text-primary" style={{ fontWeight: 600, color: "#1a1d21" }}>{formatPrice(subtotal, items[0]?.currency)}</span>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, color: "#6c757d" }}>
-                  <span>Shipping</span>
-                  <span style={{ fontWeight: 600, color: shipping === 0 ? "#28a745" : "#1a1d21" }}>
-                    {shipping === 0 ? "FREE" : formatPrice(shipping, items[0]?.currency)}
+                  <span>Delivery / Shipping</span>
+                  <span className="cf-checkout-text-primary" style={{ fontWeight: 600, color: "#1a1d21" }}>
+                    {formatPrice(shipping, items[0]?.currency)}
                   </span>
                 </div>
+                {shippingBreakdown.length > 0 && (
+                  <div style={{ fontSize: 11, color: "#64748b", margin: "4px 0 10px", lineHeight: 1.4 }}>
+                    {shippingBreakdown.map((t) => `${t.label} × ${t.totalQuantity}`).join(" · ")}
+                  </div>
+                )}
                 <div
+                  className="cf-checkout-divider"
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -292,7 +303,7 @@ export function CheckoutView() {
                     color: "#1a1d21",
                   }}
                 >
-                  <span>Grand Total</span>
+                  <span className="cf-checkout-text-primary">Grand Total</span>
                   <span style={{ color: "#0081c9" }}>{formatPrice(grandTotal, items[0]?.currency)}</span>
                 </div>
               </div>

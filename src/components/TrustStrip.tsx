@@ -1,7 +1,7 @@
 const items = [
   {
-    title: "Free shipping $75+",
-    copy: "On qualifying continental orders",
+    title: "Direct shipping",
+    copy: "Fast nationwide commercial delivery",
   },
   {
     title: "In-stock SKUs",

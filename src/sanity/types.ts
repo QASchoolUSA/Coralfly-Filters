@@ -50,4 +50,5 @@ export type CartItem = {
   image?: string;
   quantity: number;
   sku?: string;
+  category?: string;
 };
