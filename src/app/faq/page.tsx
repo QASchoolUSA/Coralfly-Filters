@@ -62,7 +62,7 @@ const FAQ_SECTIONS = [
   },
 ];
 
-export function FaqClient() {
+function FaqClient() {
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
     "0-0": true,
     "1-0": true,

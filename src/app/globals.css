@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./redparts.css";
 
+body {
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
 :root {
   --coralfly-blue: #0081c9;
   --coralfly-blue-dark: #006ba8;
