@@ -12,9 +12,34 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const guide = guides.find((item) => item.slug === slug);
-  return guide
-    ? { title: guide.title, description: guide.excerpt }
-    : { title: "Guide Not Found" };
+  if (!guide) return { title: "Guide Not Found" };
+
+  const canonicalUrl = `https://coralflyfilters.com/guides/${slug}`;
+  return {
+    title: `${guide.title} | Fleet Engineering Guide`,
+    description: guide.excerpt,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${guide.title} | CORALFLY`,
+      description: guide.excerpt,
+      url: canonicalUrl,
+      type: "article",
+      images: [
+        {
+          url: "https://coralflyfilters.com/images/og-business-card.png",
+          alt: guide.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${guide.title} | CORALFLY`,
+      description: guide.excerpt,
+      images: ["https://coralflyfilters.com/images/og-business-card.png"],
+    },
+  };
 }
 
 export default async function GuidePage({ params }: Props) {
@@ -22,8 +47,55 @@ export default async function GuidePage({ params }: Props) {
   const guide = guides.find((item) => item.slug === slug);
   if (!guide) notFound();
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: guide.title,
+    description: guide.excerpt,
+    url: `https://coralflyfilters.com/guides/${slug}`,
+    author: {
+      "@type": "Organization",
+      name: "CORALFLY Technical Engineering",
+      url: "https://coralflyfilters.com",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "CORALFLY Filters",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://coralflyfilters.com/brand/logo.png",
+      },
+    },
+    inLanguage: "en-US",
+  };
+
+  const faqJsonLd = guide.faqs && guide.faqs.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: guide.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
+
   return (
     <div className="block">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      {faqJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      )}
       {/* Header Breadcrumbs */}
       <div className="block-header block-header--has-breadcrumb block-header--has-title">
         <div className="container">

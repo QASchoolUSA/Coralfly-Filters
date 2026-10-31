@@ -3,9 +3,25 @@ import Link from "next/link";
 import { ContactClient } from "@/components/ContactClient";
 
 export const metadata: Metadata = {
-  title: "Contact Us",
+  title: "Contact Us | Fleet Sales & Technical Support",
   description:
     "Connect with CORALFLY commercial filtration engineers, fleet sales, and customer service in Sanford, FL.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/contact",
+  },
+  openGraph: {
+    title: "Contact CORALFLY Filters",
+    description:
+      "Get in touch with CORALFLY filtration specialists for fleet orders, OEM cross-references, and support.",
+    url: "https://coralflyfilters.com/contact",
+    type: "website",
+    images: [
+      {
+        url: "https://coralflyfilters.com/images/og-business-card.png",
+        alt: "Contact CORALFLY Filters",
+      },
+    ],
+  },
 };
 
 export default function ContactPage() {

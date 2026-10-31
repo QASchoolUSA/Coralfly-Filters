@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Terms and Conditions",
   description: "Terms and conditions for purchasing from the CORALFLY commercial filtration store.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/terms",
+  },
 };
 
 export default function TermsPage() {

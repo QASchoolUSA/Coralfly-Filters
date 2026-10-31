@@ -3,9 +3,25 @@ import Link from "next/link";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "About Us",
+  title: "About Us | Heavy Duty Filtration Engineering",
   description:
-    "Learn about CORALFLY Filters, our filtration engineering standards, fleet support, and commercial warehouse logistics.",
+    "Learn about CORALFLY Filters, our filtration engineering standards, fleet support, and commercial warehouse logistics in Sanford, Florida.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/about",
+  },
+  openGraph: {
+    title: "About CORALFLY Filters",
+    description:
+      "Commercial heavy duty filtration engineering and warehouse fulfillment.",
+    url: "https://coralflyfilters.com/about",
+    type: "website",
+    images: [
+      {
+        url: "https://coralflyfilters.com/images/og-business-card.png",
+        alt: "About CORALFLY Filters",
+      },
+    ],
+  },
 };
 
 export default function AboutPage() {

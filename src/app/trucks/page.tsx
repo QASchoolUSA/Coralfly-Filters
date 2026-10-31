@@ -6,7 +6,29 @@ import { getCatalogMakes } from "@/lib/catalog";
 export const metadata: Metadata = {
   title: "Commercial Truck Fitment Hub",
   description:
-    "Find heavy duty filters tailored for Volvo, Freightliner, Kenworth, Peterbilt, and Mack trucks.",
+    "Find heavy duty filters tailored for Volvo, Freightliner, Kenworth, Peterbilt, Mack, and Western Star commercial semi trucks.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/trucks",
+  },
+  openGraph: {
+    title: "Commercial Truck Fitment Hub | CORALFLY",
+    description:
+      "Find heavy duty filters tailored for Volvo, Freightliner, Kenworth, Peterbilt, and Mack semi trucks.",
+    url: "https://coralflyfilters.com/trucks",
+    type: "website",
+    images: [
+      {
+        url: "https://coralflyfilters.com/images/og-business-card.png",
+        alt: "Commercial Truck Fitment Hub",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Commercial Truck Fitment Hub | CORALFLY",
+    description: "Browse heavy duty filters by truck brand.",
+    images: ["https://coralflyfilters.com/images/og-business-card.png"],
+  },
 };
 
 const TRUCK_DETAILS: Record<string, { desc: string; models: string; engines: string }> = {

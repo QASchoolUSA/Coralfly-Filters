@@ -241,6 +241,7 @@ export function normalizeProduct(raw: RawProduct): Product | null {
 
   return {
     _id: id,
+    _updatedAt: asString(raw._updatedAt),
     name,
     slug,
     description:

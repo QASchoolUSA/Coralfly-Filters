@@ -5,6 +5,10 @@ import { CheckoutView } from "@/components/CheckoutView";
 export const metadata: Metadata = {
   title: "Checkout",
   description: "Secure checkout for CORALFLY commercial filtration orders.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function CheckoutPage() {

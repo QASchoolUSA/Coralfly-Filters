@@ -19,10 +19,38 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category: slug } = await params;
-  const { category } = await getCategory(slug);
-  return category
-    ? { title: category.name, description: `Browse CORALFLY ${category.name.toLocaleLowerCase()} in the current catalog.` }
-    : { title: "Filter Category Not Found" };
+  const { category, products } = await getCategory(slug);
+  if (!category) return { title: "Filter Category Not Found" };
+
+  const title = `${category.name} | Heavy Duty Truck Filters`;
+  const description = `Shop ${products.length} CORALFLY ${category.name.toLowerCase()} for commercial semi trucks. Factory-direct engineering, fast USA shipping, verified OEM fitment.`;
+  const canonicalUrl = `https://coralflyfilters.com/filters/${slug}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${category.name} | CORALFLY Filters`,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images: [
+        {
+          url: "https://coralflyfilters.com/images/og-business-card.png",
+          alt: `${category.name} CORALFLY`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${category.name} | CORALFLY`,
+      description,
+      images: ["https://coralflyfilters.com/images/og-business-card.png"],
+    },
+  };
 }
 
 export default async function FilterCategoryPage({ params }: Props) {
@@ -30,8 +58,29 @@ export default async function FilterCategoryPage({ params }: Props) {
   const { category, products } = await getCategory(slug);
   if (!category) notFound();
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${category.name} | CORALFLY Filters`,
+    url: `https://coralflyfilters.com/filters/${slug}`,
+    description: `Shop CORALFLY ${category.name.toLowerCase()} for commercial semi trucks.`,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: products.map((product, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `https://coralflyfilters.com/shop/${product.slug}`,
+        name: product.name,
+      })),
+    },
+  };
+
   return (
     <div className="block">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
       {/* Header Breadcrumbs */}
       <div className="block-header block-header--has-breadcrumb block-header--has-title">
         <div className="container">

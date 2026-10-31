@@ -17,6 +17,7 @@ export type ProductFitment = {
 
 export type Product = {
   _id: string;
+  _updatedAt?: string;
   name: string;
   slug: string;
   description?: string;

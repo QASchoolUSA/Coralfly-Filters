@@ -23,7 +23,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { brand: slug } = await params;
   const { make } = await resolveMake(slug);
   if (!make) return { title: "Truck Make Not Found" };
-  return { title: `${make} Truck Filters`, description: `Browse CORALFLY products explicitly tagged as compatible with ${make}.` };
+
+  const title = `${make} Truck Filters | Heavy Duty Replacements`;
+  const description = `Browse CORALFLY oil, air, fuel, and cabin filters verified for compatibility with ${make} commercial rigs. Fast dispatch, factory specs.`;
+  const canonicalUrl = `https://coralflyfilters.com/trucks/${slug}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${make} Truck Filters | CORALFLY`,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images: [
+        {
+          url: "https://coralflyfilters.com/images/og-business-card.png",
+          alt: `${make} Truck Filters`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${make} Truck Filters | CORALFLY`,
+      description,
+      images: ["https://coralflyfilters.com/images/og-business-card.png"],
+    },
+  };
 }
 
 export default async function TruckLandingPage({ params }: Props) {
@@ -37,8 +66,29 @@ export default async function TruckLandingPage({ params }: Props) {
   );
   const categories = getCatalogFilterCategories(matching);
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${make} Truck Filters - CORALFLY`,
+    url: `https://coralflyfilters.com/trucks/${slug}`,
+    description: `Heavy duty filtration products for ${make} commercial trucks.`,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: matching.map((product, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `https://coralflyfilters.com/shop/${product.slug}`,
+        name: product.name,
+      })),
+    },
+  };
+
   return (
     <div className="block">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
       {/* Header Breadcrumbs */}
       <div className="block-header block-header--has-breadcrumb block-header--has-title">
         <div className="container">

@@ -34,7 +34,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { brand, category: categorySlug } = await params;
   const { make, category } = await getCollection(brand, categorySlug);
   if (!make || !category) return { title: "Filter Category Not Found" };
-  return { title: `${make} ${category}`, description: `Browse ${category} products explicitly tagged as compatible with ${make}.` };
+
+  const title = `${make} ${category} | Heavy Duty Replacements`;
+  const description = `Shop heavy duty ${category.toLowerCase()} engineered for ${make} commercial trucks. OEM-specification filtration, fast USA delivery.`;
+  const canonicalUrl = `https://coralflyfilters.com/trucks/${brand}/${categorySlug}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${make} ${category} | CORALFLY`,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images: [
+        {
+          url: "https://coralflyfilters.com/images/og-business-card.png",
+          alt: `${make} ${category}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${make} ${category} | CORALFLY`,
+      description,
+      images: ["https://coralflyfilters.com/images/og-business-card.png"],
+    },
+  };
 }
 
 export default async function TruckCategoryPage({ params }: Props) {
@@ -42,8 +71,29 @@ export default async function TruckCategoryPage({ params }: Props) {
   const { make, category, products } = await getCollection(brand, categorySlug);
   if (!make || !category) notFound();
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${make} ${category} - CORALFLY Filters`,
+    url: `https://coralflyfilters.com/trucks/${brand}/${categorySlug}`,
+    description: `Shop ${products.length} heavy duty ${category.toLowerCase()} verified for ${make} rigs.`,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: products.map((product, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `https://coralflyfilters.com/shop/${product.slug}`,
+        name: product.name,
+      })),
+    },
+  };
+
   return (
     <div className="block">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
       {/* Header Breadcrumbs */}
       <div className="block-header block-header--has-breadcrumb block-header--has-title">
         <div className="container">

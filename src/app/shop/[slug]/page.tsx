@@ -13,8 +13,45 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) return { title: "Product" };
-  return { title: product.name, description: product.description };
+  if (!product) return { title: "Product Not Found" };
+
+  const title = product.name;
+  const description =
+    product.description ||
+    `Heavy duty ${product.name} (SKU: ${product.sku || product.slug}) engineered for commercial truck fleet reliability. In stock with fast USA dispatch.`;
+  const canonicalUrl = `https://coralflyfilters.com/shop/${slug}`;
+  const images = product.images?.length
+    ? product.images.map((img) => ({
+        url: img.url,
+        alt: img.alt || title,
+      }))
+    : [
+        {
+          url: "https://coralflyfilters.com/images/og-business-card.png",
+          alt: title,
+        },
+      ];
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
+    openGraph: {
+      title: `${title} | CORALFLY`,
+      description,
+      url: canonicalUrl,
+      type: "website",
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | CORALFLY`,
+      description,
+      images: images.map((i) => i.url),
+    },
+  };
 }
 
 async function ProductDetailLoader({ params }: Props) {

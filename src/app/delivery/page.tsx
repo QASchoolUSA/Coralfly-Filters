@@ -2,9 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Delivery Information",
+  title: "Delivery Information & Freight Terms",
   description:
-    "CORALFLY commercial shipping and delivery details, transparent per-item delivery rates, same-day cutoff times, and fleet handling.",
+    "CORALFLY commercial shipping and delivery details, transparent per-item delivery rates, same-day cutoff times, and fleet freight logistics.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/delivery",
+  },
+  openGraph: {
+    title: "Delivery & Shipping Information | CORALFLY",
+    description: "Same-day warehouse dispatch and nationwide freight delivery for commercial truck filters.",
+    url: "https://coralflyfilters.com/delivery",
+    type: "website",
+    images: ["https://coralflyfilters.com/images/og-business-card.png"],
+  },
 };
 
 export default function DeliveryPage() {

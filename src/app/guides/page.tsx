@@ -5,7 +5,30 @@ import { guides } from "@/lib/guides";
 
 export const metadata: Metadata = {
   title: "Filtration Guides & Technical Reports",
-  description: "Practical engineering reference guides for commercial filter applications, cross-references, and maintenance.",
+  description:
+    "Practical engineering reference guides for commercial semi truck filter applications, cross-references, maintenance intervals, and fleet care.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/guides",
+  },
+  openGraph: {
+    title: "Filtration Guides & Technical Reports | CORALFLY",
+    description:
+      "Engineering reference guides for commercial semi truck filter applications, cross-references, and maintenance.",
+    url: "https://coralflyfilters.com/guides",
+    type: "website",
+    images: [
+      {
+        url: "https://coralflyfilters.com/images/og-business-card.png",
+        alt: "CORALFLY Technical Filtration Guides",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Filtration Guides & Technical Reports | CORALFLY",
+    description: "Practical engineering reference guides for commercial truck filtration.",
+    images: ["https://coralflyfilters.com/images/og-business-card.png"],
+  },
 };
 
 const guideImages = [

@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useSyncExternalStore } from "react";
 import { useThemeStore } from "@/lib/theme-store";
+
+const emptySubscribe = () => () => {};
 
 type ThemeToggleProps = {
   variant?: "desktop" | "mobile-header" | "pill";
@@ -10,11 +12,7 @@ type ThemeToggleProps = {
 
 export function ThemeToggle({ variant = "desktop", className = "" }: ThemeToggleProps) {
   const { resolvedTheme, toggleTheme } = useThemeStore();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   const isDark = mounted ? resolvedTheme === "dark" : false;
 

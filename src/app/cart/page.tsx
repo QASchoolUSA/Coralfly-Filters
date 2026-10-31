@@ -5,6 +5,10 @@ import { CartView } from "@/components/CartView";
 export const metadata: Metadata = {
   title: "Shopping Cart",
   description: "Review your CORALFLY filters cart and checkout securely.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function CartPage() {

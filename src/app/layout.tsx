@@ -10,6 +10,38 @@ export const metadata: Metadata = {
   },
   description:
     "Buy CORALFLY filters online — heavy duty oil, air, fuel, and cabin filters for commercial semi trucks. In-stock SKUs, fast USA shipping, secure checkout.",
+  keywords: [
+    "semi truck filters",
+    "heavy duty truck filters",
+    "commercial vehicle filters",
+    "diesel oil filters",
+    "fuel water separator",
+    "truck air filters",
+    "cabin filters",
+    "Freightliner Cascadia filters",
+    "Volvo VNL filters",
+    "Kenworth filters",
+    "Peterbilt filters",
+    "Detroit Diesel filters",
+    "CORALFLY filters",
+  ],
+  alternates: {
+    canonical: "https://coralflyfilters.com",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  verification: {
+    google: "ql-aW2Mo6WcmgS-qBwobpAW3ngSN0B-ZEoKz2yvCwB8",
+  },
   openGraph: {
     title: "CORALFLY | Heavy Duty Filters for Semi Trucks",
     description:
@@ -48,6 +80,21 @@ export const metadata: Metadata = {
 const storeJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://coralflyfilters.com/#organization",
+      name: "CORALFLY Filters",
+      url: "https://coralflyfilters.com",
+      logo: "https://coralflyfilters.com/brand/logo.png",
+      email: "support@coralflyfilters.com",
+      contactPoint: {
+        "@type": "ContactPoint",
+        telephone: "+1-407-768-1488",
+        contactType: "customer service",
+        areaServed: "US",
+        availableLanguage: ["English"],
+      },
+    },
     {
       "@type": "AutoPartsStore",
       "@id": "https://coralflyfilters.com/#store",

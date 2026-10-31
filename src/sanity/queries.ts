@@ -42,6 +42,7 @@ const imageProjection = /* groq */ `
 
 const productFields = /* groq */ `
   _id,
+  _updatedAt,
   _type,
   name,
   title,

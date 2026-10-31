@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "CORALFLY privacy policy and customer data protection information.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/privacy",
+  },
 };
 
 export default function PrivacyPage() {

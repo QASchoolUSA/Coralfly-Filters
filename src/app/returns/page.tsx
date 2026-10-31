@@ -2,9 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Returns and Warranty",
+  title: "Returns & Warranty Policy",
   description:
-    "CORALFLY 30-day hassle-free return policy, RMA instructions, and Magnuson-Moss OEM warranty guarantee.",
+    "CORALFLY 30-day hassle-free return policy, RMA instructions, and Magnuson-Moss OEM warranty protection guarantee.",
+  alternates: {
+    canonical: "https://coralflyfilters.com/returns",
+  },
+  openGraph: {
+    title: "Returns & Warranty Policy | CORALFLY",
+    description: "30-day return policy and full OEM warranty compliance for heavy duty commercial filters.",
+    url: "https://coralflyfilters.com/returns",
+    type: "website",
+    images: ["https://coralflyfilters.com/images/og-business-card.png"],
+  },
 };
 
 export default function ReturnsPage() {

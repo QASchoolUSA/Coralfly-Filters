@@ -4,6 +4,10 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Order Confirmed",
   description: "Thank you for your commercial filtration order with CORALFLY.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function OrderSuccessPage() {

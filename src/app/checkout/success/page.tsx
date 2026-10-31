@@ -5,6 +5,10 @@ import { ClearCartOnSuccess } from "@/components/ClearCartOnSuccess";
 export const metadata: Metadata = {
   title: "Order Confirmed",
   description: "Your CORALFLY Stripe checkout completed successfully.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function CheckoutSuccessPage() {
